@@ -9,7 +9,7 @@ const content=JSON.parse(await readFile(resolve(root,'data/course.json'),'utf8')
 publicCourse(content,content.tasks);
 await access(resolve(root,'.nojekyll'));
 const html=await readFile(resolve(root,'index.html'),'utf8');
-for(const [,path] of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g)) await access(resolve(root,path));
+for(const [,path] of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g)) await access(resolve(root,path.split('?')[0]));
 for(const filename of await readdir(root)) {
   if(!filename.endsWith('.js'))continue;
   const source=await readFile(resolve(root,filename),'utf8');
