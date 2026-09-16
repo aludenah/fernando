@@ -6,13 +6,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 1,
-    "text": "Entre ℕ, ℤ, ℚ, ℝ y ℂ, ¿cuál es el conjunto más pequeño que contiene a −11?",
+    "text": "Entre \\(\\mathbb{N}\\), \\(\\mathbb{Z}\\), \\(\\mathbb{Q}\\), \\(\\mathbb{R}\\) y \\(\\mathbb{C}\\), ¿cuál es el conjunto más pequeño que contiene a \\(-11\\)?",
     "options": [
-      "ℕ",
-      "ℤ",
-      "ℚ",
-      "ℝ",
-      "ℂ"
+      "\\(\\mathbb{N}\\)",
+      "\\(\\mathbb{Z}\\)",
+      "\\(\\mathbb{Q}\\)",
+      "\\(\\mathbb{R}\\)",
+      "\\(\\mathbb{C}\\)"
     ]
   },
   "alg-uni-c1-b02": {
@@ -21,13 +21,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 2,
-    "text": "Si ℕ = {1; 2; 3; …} y ℕ₀ = {0; 1; 2; 3; …}, ¿cuál de las siguientes afirmaciones es verdadera?",
+    "text": "Si \\(\\mathbb{N}=\\{1;\\,2;\\,3;\\,\\ldots\\}\\) y \\(\\mathbb{N}_0=\\{0;\\,1;\\,2;\\,3;\\,\\ldots\\}\\), ¿cuál de las siguientes afirmaciones es verdadera?",
     "options": [
-      "√2 ∈ ℚ",
-      "0 ∈ ℕ",
-      "−3 ∈ ℕ",
-      "0 ∈ ℕ₀",
-      "1/2 ∈ ℤ"
+      "\\(\\sqrt{2}\\in\\mathbb{Q}\\)",
+      "\\(0\\in\\mathbb{N}\\)",
+      "\\(-3\\in\\mathbb{N}\\)",
+      "\\(0\\in\\mathbb{N}_0\\)",
+      "\\(\\dfrac{1}{2}\\in\\mathbb{Z}\\)"
     ]
   },
   "alg-uni-c1-b03": {
@@ -36,13 +36,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 3,
-    "text": "¿Cuál es el inverso aditivo (opuesto) de −9?",
+    "text": "¿Cuál es el inverso aditivo (opuesto) de \\(-9\\)?",
     "options": [
-      "9",
-      "-1/9",
-      "0",
-      "-9",
-      "1/9"
+      "\\(9\\)",
+      "\\(-\\dfrac{1}{9}\\)",
+      "\\(0\\)",
+      "\\(-9\\)",
+      "\\(\\dfrac{1}{9}\\)"
     ]
   },
   "alg-uni-c1-b04": {
@@ -51,13 +51,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 4,
-    "text": "¿Cuál es el inverso multiplicativo de −5/8?",
+    "text": "¿Cuál es el inverso multiplicativo de \\(-\\dfrac{5}{8}\\)?",
     "options": [
-      "-3/8",
-      "5/8",
-      "8/5",
-      "-5/8",
-      "-8/5"
+      "\\(-\\dfrac{3}{8}\\)",
+      "\\(\\dfrac{5}{8}\\)",
+      "\\(\\dfrac{8}{5}\\)",
+      "\\(-\\dfrac{5}{8}\\)",
+      "\\(-\\dfrac{8}{5}\\)"
     ]
   },
   "alg-uni-c1-b05": {
@@ -66,13 +66,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 5,
-    "text": "Calcula 7 − 3(2 − 5).",
+    "text": "Calcula:\\[7-3(2-5)\\]",
     "options": [
-      "4",
-      "10",
-      "16",
-      "-16",
-      "-2"
+      "\\(4\\)",
+      "\\(10\\)",
+      "\\(16\\)",
+      "\\(-16\\)",
+      "\\(-2\\)"
     ]
   },
   "alg-uni-c1-b06": {
@@ -81,13 +81,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 6,
-    "text": "Calcula 2/3 + 1/6 y expresa el resultado en su forma irreductible.",
+    "text": "Calcula y expresa el resultado en su forma irreductible:\\[\\frac{2}{3}+\\frac{1}{6}\\]",
     "options": [
-      "5/6",
-      "3/2",
-      "7/6",
-      "1/3",
-      "1/2"
+      "\\(\\dfrac{5}{6}\\)",
+      "\\(\\dfrac{3}{2}\\)",
+      "\\(\\dfrac{7}{6}\\)",
+      "\\(\\dfrac{1}{3}\\)",
+      "\\(\\dfrac{1}{2}\\)"
     ]
   },
   "alg-uni-c1-b07": {
@@ -96,13 +96,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 7,
-    "text": "Calcula 7/8 − 1/4.",
+    "text": "Calcula:\\[\\frac{7}{8}-\\frac{1}{4}\\]",
     "options": [
-      "7/4",
-      "3/8",
-      "5/8",
-      "3/4",
-      "1/2"
+      "\\(\\dfrac{7}{4}\\)",
+      "\\(\\dfrac{3}{8}\\)",
+      "\\(\\dfrac{5}{8}\\)",
+      "\\(\\dfrac{3}{4}\\)",
+      "\\(\\dfrac{1}{2}\\)"
     ]
   },
   "alg-uni-c1-b08": {
@@ -111,13 +111,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 8,
-    "text": "Calcula (−3/5) × (10/9).",
+    "text": "Calcula:\\[\\left(-\\frac{3}{5}\\right)\\times\\frac{10}{9}\\]",
     "options": [
-      "-6/5",
-      "-2/3",
-      "2/3",
-      "-3/2",
-      "-1/3"
+      "\\(-\\dfrac{6}{5}\\)",
+      "\\(-\\dfrac{2}{3}\\)",
+      "\\(\\dfrac{2}{3}\\)",
+      "\\(-\\dfrac{3}{2}\\)",
+      "\\(-\\dfrac{1}{3}\\)"
     ]
   },
   "alg-uni-c1-b09": {
@@ -126,13 +126,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 9,
-    "text": "Expresa el decimal exacto 0,375 como una fracción irreductible.",
+    "text": "Expresa el decimal exacto \\(0{,}375\\) como una fracción irreductible.",
     "options": [
-      "5/8",
-      "7/20",
-      "1/4",
-      "3/4",
-      "3/8"
+      "\\(\\dfrac{5}{8}\\)",
+      "\\(\\dfrac{7}{20}\\)",
+      "\\(\\dfrac{1}{4}\\)",
+      "\\(\\dfrac{3}{4}\\)",
+      "\\(\\dfrac{3}{8}\\)"
     ]
   },
   "alg-uni-c1-b10": {
@@ -143,11 +143,11 @@ const PROBLEMS = {
     "number": 10,
     "text": "¿Cuál de estos números es un imaginario puro no nulo?",
     "options": [
-      "−4 + 0i",
-      "0 + 0i",
-      "3 + 2i",
-      "0 − 6i",
-      "7 + 0i"
+      "\\(-4+0i\\)",
+      "\\(0+0i\\)",
+      "\\(3+2i\\)",
+      "\\(0-6i\\)",
+      "\\(7+0i\\)"
     ]
   },
   "alg-uni-c1-i01": {
@@ -156,13 +156,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 1,
-    "text": "¿Cuántos de los siguientes números son racionales? −3; 0; 2; 3/4; √9; √5; 0,121212… (el bloque 12 se repite indefinidamente).",
+    "text": "¿Cuántos de los siguientes números son racionales?\\[-3;\\quad0;\\quad2;\\quad\\frac{3}{4};\\quad\\sqrt{9};\\quad\\sqrt{5};\\quad0{,}\\overline{12}\\]El bloque \\(12\\) se repite indefinidamente.",
     "options": [
-      "7",
-      "3",
-      "4",
-      "5",
-      "6"
+      "\\(7\\)",
+      "\\(3\\)",
+      "\\(4\\)",
+      "\\(5\\)",
+      "\\(6\\)"
     ]
   },
   "alg-uni-c1-i02": {
@@ -173,11 +173,11 @@ const PROBLEMS = {
     "number": 2,
     "text": "Indica la secuencia V/F. I. El producto de dos irracionales siempre es irracional. II. El producto de un racional no nulo y un irracional es irracional. III. Todo real es racional.",
     "options": [
-      "VVF",
-      "FVF",
-      "VFF",
-      "FFV",
-      "FFF"
+      "\\(\\mathrm{VVF}\\)",
+      "\\(\\mathrm{FVF}\\)",
+      "\\(\\mathrm{VFF}\\)",
+      "\\(\\mathrm{FFV}\\)",
+      "\\(\\mathrm{FFF}\\)"
     ]
   },
   "alg-uni-c1-i03": {
@@ -186,13 +186,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 3,
-    "text": "Convierte a fracción irreductible 0,26666…; solo el dígito 6 se repite indefinidamente.",
+    "text": "Convierte a fracción irreductible \\(0{,}2\\overline{6}\\); solo el dígito \\(6\\) se repite indefinidamente.",
     "options": [
-      "8/25",
-      "1/3",
-      "2/9",
-      "4/15",
-      "13/45"
+      "\\(\\dfrac{8}{25}\\)",
+      "\\(\\dfrac{1}{3}\\)",
+      "\\(\\dfrac{2}{9}\\)",
+      "\\(\\dfrac{4}{15}\\)",
+      "\\(\\dfrac{13}{45}\\)"
     ]
   },
   "alg-uni-c1-i04": {
@@ -201,13 +201,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 4,
-    "text": "Calcula (3/4 − 1/6) ÷ (7/8 + 1/4).",
+    "text": "Calcula:\\[\\left(\\frac{3}{4}-\\frac{1}{6}\\right)\\div\\left(\\frac{7}{8}+\\frac{1}{4}\\right)\\]",
     "options": [
-      "14/27",
-      "27/14",
-      "7/12",
-      "2/3",
-      "7/27"
+      "\\(\\dfrac{14}{27}\\)",
+      "\\(\\dfrac{27}{14}\\)",
+      "\\(\\dfrac{7}{12}\\)",
+      "\\(\\dfrac{2}{3}\\)",
+      "\\(\\dfrac{7}{27}\\)"
     ]
   },
   "alg-uni-c1-i05": {
@@ -216,13 +216,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 5,
-    "text": "Calcula 2 − 1 / [1 − 1 / (2 − 1/2)].",
+    "text": "Calcula:\\[2-\\frac{1}{1-\\dfrac{1}{2-\\frac{1}{2}}}\\]",
     "options": [
-      "3",
-      "-3",
-      "-1",
-      "1",
-      "2"
+      "\\(3\\)",
+      "\\(-3\\)",
+      "\\(-1\\)",
+      "\\(1\\)",
+      "\\(2\\)"
     ]
   },
   "alg-uni-c1-i06": {
@@ -231,13 +231,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 6,
-    "text": "Calcula (1/2 + 1/3) ÷ (1/2 − 1/3).",
+    "text": "Calcula:\\[\\left(\\frac{1}{2}+\\frac{1}{3}\\right)\\div\\left(\\frac{1}{2}-\\frac{1}{3}\\right)\\]",
     "options": [
-      "6",
-      "1/5",
-      "2",
-      "3",
-      "5"
+      "\\(6\\)",
+      "\\(\\dfrac{1}{5}\\)",
+      "\\(2\\)",
+      "\\(3\\)",
+      "\\(5\\)"
     ]
   },
   "alg-uni-c1-i07": {
@@ -246,13 +246,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 7,
-    "text": "Calcula S = 1/(1×2) + 1/(2×3) + 1/(3×4) + 1/(4×5) + 1/(5×6).",
+    "text": "Calcula:\\[S=\\frac{1}{1\\times2}+\\frac{1}{2\\times3}+\\frac{1}{3\\times4}+\\frac{1}{4\\times5}+\\frac{1}{5\\times6}\\]",
     "options": [
-      "5/6",
-      "1/6",
-      "2/3",
-      "3/4",
-      "4/5"
+      "\\(\\dfrac{5}{6}\\)",
+      "\\(\\dfrac{1}{6}\\)",
+      "\\(\\dfrac{2}{3}\\)",
+      "\\(\\dfrac{3}{4}\\)",
+      "\\(\\dfrac{4}{5}\\)"
     ]
   },
   "alg-uni-c1-i08": {
@@ -261,13 +261,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 8,
-    "text": "Se define Sₙ = 1 + 2 + … + n. Calcula S₁ + S₂ + S₃ + S₄ + S₅.",
+    "text": "Se define \\(S_n=1+2+\\cdots+n\\). Calcula:\\[S_1+S_2+S_3+S_4+S_5\\]",
     "options": [
-      "15",
-      "25",
-      "30",
-      "35",
-      "40"
+      "\\(15\\)",
+      "\\(25\\)",
+      "\\(30\\)",
+      "\\(35\\)",
+      "\\(40\\)"
     ]
   },
   "alg-uni-c1-i09": {
@@ -276,13 +276,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 9,
-    "text": "¿Qué expresión equivale a 4(2x − 3) − 3(x − 5) para todo número real x?",
+    "text": "¿Qué expresión equivale a\\[4(2x-3)-3(x-5)\\]para todo número real \\(x\\)?",
     "options": [
-      "11·x - 27",
-      "5·x + 3",
-      "5·x - 27",
-      "11·x + 3",
-      "5·x - 3"
+      "\\(11x-27\\)",
+      "\\(5x+3\\)",
+      "\\(5x-27\\)",
+      "\\(11x+3\\)",
+      "\\(5x-3\\)"
     ]
   },
   "alg-uni-c1-i10": {
@@ -291,13 +291,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 10,
-    "text": "Sea z = (t − 2) + (t + 1)i, con t real. ¿Qué valor de t hace que z sea un número real?",
+    "text": "Sea \\(z=(t-2)+(t+1)i\\), con \\(t\\) real. ¿Qué valor de \\(t\\) hace que \\(z\\) sea un número real?",
     "options": [
-      "2",
-      "-2",
-      "-1",
-      "0",
-      "1"
+      "\\(2\\)",
+      "\\(-2\\)",
+      "\\(-1\\)",
+      "\\(0\\)",
+      "\\(1\\)"
     ]
   },
   "alg-uni-c1-a01": {
@@ -306,13 +306,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 1,
-    "text": "Calcula E = 3 − 1 / {2 − [(1/2 − 1/3) ÷ (3/4 + 1/6)]}.",
+    "text": "Calcula:\\[E=3-\\frac{1}{2-\\left[\\left(\\frac{1}{2}-\\frac{1}{3}\\right)\\div\\left(\\frac{3}{4}+\\frac{1}{6}\\right)\\right]}\\]",
     "options": [
-      "29/20",
-      "5/2",
-      "49/20",
-      "51/20",
-      "20/49"
+      "\\(\\dfrac{29}{20}\\)",
+      "\\(\\dfrac{5}{2}\\)",
+      "\\(\\dfrac{49}{20}\\)",
+      "\\(\\dfrac{51}{20}\\)",
+      "\\(\\dfrac{20}{49}\\)"
     ]
   },
   "alg-uni-c1-a02": {
@@ -321,13 +321,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 2,
-    "text": "Calcula (0,83333… − 0,125) ÷ (0,16666… + 0,25). En los decimales periódicos se repiten, respectivamente, solo 3 y solo 6.",
+    "text": "Calcula:\\[\\left(0{,}8\\overline{3}-0{,}125\\right)\\div\\left(0{,}1\\overline{6}+0{,}25\\right)\\]En los decimales periódicos se repiten, respectivamente, solo \\(3\\) y solo \\(6\\).",
     "options": [
-      "17/10",
-      "19/10",
-      "3/2",
-      "7/10",
-      "10/17"
+      "\\(\\dfrac{17}{10}\\)",
+      "\\(\\dfrac{19}{10}\\)",
+      "\\(\\dfrac{3}{2}\\)",
+      "\\(\\dfrac{7}{10}\\)",
+      "\\(\\dfrac{10}{17}\\)"
     ]
   },
   "alg-uni-c1-a03": {
@@ -336,13 +336,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 3,
-    "text": "Calcula S = 1/(1×3) + 1/(3×5) + 1/(5×7) + … + 1/(15×17).",
+    "text": "Calcula:\\[S=\\frac{1}{1\\times3}+\\frac{1}{3\\times5}+\\frac{1}{5\\times7}+\\cdots+\\frac{1}{15\\times17}\\]",
     "options": [
-      "16/17",
-      "8/15",
-      "17/8",
-      "4/17",
-      "8/17"
+      "\\(\\dfrac{16}{17}\\)",
+      "\\(\\dfrac{8}{15}\\)",
+      "\\(\\dfrac{17}{8}\\)",
+      "\\(\\dfrac{4}{17}\\)",
+      "\\(\\dfrac{8}{17}\\)"
     ]
   },
   "alg-uni-c1-a04": {
@@ -351,13 +351,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 4,
-    "text": "Si Sₙ = 1 + 2 + … + n, calcula S₁ + S₂ + … + S₁₂.",
+    "text": "Si \\(S_n=1+2+\\cdots+n\\), calcula:\\[S_1+S_2+\\cdots+S_{12}\\]",
     "options": [
-      "312",
-      "364",
-      "650",
-      "78",
-      "286"
+      "\\(312\\)",
+      "\\(364\\)",
+      "\\(650\\)",
+      "\\(78\\)",
+      "\\(286\\)"
     ]
   },
   "alg-uni-c1-a05": {
@@ -366,13 +366,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 5,
-    "text": "Simplifica E = [3 + 1/(x − 2)] ÷ [1 − 4/(3x − 1)], para x ≠ 2, x ≠ 1/3 y x ≠ 5/3.",
+    "text": "Simplifica:\\[E=\\left[3+\\frac{1}{x-2}\\right]\\div\\left[1-\\frac{4}{3x-1}\\right]\\]Para \\(x\\ne2\\), \\(x\\ne\\dfrac{1}{3}\\) y \\(x\\ne\\dfrac{5}{3}\\).",
     "options": [
-      "(3·x - 5)/(x - 2)",
-      "(3·x + 1)/(x - 2)",
-      "(3·x - 1)/(x + 2)",
-      "(3·x - 1)/(x - 2)",
-      "(x - 2)/(3·x - 1)"
+      "\\(\\dfrac{3x-5}{x-2}\\)",
+      "\\(\\dfrac{3x+1}{x-2}\\)",
+      "\\(\\dfrac{3x-1}{x+2}\\)",
+      "\\(\\dfrac{3x-1}{x-2}\\)",
+      "\\(\\dfrac{x-2}{3x-1}\\)"
     ]
   },
   "alg-uni-c1-a06": {
@@ -381,13 +381,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 6,
-    "text": "Sean P = 4 − 3/x y Q = x/(4x − 3) + 2x/(4x − 3) + 4x/(4x − 3), con x ≠ 0 y x ≠ 3/4. Calcula P·Q.",
+    "text": "Sean\\[\\begin{aligned}P&=4-\\frac{3}{x}\\\\[6pt]Q&=\\frac{x}{4x-3}+\\frac{2x}{4x-3}+\\frac{4x}{4x-3}\\end{aligned}\\]con \\(x\\ne0\\) y \\(x\\ne\\dfrac{3}{4}\\). Calcula \\(P\\cdot Q\\).",
     "options": [
-      "4",
-      "7",
-      "7·x",
-      "4·x - 3",
-      "1"
+      "\\(4\\)",
+      "\\(7\\)",
+      "\\(7x\\)",
+      "\\(4x-3\\)",
+      "\\(1\\)"
     ]
   },
   "alg-uni-c1-a07": {
@@ -396,13 +396,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 7,
-    "text": "Resuelve 3x − 2[1 − (3 − x) + x/2] = 2(x − 1) + 5. Luego calcula 6x + 1.",
+    "text": "Resuelve:\\[3x-2\\left[1-(3-x)+\\frac{x}{2}\\right]=2(x-1)+5\\]Luego calcula \\(6x+1\\).",
     "options": [
-      "5",
-      "1",
-      "2",
-      "3",
-      "4"
+      "\\(5\\)",
+      "\\(1\\)",
+      "\\(2\\)",
+      "\\(3\\)",
+      "\\(4\\)"
     ]
   },
   "alg-uni-c1-a08": {
@@ -411,13 +411,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 8,
-    "text": "Despeja x en (x − a)/b = (x + b)/a. Supón a ≠ 0, b ≠ 0 y a ≠ b.",
+    "text": "Despeja \\(x\\) en\\[\\frac{x-a}{b}=\\frac{x+b}{a}\\]Supón \\(a\\ne0\\), \\(b\\ne0\\) y \\(a\\ne b\\).",
     "options": [
-      "a - b",
-      "a + b",
-      "(a² + b²)/(a - b)",
-      "(a² - b²)/(a - b)",
-      "(a² + b²)/(a + b)"
+      "\\(a-b\\)",
+      "\\(a+b\\)",
+      "\\(\\dfrac{a^2+b^2}{a-b}\\)",
+      "\\(\\dfrac{a^2-b^2}{a-b}\\)",
+      "\\(\\dfrac{a^2+b^2}{a+b}\\)"
     ]
   },
   "alg-uni-c1-a09": {
@@ -426,13 +426,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 9,
-    "text": "Dos resistencias en paralelo cumplen 1/R = 1/R₁ + 1/R₂. Para R₁ = 4 Ω y R₂ = 12 Ω, elige el despeje correcto junto con el valor de R.",
+    "text": "Dos resistencias en paralelo cumplen\\[\\frac{1}{R}=\\frac{1}{R_1}+\\frac{1}{R_2}\\]Para \\(R_1=4\\,\\Omega\\) y \\(R_2=12\\,\\Omega\\), elige el despeje correcto junto con el valor de \\(R\\).",
     "options": [
-      "R = R₁ + R₂; R = 16 Ω",
-      "R = R₁R₂; R = 48 Ω",
-      "R = (R₁ + R₂)/(R₁R₂); R = 1/3 Ω",
-      "R = R₁R₂/(R₁ + R₂); R = 3 Ω",
-      "R = R₁R₂/(R₂ − R₁); R = 6 Ω"
+      "\\(R=R_1+R_2;\\quad R=16\\,\\Omega\\)",
+      "\\(R=R_1R_2;\\quad R=48\\,\\Omega\\)",
+      "\\(R=\\dfrac{R_1+R_2}{R_1R_2};\\quad R=\\dfrac{1}{3}\\,\\Omega\\)",
+      "\\(R=\\dfrac{R_1R_2}{R_1+R_2};\\quad R=3\\,\\Omega\\)",
+      "\\(R=\\dfrac{R_1R_2}{R_2-R_1};\\quad R=6\\,\\Omega\\)"
     ]
   },
   "alg-uni-c1-a10": {
@@ -441,13 +441,13 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 10,
-    "text": "Sea z = (m² − 9) + (m + 3)i, con m real. ¿Qué valor de m hace que z sea un imaginario puro no nulo?",
+    "text": "Sea \\(z=(m^2-9)+(m+3)i\\), con \\(m\\) real. ¿Qué valor de \\(m\\) hace que \\(z\\) sea un imaginario puro no nulo?",
     "options": [
-      "3",
-      "9",
-      "-9",
-      "-3",
-      "0"
+      "\\(3\\)",
+      "\\(9\\)",
+      "\\(-9\\)",
+      "\\(-3\\)",
+      "\\(0\\)"
     ]
   }
 };

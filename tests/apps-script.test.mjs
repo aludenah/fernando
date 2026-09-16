@@ -56,7 +56,7 @@ test('upload saves the chosen alternative with the file in the server-selected p
   assert.deepEqual(r.folders,[drive.problems['alg-uni-c1-b01'].folderId]);
   assert.equal(r.created.length,1);assert.equal(receipt.fileId,r.created[0].id);
   const record=JSON.parse([...r.records.values()][0]);
-  assert.equal(record.questionId,'alg-uni-c1-b01');assert.equal(record.letter,'B');assert.equal(record.selectedText,'ℤ');assert.equal(record.note,'Mi desarrollo');
+  assert.equal(record.questionId,'alg-uni-c1-b01');assert.equal(record.letter,'B');assert.equal(record.selectedText,course.tasks[0].questions[0].options[1]);assert.equal(record.note,'Mi desarrollo');
   assert.equal(r.released(),1);
   const repeated=r.ctx.uploadSolution(form());assert.equal(repeated.fileId,receipt.fileId);assert.equal(r.created.length,1);
   assert.throws(()=>r.ctx.uploadSolution({...form(),answer:'2'}),/otra respuesta/);

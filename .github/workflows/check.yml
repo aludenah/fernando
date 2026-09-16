@@ -21,6 +21,7 @@ jobs:
       - name: Verificar JavaScript y contenido
         run: |
           node --check docs/app.js
+          node --check docs/math.js
           node --check docs/sequence.js
           node --check docs/model.js
           node --check docs/store.js

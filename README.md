@@ -63,6 +63,14 @@ Los borradores también forman parte del archivo público. No incluyas datos pri
 
 Cada confirmación en `main` ejecuta las comprobaciones y actualiza GitHub Pages. El historial conserva las versiones anteriores; el proyecto previo al traslado a Pages está en `archive/before-github-pages`.
 
+## Expresiones matemáticas
+
+La teoría, los enunciados, las alternativas y el detalle para Padres usan LaTeX. En `course.json` se escribe `\\(...\\)` para fórmulas dentro del texto y `\\[...\\]` para fórmulas separadas; JSON requiere duplicar las barras inversas. Los valores y el orden de las alternativas se conservan, al igual que los identificadores del avance guardado.
+
+El renderizado usa [KaTeX 0.18.7](https://katex.org/docs/api.html), alojado en el propio repositorio, con sus fuentes WOFF2 y licencia MIT. Genera HTML y MathML para lectores de pantalla. Los textos se escapan y `trust: false` impide que las expresiones importadas inserten enlaces, imágenes o HTML. Las macros se aíslan entre expresiones.
+
+Los archivos de `docs/vendor/katex` proceden del paquete oficial `katex@0.18.7`. La hoja de estilos conserva las fuentes WOFF2 y omite las alternativas WOFF/TTF. No se necesita un CDN para abrir las fórmulas. Al actualizar los módulos o estilos, debe actualizarse también su versión en las referencias de carga para evitar copias antiguas en caché.
+
 ## Desarrollo
 
 Con Node 22 o superior y Python 3:
