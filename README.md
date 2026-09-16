@@ -9,7 +9,7 @@ La portada permite elegir **Padres** o **Estudiante**, ambos libres y sin correo
 - Estudiante conserva la teoría, los 30 problemas, el guardado de respuestas y los botones **Subir al Drive**.
 - Padres muestra el avance real de Fernando: respuestas marcadas y pendientes, tareas respondidas, temas repasados, última actividad, comentarios y detalle de cada pregunta. Marcar una alternativa no significa que sea correcta ni que el solucionario esté entregado.
 - En el mismo navegador, ambas vistas usan los mismos datos. El panel recibe cambios entre pestañas y vuelve a consultar el avance al recuperar el foco o pulsar **Actualizar vista**.
-- Desde otro dispositivo se utiliza **Informe para mis padres**, disponible en Estudiante incluso con tareas incompletas. El padre importa ese JSON con **Abrir informe del estudiante**. El informe indica su fecha y no se actualiza automáticamente; no sustituye las respuestas locales del alumno.
+- Desde otro dispositivo se utiliza **Informe para mis padres**, disponible en el inicio de Estudiante y en la lista de tareas, incluso con tareas incompletas. El padre importa ese JSON con **Abrir informe del estudiante**. El informe indica su fecha y no se actualiza automáticamente; no sustituye las respuestas locales del alumno.
 - La sincronización automática entre dispositivos requiere un servicio de almacenamiento compartido que esta versión estática no tiene. No se publican respuestas ni informes personales en GitHub.
 
 Las instrucciones y los enunciados son autónomos: no remiten al libro ni al PDF para resolver los problemas.
@@ -47,8 +47,8 @@ El material del profesor está separado de las entregas, en la carpeta privada *
 ## Respuestas y revisión
 
 - Las alternativas y comentarios se guardan en el navegador de Fernando.
-- **Descargar mis respuestas** permite conservar una copia cuando estén respondidas las diez preguntas del nivel. No exige adjuntar archivos locales.
-- La copia JSON versión 3 puede incluir archivos locales conservados de versiones anteriores. El profesor puede importarla desde **Preparar clase** para revisar las respuestas, puntuar sobre 20 y descargar sus comentarios.
+- La vista de cada tarea muestra las preguntas, el avance y los accesos a Drive. No incluye botones para descargar respuestas ni informes.
+- Las copias JSON versión 3 descargadas anteriormente siguen siendo compatibles y pueden incluir archivos locales conservados de versiones anteriores. El profesor puede importarlas desde **Preparar clase** para revisar las respuestas, puntuar sobre 20 y descargar sus comentarios.
 - Las copias de trabajo de las versiones 1 y 2 siguen siendo compatibles.
 - Los solucionarios se suben dentro de Drive. Abrir una carpeta no confirma una entrega; la página no consulta sus archivos ni registra una subida automática.
 - Las herramientas del profesor son un editor local; no son una zona autenticada. Las claves privadas no se incluyen en la web.

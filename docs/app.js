@@ -1,6 +1,6 @@
 import {all, put, write, openDatabase} from './store.js';
 import {hasAnswer, questionSequence, canOpenQuestion} from './sequence.js';
-import {html as h, normalizeTask, normalizeAnswers, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js';
+import {html as h, normalizeTask, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js';
 import {courseCatalog, courseOutline} from './course-views.js';
 import {accessView,parentsView,studentReportPanel} from './family-views.js';
 import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from './progress.js';
@@ -113,7 +113,7 @@ function renderTask(task) {
   <div class="detail-layout"><div><details class="panel task-instructions"><summary>Indicaciones de la tarea</summary><p class="prewrap instructions">${h(task.instructions)}</p></details>
   <div id="question-stage">${renderQuestionStage(task)}</div>
   </div>
-  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Tu tarea, paso a paso</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><div class="progress-caption"><strong id="answer-percent">${sequence.percent}%</strong><span id="task-progress-state">${sequence.complete?'Todas las preguntas respondidas':`${sequence.total-count} preguntas pendientes`}</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="last-saved" class="save-status">${draft.updatedAt?`Último avance guardado: ${h(formatTime(draft.updatedAt))}`:'Tu avance se guardará al marcar una respuesta.'}</p><p class="resume-note">Al volver a esta tarea, continuarás desde la primera pregunta pendiente.</p><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><button class="button secondary full" data-action="export-progress" ${!state.storage?'disabled':''}>Informe para mis padres</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>Usa «Subir al Drive» y añade tu foto o PDF en la carpeta. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section></aside></div>`;
+  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Tu tarea, paso a paso</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><div class="progress-caption"><strong id="answer-percent">${sequence.percent}%</strong><span id="task-progress-state">${sequence.complete?'Todas las preguntas respondidas':`${sequence.total-count} preguntas pendientes`}</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="last-saved" class="save-status">${draft.updatedAt?`Último avance guardado: ${h(formatTime(draft.updatedAt))}`:'Tu avance se guardará al marcar una respuesta.'}</p><p class="resume-note">Al volver a esta tarea, continuarás desde la primera pregunta pendiente.</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>Usa «Subir al Drive» y añade tu foto o PDF en la carpeta. Esta página no verifica los archivos subidos a Drive.</p></div></section></aside></div>`;
 }
 function renderTeacher() {
   return `<div class="page-heading"><div><p class="eyebrow">HERRAMIENTAS DEL PROFESOR</p><h1>Prepara la próxima clase.</h1><p>Crea tareas y revisa copias de trabajo desde este dispositivo.</p></div><button class="button" data-action="new-task" ${!state.storage?'disabled':''}>${icon('plus',18)} Nueva tarea</button></div>${nav('profesor')}
@@ -219,9 +219,6 @@ function updateProgress(id) {
   document.querySelector('#last-saved').textContent=draft.updatedAt?`Último avance guardado: ${formatTime(draft.updatedAt)}`:'Tu avance se guardará al marcar una respuesta.';
   updateQuestionControls(task);
   document.querySelector('#answer-progress').value=answerCount(task,draft.answers);
-  document.querySelector('#export-submission').disabled=!state.storage||!answersReady(task,draft);
-  document.querySelector('#ready-note').textContent=answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas.':'Marca todas las respuestas para descargar una copia.';
-  document.querySelector('#prepared-note').textContent=draft.preparedAt?`Última copia: ${formatTime(draft.preparedAt)}`:'';
 
 }
 function updateProblemControls(taskId) {
@@ -238,12 +235,6 @@ function download(blob,name) {
   setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
 const downloadJSON=(data,name)=>download(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),name);
-async function base64(blob) {
-  const bytes=new Uint8Array(await blob.arrayBuffer());
-  const chunks=[];
-  for(let offset=0;offset<bytes.length;offset+=32768) chunks.push(String.fromCharCode(...bytes.subarray(offset,offset+32768)));
-  return btoa(chunks.join(''));
-}
 function captureEditor() {
   const form=document.querySelector('#task-editor');
   if(!form||!state.editor) return;
@@ -282,14 +273,6 @@ async function action(name,id) {
     if(location.hash===`#tarea/${file.taskId}`){updateProblemControls(file.taskId);updateProgress(file.taskId);}return;
   }
   if(name==='export-course') {downloadJSON(publicCourse(state.course,state.tasks),'course.json');notify('Contenido descargado. Súbelo a docs/data en GitHub y confirma el cambio para actualizar la web.');return;}
-  if(name==='export-submission') {
-    const task=taskFor(id),draft=draftFor(id),files=filesFor(id);
-    if(!answersReady(task,draft)) throw new Error('Completa todas las respuestas antes de descargar la copia.');
-    const createdAt=new Date().toISOString();
-    const data={format:'fernando-entrega',version:3,id:crypto.randomUUID(),createdAt,task:normalizeTask(task),answers:normalizeAnswers(task,draft.answers),note:draft.note||'',files:await Promise.all(files.map(async f=>({name:f.name,type:f.type,size:f.size,questionId:f.questionId,data:await base64(f.blob)})))};
-    downloadJSON(data,`fernando-${task.id}-${createdAt.slice(0,10)}.json`);
-    await put('drafts',{...draft,preparedAt:createdAt});await refresh();updateProgress(id);notify('Copia descargada. Los solucionarios se entregan desde «Subir al Drive» en cada problema.');return;
-  }
   if(name==='open-review') {location.hash=`revision/${id}`;return;}
   if(name==='review-file') {
     const file=state.review?.files[Number(id)];if(!file)return;
