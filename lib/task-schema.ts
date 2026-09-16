@@ -1,3 +1,0 @@
-import { z } from 'zod';
-const question=z.object({id:z.string().min(1).max(80),text:z.string().trim().min(1).max(4000),options:z.array(z.string().trim().min(1).max(1000)).min(2).max(5),correct:z.number().int().min(0).max(4),solution:z.string().max(6000).optional()}).refine(q=>q.correct<q.options.length);
-export const taskSchema=z.object({id:z.string().uuid().optional(),title:z.string().trim().min(1).max(160),subject:z.string().trim().min(1).max(80),instructions:z.string().max(8000),due:z.string().regex(/^$|^\d{4}-\d{2}-\d{2}$/),questions:z.array(question).min(1).max(60),published:z.boolean()}).refine(t=>new Set(t.questions.map(q=>q.id)).size===t.questions.length);

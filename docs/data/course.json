@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "lesson": {
+    "id": "algebra-chapter-1",
+    "title": "Conjuntos numéricos",
+    "subject": "Álgebra",
+    "chapter": 1,
+    "source": "Álgebra · Colección Esencial, Lumbreras Editores. Capítulo 1: pp. 13–45 del libro; pp. 6–38 del PDF proporcionado.",
+    "convention": "Seguimos el libro: ℕ comienza en 1. El cero es entero, racional y real.",
+    "objectives": [
+      "Reconocer los conjuntos numéricos y sus relaciones.",
+      "Operar con enteros y fracciones respetando signos y prioridades.",
+      "Aplicar propiedades e inversos y explicar el desarrollo."
+    ],
+    "taskIds": [
+      "e7cac150-5d2e-5fca-aa5c-483340ebbdd7",
+      "efd51fa2-ad7d-5dc1-b193-f127643ee652",
+      "782654a9-cb80-51e3-be7b-bb2cd0952b48"
+    ],
+    "topics": [
+      {
+        "id": "naturales",
+        "title": "1. Números naturales",
+        "pages": "Libro: pp. 14–15 · PDF: pp. 7–8",
+        "concept": "Sirven para contar. En este libro, ℕ = {1; 2; 3; …}; por tanto, 0 no pertenece a ℕ. Sumar o multiplicar naturales siempre da un natural; restar o dividir no siempre.",
+        "formulas": [
+          "1 + 2 + … + n = n(n + 1)/2",
+          "1 + 3 + … + (2n − 1) = n²",
+          "2 + 4 + … + 2n = n(n + 1)"
+        ],
+        "example": "Ejemplo: 2 + 4 + … + 20 tiene 10 términos.\nS = 10(10 + 1) = 110.",
+        "tip": "En las fórmulas, n es la cantidad de términos. No siempre es el último número de la suma."
+      },
+      {
+        "id": "enteros",
+        "title": "2. Números enteros",
+        "pages": "Libro: pp. 15–20 · PDF: pp. 8–13",
+        "concept": "ℤ = {…; −3; −2; −1; 0; 1; 2; 3; …}. Incluye positivos, negativos y cero. En la recta numérica, el número situado más a la derecha es mayor.",
+        "formulas": [
+          "Restar equivale a sumar el opuesto: a − b = a + (−b).",
+          "En multiplicación y división: signos iguales → positivo; signos diferentes → negativo.",
+          "Orden: agrupaciones; potencias si aparecen; multiplicaciones y divisiones; sumas y restas. A igual prioridad, de izquierda a derecha."
+        ],
+        "example": "Ejemplo: 4 − 3(2 − 5)\n1. Paréntesis: 2 − 5 = −3.\n2. Producto: 3(−3) = −9.\n3. Resta: 4 − (−9) = 13.",
+        "tip": "La regla de signos del producto no se aplica directamente a una suma: (−4) + (−3) = −7."
+      },
+      {
+        "id": "racionales",
+        "title": "3. Números racionales",
+        "pages": "Libro: pp. 20–25 · PDF: pp. 13–18",
+        "concept": "Un racional se escribe como a/b, con a y b enteros y b ≠ 0. Los enteros, los decimales exactos y los periódicos son racionales: 5 = 5/1; 0,25 = 1/4; 0,333… = 1/3.",
+        "formulas": [
+          "a/b + c/d = (ad + bc)/(bd); a/b − c/d = (ad − bc)/(bd).",
+          "(a/b) × (c/d) = ac/(bd).",
+          "(a/b) ÷ (c/d) = ad/(bc), con b, c y d distintos de cero."
+        ],
+        "example": "Ejemplo: (2/3 + 1/6) ÷ (5/4)\n1. Suma: 4/6 + 1/6 = 5/6.\n2. Multiplica por el recíproco: (5/6) × (4/5).\n3. Simplifica: 20/30 = 2/3.",
+        "tip": "Al sumar no se suman los denominadores. El recíproco se usa al dividir. La división entre cero no está definida."
+      },
+      {
+        "id": "irracionales",
+        "title": "4. Números irracionales",
+        "pages": "Libro: p. 25 · PDF: p. 18",
+        "concept": "No se pueden escribir como una fracción de enteros. Su desarrollo decimal es infinito y no periódico. Ejemplos: √2, √3 y π.",
+        "formulas": [
+          "√9 = 3 es racional, porque 9 es un cuadrado perfecto.",
+          "√5 es irracional, porque 5 no es un cuadrado perfecto."
+        ],
+        "example": "Ejemplo: clasifica √16 y √6.\n√16 = 4 pertenece a ℕ, ℤ, ℚ y ℝ.\n√6 es irracional y real.",
+        "tip": "Tener una raíz escrita no basta para ser irracional. Revisa si la raíz es exacta."
+      },
+      {
+        "id": "reales",
+        "title": "5. Números reales",
+        "pages": "Libro: pp. 25–26 · PDF: pp. 18–19",
+        "concept": "Los reales reúnen a los racionales y a los irracionales. Un número puede pertenecer a varios conjuntos. Si se pide una sola clasificación, identifica el conjunto más pequeño que lo contiene.",
+        "formulas": [
+          "ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ",
+          "ℝ = ℚ ∪ I; ℚ ∩ I = ∅."
+        ],
+        "example": "Clasificación en el conjunto más pequeño:\n8 → ℕ.\n−8 y 0 → ℤ, siguiendo la convención del libro.\n3/8 → ℚ.\n√8 → I.\nTodos los anteriores son reales.",
+        "tip": "Ningún número es racional e irracional a la vez."
+      },
+      {
+        "id": "propiedades",
+        "title": "6. Propiedades e inversos",
+        "pages": "Libro: pp. 26–28 · PDF: pp. 19–21",
+        "concept": "Estas propiedades permiten reorganizar y simplificar operaciones sin cambiar su valor.",
+        "formulas": [
+          "Conmutativa: a + b = b + a; ab = ba.",
+          "Asociativa: (a + b) + c = a + (b + c); (ab)c = a(bc).",
+          "Distributiva: a(b + c) = ab + ac.",
+          "Elementos neutros: a + 0 = a; a × 1 = a.",
+          "Inverso aditivo: −a. Inverso multiplicativo: 1/a, solo si a ≠ 0."
+        ],
+        "example": "Ejemplo: 4(x + 2) − x = 4x + 8 − x = 3x + 8.\nPara −2/3: su inverso aditivo es 2/3 y el multiplicativo es −3/2.",
+        "tip": "La resta y la división no son conmutativas ni asociativas. Cero no tiene inverso multiplicativo."
+      },
+      {
+        "id": "estrategias",
+        "title": "7. Aplicaciones del capítulo",
+        "pages": "Libro: pp. 30–45 · PDF: pp. 23–38",
+        "concept": "Aplica las propiedades para simplificar fracciones, reconocer sumas que se cancelan y resolver situaciones cotidianas.",
+        "formulas": [
+          "1/a + 1/b = (a + b)/(ab), con a ≠ 0 y b ≠ 0.",
+          "1/[k(k + 1)] = 1/k − 1/(k + 1), con k natural."
+        ],
+        "example": "Ejemplo de cancelación:\n1/(1×2) + 1/(2×3) = (1 − 1/2) + (1/2 − 1/3) = 2/3.\nEjemplo cotidiano: si se consume 1/4 de una cantidad, queda 3/4 de esa cantidad.",
+        "tip": "Una fracción de una cantidad se calcula multiplicando. En una suma telescópica, escribe los términos y observa qué se cancela."
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "id": "e7cac150-5d2e-5fca-aa5c-483340ebbdd7",
+      "title": "01 · Naturales y enteros",
+      "subject": "Álgebra · Capítulo 1",
+      "instructions": "Secciones 1 y 2; libro, pp. 14–20 (PDF, pp. 7–13).\nTarea 1 de 3 · Inicio. Actividad adaptada al contenido del PDF; no reproduce todo el banco de ejercicios.\nMarca una alternativa por pregunta y adjunta fotos o un PDF con tu desarrollo. Explica las clasificaciones y muestra tus operaciones. Usamos ℕ = {1; 2; 3; …}.",
+      "due": "",
+      "published": true,
+      "questions": [
+        {
+          "text": "Entre ℕ, ℤ, ℚ, I y ℝ, ¿cuál es el conjunto más pequeño que contiene a −7?",
+          "options": [
+            "ℕ: naturales",
+            "ℤ: enteros",
+            "ℚ: racionales",
+            "I: irracionales",
+            "ℝ: reales"
+          ],
+          "id": "algebra-c1-t1-p1"
+        },
+        {
+          "text": "Calcula la suma de los 15 primeros números naturales: 1 + 2 + 3 + … + 15.",
+          "options": [
+            "105",
+            "115",
+            "120",
+            "225",
+            "240"
+          ],
+          "id": "algebra-c1-t1-p2"
+        },
+        {
+          "text": "Calcula 1 + 3 + 5 + … + 39.",
+          "options": [
+            "20",
+            "39",
+            "380",
+            "400",
+            "420"
+          ],
+          "id": "algebra-c1-t1-p3"
+        },
+        {
+          "text": "Ordena de menor a mayor los números −5; 3; 0; −8; 2.",
+          "options": [
+            "−8; −5; 0; 2; 3",
+            "−5; −8; 0; 2; 3",
+            "0; −8; −5; 2; 3",
+            "−8; 0; −5; 2; 3",
+            "3; 2; 0; −5; −8"
+          ],
+          "id": "algebra-c1-t1-p4"
+        },
+        {
+          "text": "Calcula 6 − 2[3 − (−4)] + 18 ÷ (−3).",
+          "options": [
+            "−2",
+            "2",
+            "14",
+            "−8",
+            "−14"
+          ],
+          "id": "algebra-c1-t1-p5"
+        }
+      ]
+    },
+    {
+      "id": "efd51fa2-ad7d-5dc1-b193-f127643ee652",
+      "title": "02 · Operaciones con racionales",
+      "subject": "Álgebra · Capítulo 1",
+      "instructions": "Sección 3; libro, pp. 20–25 (PDF, pp. 13–18).\nTarea 2 de 3 · Práctica. Actividad adaptada al contenido del PDF; no reproduce todo el banco de ejercicios.\nMarca una alternativa por pregunta y adjunta fotos o un PDF con tu desarrollo. Explica las clasificaciones y muestra tus operaciones. Usamos ℕ = {1; 2; 3; …}.",
+      "due": "",
+      "published": true,
+      "questions": [
+        {
+          "text": "Calcula 3/4 + 5/6 y expresa el resultado como una fracción irreductible.",
+          "options": [
+            "8/10",
+            "19/12",
+            "19/24",
+            "4/5",
+            "9/12"
+          ],
+          "id": "algebra-c1-t2-p1"
+        },
+        {
+          "text": "Calcula 7/5 − 3/10.",
+          "options": [
+            "4/5",
+            "1/2",
+            "11/10",
+            "4/15",
+            "17/10"
+          ],
+          "id": "algebra-c1-t2-p2"
+        },
+        {
+          "text": "Calcula (−3/7) × (14/9).",
+          "options": [
+            "−2/3",
+            "2/3",
+            "−6/7",
+            "−3/2",
+            "−1/3"
+          ],
+          "id": "algebra-c1-t2-p3"
+        },
+        {
+          "text": "Calcula (5/8) ÷ (−15/4).",
+          "options": [
+            "1/6",
+            "−3/2",
+            "−75/32",
+            "−1/6",
+            "−2/3"
+          ],
+          "id": "algebra-c1-t2-p4"
+        },
+        {
+          "text": "Calcula [1 − (2/3)] ÷ [(3/4) − (1/2)].",
+          "options": [
+            "1/12",
+            "3/4",
+            "1/3",
+            "1",
+            "4/3"
+          ],
+          "id": "algebra-c1-t2-p5"
+        }
+      ]
+    },
+    {
+      "id": "782654a9-cb80-51e3-be7b-bb2cd0952b48",
+      "title": "03 · Reales, propiedades y aplicaciones",
+      "subject": "Álgebra · Capítulo 1",
+      "instructions": "Secciones 4 y 5 y aplicaciones; libro, pp. 25–45 (PDF, pp. 18–38).\nTarea 3 de 3 · Integración. Actividad adaptada al contenido del PDF; no reproduce todo el banco de ejercicios.\nMarca una alternativa por pregunta y adjunta fotos o un PDF con tu desarrollo. Explica las clasificaciones y muestra tus operaciones. Usamos ℕ = {1; 2; 3; …}.",
+      "due": "",
+      "published": true,
+      "questions": [
+        {
+          "text": "¿Cuál de los siguientes números es irracional?",
+          "options": [
+            "−5",
+            "0,125",
+            "√49",
+            "√7",
+            "2/3"
+          ],
+          "id": "algebra-c1-t3-p1"
+        },
+        {
+          "text": "¿Cuáles son, respectivamente, el inverso aditivo y el inverso multiplicativo de −3/5?",
+          "options": [
+            "−3/5 y 5/3",
+            "3/5 y −5/3",
+            "5/3 y 3/5",
+            "3/5 y 5/3",
+            "−5/3 y 3/5"
+          ],
+          "id": "algebra-c1-t3-p2"
+        },
+        {
+          "text": "Aplica la propiedad distributiva y simplifica 3(x + 4) − 2x.",
+          "options": [
+            "x + 12",
+            "x + 4",
+            "5x + 12",
+            "3x + 2",
+            "x − 12"
+          ],
+          "id": "algebra-c1-t3-p3"
+        },
+        {
+          "text": "Una botella contiene 3/4 de litro. Se consume la quinta parte de su contenido. ¿Cuántos litros quedan?",
+          "options": [
+            "1/5 de litro",
+            "3/20 de litro",
+            "1/2 de litro",
+            "4/5 de litro",
+            "3/5 de litro"
+          ],
+          "id": "algebra-c1-t3-p4"
+        },
+        {
+          "text": "Calcula 1/(1×2) + 1/(2×3) + 1/(3×4) + 1/(4×5).",
+          "options": [
+            "1/5",
+            "3/4",
+            "4/5",
+            "5/4",
+            "1"
+          ],
+          "id": "algebra-c1-t3-p5"
+        }
+      ]
+    }
+  ]
+}

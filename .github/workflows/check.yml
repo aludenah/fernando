@@ -1,0 +1,27 @@
+name: Comprobar el aula
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar JavaScript y contenido
+        run: |
+          node --check docs/app.js
+          node --check docs/model.js
+          node --check docs/store.js
+          npm test
+          npm run check
