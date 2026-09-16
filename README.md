@@ -2,6 +2,18 @@
 
 Web de clases particulares publicada en **[GitHub Pages](https://aludenah.github.io/fernando/)**, desde `main` y la carpeta `/docs`. No requiere correo ni inicio de sesión. Los accesos privados se incorporarán más adelante.
 
+## Acceso de padres y estudiante
+
+La portada permite elegir **Padres** o **Estudiante**, ambos libres y sin correo ni contraseña. Son vistas de la misma aula; no constituyen autenticación ni protección de acceso.
+
+- Estudiante conserva la teoría, los 30 problemas, el guardado de respuestas y los botones **Subir al Drive**.
+- Padres muestra el avance real de Fernando: respuestas marcadas y pendientes, tareas respondidas, temas repasados, última actividad, comentarios y detalle de cada pregunta. Marcar una alternativa no significa que sea correcta ni que el solucionario esté entregado.
+- En el mismo navegador, ambas vistas usan los mismos datos. El panel recibe cambios entre pestañas y vuelve a consultar el avance al recuperar el foco o pulsar **Actualizar vista**.
+- Desde otro dispositivo se utiliza **Informe para mis padres**, disponible en Estudiante incluso con tareas incompletas. El padre importa ese JSON con **Abrir informe del estudiante**. El informe indica su fecha y no se actualiza automáticamente; no sustituye las respuestas locales del alumno.
+- La sincronización automática entre dispositivos requiere un servicio de almacenamiento compartido que esta versión estática no tiene. No se publican respuestas ni informes personales en GitHub.
+
+Las instrucciones y los enunciados son autónomos: no remiten al libro ni al PDF para resolver los problemas.
+
 ## Curso y contenido
 
 La referencia actual es **ALGEBRA.pdf · Colección Compendios Académicos UNI · Lumbreras Editores**. El temario conserva sus **28 capítulos**, con referencias a la página impresa y a la página del PDF. Solo está desarrollado el capítulo 1, **Introducción al álgebra**: libro pp. 9–18, PDF pp. 4–13.
@@ -60,6 +72,7 @@ Abre `http://localhost:4173`. La aplicación estática no tiene dependencias de 
 | `docs/data/drive.json` | Enlace a la carpeta de cada problema |
 | `docs/app.js` | Respuestas, archivos, editor y revisión |
 | `docs/course-views.js` | Catálogo de cursos y temario |
+| `docs/family-views.js`, `docs/progress.js` | Entradas, panel de padres e informes de avance |
 | `docs/drive.js` | Utilidades de la integración anterior, sin uso en la web |
 | `docs/model.js`, `docs/store.js` | Validaciones y almacenamiento local |
 | `integrations/google-drive/` | Guía de permisos y receptor anterior conservado |

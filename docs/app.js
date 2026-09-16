@@ -1,11 +1,13 @@
 import {all, put, write, openDatabase} from './store.js';
 import {html as h, normalizeTask, normalizeAnswers, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js';
 import {courseCatalog, courseOutline} from './course-views.js';
+import {accessView,parentsView,studentReportPanel} from './family-views.js';
+import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from './progress.js';
 
 const app = document.querySelector('#app');
 const message = document.querySelector('#message');
 const letters = ['A', 'B', 'C', 'D', 'E'];
-const state = {course: null, drive:{problems:{}}, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
+const state = {role:null,pendingRoute:null,parentReport:null,parentSource:'local',theoryUpdatedAt:null,course: null, drive:{problems:{}}, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
 const icons = {
   book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',
   arrow: '<path d="m9 18 6-6-6-6"/>',
@@ -39,7 +41,7 @@ function storageNote() {
   return `<div class="local-note">${icon('file',18)}<p>Marca tus respuestas aquí. Para entregar el desarrollo, pulsa <strong>Subir al Drive</strong> en cada problema y añade el archivo a su carpeta. Las respuestas se conservan en este dispositivo.</p></div>`;
 }
 function nav(tab) {
-  return `<nav class="tabs" aria-label="Secciones del aula">${[['cursos','Mis cursos'],['temario/algebra','Temario'],['curso','Capítulo 1'],['tareas','Práctica'],['profesor','Preparar clase']].map(([id,label]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
+  return `<nav class="tabs" aria-label="Secciones del aula">${[['cursos','Mis cursos'],['temario/algebra','Temario'],['curso','Capítulo 1'],['tareas','Práctica']].map(([id,label]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
 }
 function heading() {
   const tasks = state.tasks.filter(t => t.published);
@@ -62,7 +64,7 @@ function renderCourse() {
 }
 function renderTasks() {
   const tasks = state.tasks.filter(t=>t.published);
-  return `${heading()}${nav('tareas')}<div class="section-heading"><h2>Un paso más en cada tarea</h2><span>${tasks.length} tareas</span></div>${tasks.map((t,i)=>taskCard(t,i)).join('')}${storageNote()}`;
+  return `${heading()}${nav('tareas')}<div class="section-heading"><h2>Un paso más en cada tarea</h2><span>${tasks.length} tareas</span></div>${tasks.map((t,i)=>taskCard(t,i)).join('')}${studentReportPanel(state.storage)}${storageNote()}`;
 }
 function attachmentRows(files, review = false) {
   if (!files.length) return '<p class="muted">Esta copia contiene las respuestas. Revisa los solucionarios en las carpetas de Drive de cada problema.</p>';
@@ -74,11 +76,11 @@ function questionWork(task,question) {
 }
 function renderTask(task) {
   const draft = draftFor(task.id), count = answerCount(task, draft.answers);
-  return `<a class="back" href="#tareas">← Volver a mis tareas</a><div class="page-heading"><div><p class="eyebrow">${h(task.subject)}</p><h1>${h(taskName(task))}</h1><p>${task.questions.length} preguntas · ${h(formatDate(task.due))}</p></div><button class="button secondary" data-action="edit-task" data-id="${h(task.id)}">Editar tarea</button></div>${isLocal(task.id)?'<p class="local-edit-notice">Esta versión tiene cambios guardados únicamente en este dispositivo.</p>':''}${storageNote()}
+  return `<a class="back" href="#tareas">← Volver a mis tareas</a><div class="page-heading"><div><p class="eyebrow">${h(task.subject)}</p><h1>${h(taskName(task))}</h1><p>${task.questions.length} preguntas · ${h(formatDate(task.due))}</p></div>${state.role==='parent'?`<button class="button secondary" data-action="edit-task" data-id="${h(task.id)}">Editar tarea</button>`:''}</div>${isLocal(task.id)?'<p class="local-edit-notice">Esta versión tiene cambios guardados únicamente en este dispositivo.</p>':''}${storageNote()}
   <div class="detail-layout"><div><section class="panel"><h2>Antes de empezar</h2><p class="prewrap instructions">${h(task.instructions)}</p></section>
   ${task.questions.map((question,index)=>`<fieldset class="panel question-card" id="problem-${h(question.id)}"><legend><span class="question-number">${String(index+1).padStart(2,'0')}</span><span>${h(question.text)}</span></legend><div class="options">${question.options.map((option,i)=>`<label class="answer-option ${draft.answers[question.id]===i?'selected':''}"><input type="radio" name="${h(question.id)}" value="${i}" data-answer="${h(question.id)}" data-task="${h(task.id)}" ${draft.answers[question.id]===i?'checked':''} ${!state.storage?'disabled':''}><span class="option-letter">${letters[i]}</span><span>${h(option)}</span></label>`).join('')}</div><div id="work-${h(question.id)}">${questionWork(task,question)}</div></fieldset>`).join('')}
   <section class="panel"><h2>Mi comentario sobre este nivel</h2><label class="field-label" for="student-note">¿Qué necesitas repasar?</label><textarea id="student-note" data-task="${h(task.id)}" rows="3" maxlength="4000" placeholder="Anota una duda para la próxima clase." ${!state.storage?'disabled':''}>${h(draft.note)}</textarea><p id="save-status" class="save-status" aria-live="polite">${state.storage?'Respuestas guardadas en este dispositivo.':'No se puede guardar en este navegador.'}</p></section></div>
-  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Prepara tu trabajo</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>En Drive, usa «Nuevo → Subir archivo» y comprueba que aparezca tu foto o PDF. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section><div class="quiet-tip"><strong>Revisa antes de terminar</strong><p>¿Marcaste una alternativa por pregunta? ¿Se leen bien tus fotos? ¿Incluiste tus operaciones?</p></div></aside></div>`;
+  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Prepara tu trabajo</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><button class="button secondary full" data-action="export-progress" ${!state.storage?'disabled':''}>Informe para mis padres</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>En Drive, usa «Nuevo → Subir archivo» y comprueba que aparezca tu foto o PDF. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section><div class="quiet-tip"><strong>Revisa antes de terminar</strong><p>¿Marcaste una alternativa por pregunta? ¿Se leen bien tus fotos? ¿Incluiste tus operaciones?</p></div></aside></div>`;
 }
 function renderTeacher() {
   return `<div class="page-heading"><div><p class="eyebrow">HERRAMIENTAS DEL PROFESOR</p><h1>Prepara la próxima clase.</h1><p>Crea tareas y revisa copias de trabajo desde este dispositivo.</p></div><button class="button" data-action="new-task" ${!state.storage?'disabled':''}>${icon('plus',18)} Nueva tarea</button></div>${nav('profesor')}
@@ -101,24 +103,54 @@ function renderEditor() {
 function renderReview(review) {
   return `<a class="back" href="#profesor">← Volver a preparar clase</a><div class="page-heading"><div><p class="eyebrow">REVISIÓN LOCAL</p><h1>${h(taskName(review.task))}</h1><p>Copia preparada el ${h(formatTime(review.createdAt))}</p></div></div><div class="detail-layout"><div>${review.task.questions.map((q,i)=>`<section class="panel"><p class="eyebrow">PREGUNTA ${i+1}</p><h2>${h(q.text)}</h2><p class="review-answer"><strong>Respuesta marcada: ${letters[review.answers[q.id]]}</strong> · ${h(q.options[review.answers[q.id]])}</p></section>`).join('')}<section class="panel"><h2>Solucionario adjunto</h2>${attachmentRows(review.files,true)}${review.note?`<h3>Comentario de Fernando</h3><p class="prewrap">${h(review.note)}</p>`:''}</section></div><aside class="panel detail-aside"><h2>Tu revisión</h2><form id="review-form" data-id="${h(review.id)}"><label class="field-label">Nota sobre 20<input name="score" type="number" min="0" max="20" step="0.1" value="${review.score??''}" required></label><label class="field-label">Comentarios<textarea name="feedback" rows="6" maxlength="6000">${h(review.feedback||'')}</textarea></label><button class="button full" type="submit">Guardar revisión</button></form><button class="button secondary full" data-action="export-review" data-id="${h(review.id)}">${icon('download',18)} Descargar comentarios</button><p class="source-note">La revisión se guarda aquí. No se envía automáticamente a Fernando.</p></aside></div>`;
 }
+function currentProgress() {
+  return createProgressReport(state.course,state.tasks,state.drafts,state.learned,state.theoryUpdatedAt);
+}
+function renderParents() {
+  const source=state.parentSource==='report'&&state.parentReport?'report':'local';
+  return parentsView(source==='report'?state.parentReport:currentProgress(),{source,hasReport:Boolean(state.parentReport),drive:state.drive,storage:state.storage});
+}
+function audienceBar() {
+  return `<div class="audience-bar"><span class="audience-badge">${state.role==='parent'?'ACCESO A PADRES':'ACCESO A ESTUDIANTE'}</span><a href="#inicio">Cambiar de acceso</a></div>`;
+}
 function route(focus = false) {
   if (!state.course) return;
   const [tab,id] = location.hash.slice(1).split('/');
+  if(tab==='inicio'||!tab) {state.role=null;state.pendingRoute=null;}
+  else if(tab==='padres') {state.role='parent';state.pendingRoute=null;}
+  else if(tab==='estudiante') {
+    state.role='student';
+    if(state.pendingRoute){const target=state.pendingRoute;state.pendingRoute=null;location.hash=target;return;}
+  }
   if (tab !== 'editar') state.editor = null;
   if (tab !== 'revision') state.review = null;
-  if (tab === 'tarea' && taskFor(id)) app.innerHTML = renderTask(taskFor(id));
-  else if (tab === 'tareas') app.innerHTML = renderTasks();
-  else if (tab === 'profesor') app.innerHTML = renderTeacher();
-  else if (tab === 'editar' && state.editor) app.innerHTML = renderEditor();
-  else if (tab === 'revision' && state.reviews.some(r=>r.id===id)) {state.review=state.reviews.find(r=>r.id===id);app.innerHTML=renderReview(state.review);}
-  else if(tab==='curso') app.innerHTML=renderCourse();
-  else if(tab==='temario') app.innerHTML=nav('temario/algebra')+courseOutline(state.course.courses.find(c=>c.id===id));
-  else app.innerHTML=nav('cursos')+courseCatalog(state.course.courses);
+  if(!state.role) {
+    if(['curso','cursos','temario','tarea','tareas'].includes(tab))state.pendingRoute=location.hash;
+    app.innerHTML=accessView();
+  }
+  else if(tab==='padres')app.innerHTML=renderParents();
+  else {
+    let content;
+    if (tab === 'tarea' && taskFor(id)) content = renderTask(taskFor(id));
+    else if (tab === 'tareas') content = renderTasks();
+    else if (tab === 'profesor') content = renderTeacher();
+    else if (tab === 'editar' && state.editor) content = renderEditor();
+    else if (tab === 'revision' && state.reviews.some(r=>r.id===id)) {state.review=state.reviews.find(r=>r.id===id);content=renderReview(state.review);}
+    else if(tab==='curso')content=renderCourse();
+    else if(tab==='temario')content=nav('temario/algebra')+courseOutline(state.course.courses.find(c=>c.id===id));
+    else content=nav('cursos')+courseCatalog(state.course.courses)+studentReportPanel(state.storage);
+    app.innerHTML=audienceBar()+content;
+  }
+  const account=document.querySelector('.account>span:first-child');
+  if(account)account.textContent=state.role==='parent'?'Acompañando a Fernando.':state.role==='student'?'Un paso a la vez.':'Aprender en familia.';
   if (focus) {document.querySelector('#main').focus({preventScroll:true}); window.scrollTo({top:0});}
 }
 async function refresh() {
   [state.drafts,state.files,state.localTasks,state.reviews] = await Promise.all(['drafts','files','tasks','reviews'].map(all));
   const settings = await all('settings');
+  const received=settings.find(item=>item.id==='parent-report')?.report;
+  try{state.parentReport=received?validateProgressReport(received):null;}catch{state.parentReport=null;}
+  state.theoryUpdatedAt=settings.find(item=>item.id==='learned')?.updatedAt||null;
   state.learned = (settings.find(s=>s.id==='learned')?.topics||[]).filter(id=>state.course.lesson.topics.some(t=>t.id===id));
   const merged = new Map(state.course.tasks.map(t=>[t.id,t]));
   for (const task of state.localTasks) merged.set(task.id,normalizeTask(task));
@@ -141,6 +173,7 @@ async function saveDraft(taskId, changes) {
   if(location.hash===`#tarea/${taskId}`)updateProblemControls(taskId);
   const saved = location.hash===`#tarea/${taskId}` ? document.querySelector('#save-status') : null;
   if (saved) saved.textContent = 'Guardado en este dispositivo.';
+  signalProgress();
 }
 function updateProgress(id) {
   if(location.hash!==`#tarea/${id}`)return;
@@ -181,6 +214,15 @@ function captureEditor() {
 }
 const blankQuestion=()=>({id:crypto.randomUUID(),text:'',options:['','','','','']});
 async function action(name,id) {
+  if(name==='export-progress') {
+    await refresh();const report=currentProgress();
+    downloadJSON(report,`fernando-avance-${report.generatedAt.slice(0,10)}.json`);
+    notify('Informe descargado. En otro dispositivo, entra a Padres y selecciona «Abrir informe del estudiante».');return;
+  }
+  if(name==='refresh-parents'){await refresh();route();notify(state.parentSource==='report'?'Se muestra la copia recibida. Abre un informe nuevo para consultar cambios posteriores.':'Avance actualizado desde este navegador.');return;}
+  if(name==='parent-local'){state.parentSource='local';await refresh();route();return;}
+  if(name==='parent-report'&&state.parentReport){state.parentSource='report';route();return;}
+
   if(name==='new-task'||name==='edit-task') {
     state.editor=name==='edit-task'?structuredClone(taskFor(id)):{id:crypto.randomUUID(),title:'',subject:'Álgebra · Capítulo 1',instructions:'Resuelve cada pregunta, marca una alternativa y usa «Subir al Drive» para entregar tu desarrollo en la carpeta del problema.',due:'',published:true,questions:[blankQuestion()]};
     location.hash='editar';route(true);return;
@@ -229,7 +271,17 @@ app.addEventListener('change',event=>{
     const id=target.dataset.topic,checked=target.checked;
     enqueue(async()=>{
       const learned=checked?[...new Set([...state.learned,id])]:state.learned.filter(t=>t!==id);
-      try{await put('settings',{id:'learned',topics:learned});state.learned=learned;const counter=document.querySelector('.chapter-guide .section-heading span');if(counter)counter.textContent=`${learned.length} / ${state.course.lesson.topics.length} repasados`;}catch(error){target.checked=!checked;throw error;}
+      try{const updatedAt=new Date().toISOString();await put('settings',{id:'learned',topics:learned,updatedAt});state.learned=learned;state.theoryUpdatedAt=updatedAt;signalProgress();const counter=document.querySelector('.chapter-guide .section-heading span');if(counter)counter.textContent=`${learned.length} / ${state.course.lesson.topics.length} repasados`;}catch(error){target.checked=!checked;throw error;}
+    });
+  }
+  if(target.id==='import-progress') {
+    const file=target.files[0];target.value='';if(!file)return;
+    enqueue(async()=>{
+      if(file.size>MAX_PROGRESS_FILE_SIZE)throw new Error('El informe de avance debe pesar hasta 2 MB.');
+      let parsed;try{parsed=JSON.parse(await file.text());}catch{throw new Error('No se pudo leer el informe. Selecciona el archivo JSON descargado desde Estudiante.');}
+      const report=validateProgressReport(parsed);
+      await put('settings',{id:'parent-report',report});state.parentReport=report;state.parentSource='report';
+      route();notify('Informe abierto. Estás viendo una copia del avance guardado en la fecha indicada.');
     });
   }
   if(target.id==='import-review') {
@@ -263,7 +315,7 @@ app.addEventListener('submit',event=>{
       });
       const answers=Object.fromEntries(unchanged.filter(q=>Object.hasOwn(draft.answers,q.id)).map(q=>[q.id,draft.answers[q.id]]));
       await write([{store:'tasks',value:task},{store:'drafts',value:{...draft,answers,preparedAt:null}}]);
-      await refresh();state.editor=null;location.hash='profesor';notify('Tarea guardada en este dispositivo. Descarga el contenido y actualízalo en GitHub para compartirla.');
+      await refresh();signalProgress();state.editor=null;location.hash='profesor';notify('Tarea guardada en este dispositivo. Descarga el contenido y actualízalo en GitHub para compartirla.');
     });
   }
   if(form.id==='review-form') {
@@ -271,7 +323,21 @@ app.addEventListener('submit',event=>{
     enqueue(async()=>{if(!Number.isFinite(score)||score<0||score>20)throw new Error('La nota debe estar entre 0 y 20.');const review={...state.reviews.find(r=>r.id===id),score,feedback};await put('reviews',review);await refresh();state.review=review;notify('Revisión guardada en este dispositivo.');});
   }
 });
-window.addEventListener('hashchange',()=>route(true));
+let progressChannel;
+try{if(typeof BroadcastChannel==='function')progressChannel=new BroadcastChannel('fernando-progress');}catch{}
+function signalProgress(){try{progressChannel?.postMessage({type:'progress-updated'});}catch{}}
+function refreshParentsFromStorage(){
+  if(location.hash!=='#padres'||!state.storage)return;
+  enqueue(async()=>{
+    await refresh();if(location.hash!=='#padres')return;
+    const opened=[...app.querySelectorAll('[data-parent-task][open]')].map(element=>element.dataset.parentTask);
+    route();for(const element of app.querySelectorAll('[data-parent-task]'))element.open=opened.includes(element.dataset.parentTask);
+  });
+}
+progressChannel?.addEventListener('message',event=>{if(event.data?.type==='progress-updated')refreshParentsFromStorage();});
+window.addEventListener('focus',refreshParentsFromStorage);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshParentsFromStorage();});
+window.addEventListener('hashchange',()=>enqueue(async()=>{if(location.hash==='#padres'&&state.storage)await refresh();route(true);}));
 window.addEventListener('beforeunload',event=>{if(state.editor||state.pending){event.preventDefault();event.returnValue='';}});
 async function init() {
   try {

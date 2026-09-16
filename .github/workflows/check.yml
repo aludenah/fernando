@@ -25,5 +25,7 @@ jobs:
           node --check docs/store.js
           node --check docs/course-views.js
           node --check docs/drive.js
+          node --check docs/progress.js
+          node --check docs/family-views.js
           npm test
           npm run check

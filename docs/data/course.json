@@ -233,7 +233,7 @@
     "subject": "Álgebra",
     "chapter": 1,
     "source": "Álgebra · Colección Compendios Académicos UNI, Lumbreras Editores. PDF ALGEBRA.pdf, 346 páginas. Índice: pp. 2–3 del PDF. Capítulo 1: pp. 9–18 del libro; pp. 4–13 del PDF.",
-    "convention": "Seguimos el libro: ℕ empieza en 1; ℕ₀ incluye al cero. I representa a los irracionales.",
+    "convention": "En este curso, ℕ empieza en 1; ℕ₀ incluye al cero. I representa a los irracionales.",
     "objectives": [
       "Reconocer naturales, enteros, racionales, irracionales, reales y complejos.",
       "Operar con fracciones y decimales, distinguiendo opuestos y recíprocos.",
@@ -261,7 +261,7 @@
       {
         "id": "uni-c1-naturales",
         "title": "2. Naturales, cero y paridad",
-        "concept": "Seguimos la convención de este libro: los naturales empiezan en 1. Para incluir el cero se usa ℕ₀. Un natural es par si es múltiplo de 2, e impar si deja residuo 1 al dividirse entre 2.",
+        "concept": "En este curso, los números naturales empiezan en 1. Para incluir el cero se usa ℕ₀. Un natural es par si es múltiplo de 2, e impar si deja residuo 1 al dividirse entre 2.",
         "formulas": [
           "ℕ = {1; 2; 3; …}; ℕ₀ = {0; 1; 2; 3; …}.",
           "Pares naturales: 2n. Impares naturales: 2n − 1, con n ∈ ℕ.",
@@ -386,7 +386,7 @@
       "chapterId": "algebra-uni-c1",
       "level": "basico",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Las actividades son originales y están adaptadas al alcance del capítulo 1 del PDF. Se usa ℕ = {1; 2; 3; …}.",
+      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Se usa ℕ = {1; 2; 3; …}.",
       "due": "",
       "published": true,
       "questions": [
@@ -406,7 +406,7 @@
         {
           "id": "alg-uni-c1-b02",
           "number": 2,
-          "text": "Usando la convención del libro, ¿cuál de las siguientes afirmaciones es verdadera?",
+          "text": "Si ℕ = {1; 2; 3; …} y ℕ₀ = {0; 1; 2; 3; …}, ¿cuál de las siguientes afirmaciones es verdadera?",
           "options": [
             "√2 ∈ ℚ",
             "0 ∈ ℕ",
@@ -529,7 +529,7 @@
       "chapterId": "algebra-uni-c1",
       "level": "intermedio",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Las actividades son originales y están adaptadas al alcance del capítulo 1 del PDF. Se usa ℕ = {1; 2; 3; …}.",
+      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Se usa ℕ = {1; 2; 3; …}.",
       "due": "",
       "published": true,
       "questions": [
@@ -672,7 +672,7 @@
       "chapterId": "algebra-uni-c1",
       "level": "avanzado",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Las actividades son originales y están adaptadas al alcance del capítulo 1 del PDF. Se usa ℕ = {1; 2; 3; …}.",
+      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Se usa ℕ = {1; 2; 3; …}.",
       "due": "",
       "published": true,
       "questions": [

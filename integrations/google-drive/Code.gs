@@ -21,7 +21,7 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "basico",
     "number": 2,
-    "text": "Usando la convención del libro, ¿cuál de las siguientes afirmaciones es verdadera?",
+    "text": "Si ℕ = {1; 2; 3; …} y ℕ₀ = {0; 1; 2; 3; …}, ¿cuál de las siguientes afirmaciones es verdadera?",
     "options": [
       "√2 ∈ ℚ",
       "0 ∈ ℕ",
