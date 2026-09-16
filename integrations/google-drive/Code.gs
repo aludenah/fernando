@@ -216,7 +216,7 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "intermedio",
     "number": 5,
-    "text": "Calcula:\\[2-\\frac{1}{1-\\dfrac{1}{2-\\frac{1}{2}}}\\]",
+    "text": "Calcula:\\[2-\\dfrac{1}{1-\\dfrac{1}{2-\\dfrac{1}{2}}}\\]",
     "options": [
       "\\(3\\)",
       "\\(-3\\)",
@@ -306,7 +306,7 @@ const PROBLEMS = {
     "chapter": 1,
     "level": "avanzado",
     "number": 1,
-    "text": "Calcula:\\[E=3-\\frac{1}{2-\\left[\\left(\\frac{1}{2}-\\frac{1}{3}\\right)\\div\\left(\\frac{3}{4}+\\frac{1}{6}\\right)\\right]}\\]",
+    "text": "Calcula:\\[E=3-\\dfrac{1}{2-\\left[\\left(\\dfrac{1}{2}-\\dfrac{1}{3}\\right)\\div\\left(\\dfrac{3}{4}+\\dfrac{1}{6}\\right)\\right]}\\]",
     "options": [
       "\\(\\dfrac{29}{20}\\)",
       "\\(\\dfrac{5}{2}\\)",
