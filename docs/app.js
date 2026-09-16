@@ -176,8 +176,6 @@ function route(focus = false) {
     else content=nav('cursos')+courseCatalog(state.course.courses)+studentReportPanel(state.storage);
     app.innerHTML=audienceBar()+content;
   }
-  const account=document.querySelector('.account>span:first-child');
-  if(account)account.textContent=state.role==='parent'?'Acompañando a Fernando.':state.role==='student'?'Un paso a la vez.':'Aprender en familia.';
   if (focus) {document.querySelector('#main').focus({preventScroll:true}); window.scrollTo({top:0});}
 }
 async function refresh() {
