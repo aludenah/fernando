@@ -18,4 +18,10 @@ for(const filename of await readdir(root)) {
 }
 assert.match(html,/<html lang="es">/);
 assert.doesNotMatch(JSON.stringify(content),/"correct"|"solution"|@gmail\.com|appgprj_/);
-console.log('Sitio estático comprobado: rutas relativas, 7 temas, 15 preguntas y contenido sin claves privadas.');
+const drive=JSON.parse(await readFile(resolve(root,'data/drive.json'),'utf8'));
+const questions=content.tasks.flatMap(t=>t.questions);
+assert.equal(questions.length,30);
+assert.equal(content.courses[0].chapters.length,28);
+assert.equal(new Set(questions.map(q=>drive.problems[q.id].folderId)).size,30);
+for(const q of questions)assert.equal(drive.problems[q.id].folderUrl,'https://drive.google.com/drive/folders/'+drive.problems[q.id].folderId);
+console.log('Sitio comprobado: 28 capítulos, 30 problemas, 30 carpetas únicas y sin claves privadas.');

@@ -1,52 +1,47 @@
-# Fernando · Aula de Álgebra
+# Fernando · Aula de Matemáticas
 
-Web para las clases particulares de Fernando, preparada para **GitHub Pages**. No utiliza Sites ni requiere una cuenta de ChatGPT. No se ha configurado correo ni inicio de sesión.
+Web de clases particulares publicada en **[GitHub Pages](https://aludenah.github.io/fernando/)**, desde `main` y la carpeta `/docs`. No requiere correo ni inicio de sesión. Los accesos privados se incorporarán más adelante.
 
-## Publicación en GitHub Pages
+## Curso y contenido
 
-1. Abre [Settings → Pages](https://github.com/aludenah/fernando/settings/pages).
-2. En **Build and deployment → Source**, elige **Deploy from a branch**.
-3. Selecciona **main** y **/docs**, y pulsa **Save**.
+La referencia actual es **ALGEBRA.pdf · Colección Compendios Académicos UNI · Lumbreras Editores**. El temario conserva sus **28 capítulos**, con referencias a la página impresa y a la página del PDF. Solo está desarrollado el capítulo 1, **Introducción al álgebra**: libro pp. 9–18, PDF pp. 4–13.
 
-GitHub publicará la web en `https://aludenah.github.io/fernando/`. La activación inicial necesita un administrador del repositorio; añadir los archivos no la activa automáticamente. El proceso de publicación se puede consultar en la pestaña **Actions**. Cada cambio confirmado en `docs/` actualizará la web.
+- Diez apartados teóricos con explicaciones, fórmulas, ejemplos resueltos y recomendaciones: conjuntos numéricos, inversos, decimales, números complejos, operaciones, sumas telescópicas y despejes.
+- **30 problemas originales adaptados al contenido**: 10 básicos, 10 intermedios y 10 avanzados, con cinco alternativas por pregunta.
+- Fernando marca una respuesta en la página y puede adjuntar un desarrollo independiente a cada problema.
+- Aritmética, Geometría y Trigonometría tienen espacios preparados para incorporar sus cursos más adelante.
 
-El sitio usa rutas relativas y navegación por fragmentos, por lo que funciona en `/fernando/` y permite recargar una tarea sin errores 404. No hay instalación ni compilación para publicarlo.
+Los naturales empiezan en 1, según la convención del libro; ℕ₀ incluye el cero. No se publica el PDF completo ni las claves de respuestas. El solucionario del profesor está en la carpeta privada **Material del profesor** de Google Drive.
 
-## Contenido del capítulo 1
+## Solucionarios en Google Drive
 
-El capítulo **Conjuntos numéricos** sigue el PDF de Álgebra, Colección Esencial, Lumbreras Editores, proporcionado para las clases:
+Las carpetas ya se crearon en el Drive del profesor, organizadas por curso, capítulo, nivel y problema. `docs/data/drive.json` contiene los enlaces exactos a las 30 carpetas de ejercicios.
 
-- 7 apartados: naturales, enteros, racionales, irracionales, reales, propiedades e inversos, y aplicaciones.
-- 3 tareas iniciales, con 5 preguntas cada una y alternativas A–E.
-- Referencias a las páginas del libro y del PDF. Se respeta la convención del libro: los naturales empiezan en 1.
+**La subida directa está preparada, pendiente de la autorización y publicación inicial de Google Apps Script por el propietario de Drive.** Hasta esa activación, el botón de envío permanece deshabilitado y la web explica que los adjuntos solo se guardan en este dispositivo.
 
-La guía resume y adapta el contenido. No se publica el PDF completo ni las claves o soluciones privadas del profesor.
+[Instrucciones y código para activar la recepción](integrations/google-drive/README.md). La implementación utiliza un código de entrega elegido por el profesor, sin pedir correo ni una cuenta de Google a Fernando. El código se configura en Google; nunca se publica en GitHub. Las carpetas mantienen sus permisos privados.
 
-## Qué funciona en esta etapa
+Tras activar la conexión, cada envío guarda el PDF o foto y un registro con el enunciado, la alternativa marcada, el comentario y la fecha. La página muestra **Enviado a Drive** únicamente al recibir una confirmación válida del servidor. Si la respuesta cambia, solicita un nuevo envío. Una copia local o una descarga no equivale a una entrega al profesor.
 
-- Leer la guía, marcar temas repasados y seleccionar respuestas.
-- Adjuntar PDF, JPG, PNG y WEBP: hasta 10 MB por archivo, 10 archivos y 40 MB por tarea.
-- Conservar respuestas, comentarios y archivos en IndexedDB del navegador.
-- Descargar una copia `.json` que contiene la tarea, las respuestas y todos los adjuntos. Se requiere responder todas las preguntas y adjuntar al menos un archivo.
-- Importar esa copia desde **Preparar clase**, descargar los adjuntos, guardar una nota sobre 20 y comentarios, y descargar la revisión como texto.
-- Crear o editar tareas localmente y descargar el contenido actualizado.
+## Trabajo local y revisión
 
-**Las descargas no son entregas en línea.** El profesor no recibe automáticamente lo que Fernando hace en otro dispositivo. La página lo indica junto al formulario y al botón de descarga. El inicio de sesión, el envío remoto y el almacenamiento compartido se implementarán en una etapa posterior con un servicio de backend: GitHub Pages sirve archivos estáticos y no ofrece una base de datos ni recepción de archivos.
+- Respuestas, comentarios, temas repasados y archivos locales se conservan en IndexedDB de este navegador. No se sincronizan entre dispositivos.
+- Se aceptan PDF, JPG, PNG y WEBP, hasta 10 MB por archivo y 10 archivos por problema. La copia local de un nivel admite 40 MB en total.
+- **Descargar mi trabajo** genera una copia JSON con las respuestas y los adjuntos, identificando a qué problema corresponde cada archivo. Requiere responder los diez problemas y adjuntar un archivo local para cada uno.
+- **Preparar clase** permite importar esa copia, descargar sus adjuntos, anotar una calificación sobre 20 y exportar los comentarios del profesor. También admite las copias de la versión anterior.
+- Las herramientas del profesor son un editor local; no son una zona autenticada. Las claves privadas no se incluyen en la web.
 
-El almacenamiento pertenece a este navegador y dispositivo. No se sincroniza entre equipos; borrar los datos del navegador elimina el trabajo local. Las descargas permiten conservar una copia. Las herramientas del profesor son un editor local, no una zona privada autenticada. Publicar en GitHub requiere los permisos de la cuenta del repositorio.
+## Añadir y publicar contenido
 
-## Crear y publicar tareas
+1. En **Preparar clase**, crea o edita una tarea y guárdala en el dispositivo.
+2. Descarga `course.json` y reemplaza `docs/data/course.json` en GitHub, confirmando el cambio.
+3. Para habilitar envíos en preguntas nuevas o modificadas, actualiza también el mapa de problemas de Apps Script y `drive.json`, según las instrucciones de la integración.
 
-1. Abre **Preparar clase → Nueva tarea** o **Editar tarea** desde una actividad.
-2. Guarda los cambios en el dispositivo.
-3. En **Preparar clase**, descarga `course.json`.
-4. Usa **Abrir carpeta en GitHub** para subir ese archivo a `docs/data`, sustituyendo el existente, y confirma el cambio.
+Los borradores también forman parte del archivo público. No incluyas datos privados ni claves de respuestas. Los cursos y capítulos tienen identificadores propios, para ampliar la colección sin mezclar entregas. Las preguntas modificadas deben recibir un identificador nuevo si cambia su significado o sus alternativas.
 
-Las tareas y los borradores de `course.json` son públicos en el repositorio. La marca `published` solo controla su aparición en la lista del alumno: no protege contenido. No incluyas información personal, entregas del alumno o claves de respuestas en ese archivo. El exportador conserva solo los campos públicos definidos de cada tarea.
+Cada confirmación en `main` ejecuta las comprobaciones y actualiza GitHub Pages. El historial conserva las versiones anteriores; el proyecto previo al traslado a Pages está en `archive/before-github-pages`.
 
-Las claves y soluciones privadas de la versión previa no se han trasladado al sitio público. El trabajo anterior se conserva en la rama `archive/before-github-pages`.
-
-## Desarrollo y comprobaciones
+## Desarrollo
 
 Con Node 22 o superior y Python 3:
 
@@ -56,16 +51,15 @@ npm run check
 npm start
 ```
 
-Abre `http://localhost:4173`. La aplicación no tiene dependencias de paquetes ni carga scripts externos.
+Abre `http://localhost:4173`. La aplicación estática no tiene dependencias de paquetes ni necesita compilación. Las pruebas comprueban el contenido público, los archivos por problema, las confirmaciones de envío y la validación del receptor de Apps Script con servicios simulados. Las pruebas locales no sustituyen la primera entrega real tras autorizar Google.
 
-```text
-docs/index.html          Página inicial
-docs/styles.css          Diseño adaptable
-docs/app.js              Curso, tareas, editor y revisiones
-docs/model.js            Validaciones y formato público de los datos
-docs/store.js            Almacenamiento local transaccional
-docs/data/course.json    Capítulo 1 y tareas publicadas
-tests/                   Comprobaciones de datos y archivos
-```
-
-Para entregas remotas, el siguiente paso es elegir y conectar autenticación, una base de datos y almacenamiento privado de archivos. No se deben añadir tokens de GitHub, credenciales o claves de servicio a los archivos públicos de esta web.
+| Ruta | Contenido |
+| --- | --- |
+| `docs/data/course.json` | Catálogo, 28 capítulos, teoría y 30 problemas |
+| `docs/data/drive.json` | Carpeta de cada problema y URL del receptor |
+| `docs/app.js` | Respuestas, archivos, editor y revisión |
+| `docs/course-views.js` | Catálogo de cursos y temario |
+| `docs/drive.js` | Enlace de subida y comprobación de confirmaciones |
+| `docs/model.js`, `docs/store.js` | Validaciones y almacenamiento local |
+| `integrations/google-drive/` | Receptor de archivos y activación inicial |
+| `tests/` | Pruebas automáticas |

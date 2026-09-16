@@ -1,0 +1,206 @@
+{
+  "status": "pending",
+  "uploadUrl": "",
+  "rootFolderUrl": "https://drive.google.com/drive/folders/1OPXQCzYpsso49nOuI2A2SzDLwix_y4BI",
+  "chapterFolderUrl": "https://drive.google.com/drive/folders/1sdilWeMFRuw5Z10ZoYPRNzdRtkE83iRy",
+  "courseFolders": {
+    "Aritmética": {
+      "id": "1yB1qxeDw7JAu7JiSWia3skn6gnRONSb3",
+      "url": "https://drive.google.com/drive/folders/1yB1qxeDw7JAu7JiSWia3skn6gnRONSb3"
+    },
+    "Geometría": {
+      "id": "1PYsf6lqTh1_lk1vNey8MMf7omzQFn67T",
+      "url": "https://drive.google.com/drive/folders/1PYsf6lqTh1_lk1vNey8MMf7omzQFn67T"
+    },
+    "Trigonometría": {
+      "id": "1Hmzl8yNE6cG7d1Y1U7yn8Yn-Ut0FvVi6",
+      "url": "https://drive.google.com/drive/folders/1Hmzl8yNE6cG7d1Y1U7yn8Yn-Ut0FvVi6"
+    },
+    "Álgebra": {
+      "id": "1Jj6AlNIJHDcjlBeChD9cBEoMQsqIT1t9",
+      "url": "https://drive.google.com/drive/folders/1Jj6AlNIJHDcjlBeChD9cBEoMQsqIT1t9"
+    }
+  },
+  "problems": {
+    "alg-uni-c1-a01": {
+      "folderId": "1rcStX9Jpl_xKYdVqcuU8THutkIex_9IL",
+      "folderUrl": "https://drive.google.com/drive/folders/1rcStX9Jpl_xKYdVqcuU8THutkIex_9IL",
+      "level": "avanzado",
+      "number": 1
+    },
+    "alg-uni-c1-a02": {
+      "folderId": "1boVE4PuYdPxnwYivNOhchKO5HqwlCBEw",
+      "folderUrl": "https://drive.google.com/drive/folders/1boVE4PuYdPxnwYivNOhchKO5HqwlCBEw",
+      "level": "avanzado",
+      "number": 2
+    },
+    "alg-uni-c1-a03": {
+      "folderId": "151BJxNpJhIdztdWBKmrGfe2bMp8LLiYD",
+      "folderUrl": "https://drive.google.com/drive/folders/151BJxNpJhIdztdWBKmrGfe2bMp8LLiYD",
+      "level": "avanzado",
+      "number": 3
+    },
+    "alg-uni-c1-a04": {
+      "folderId": "1zkzZvmRefZetkRcDx6Ehi2_3OkAnj5Sy",
+      "folderUrl": "https://drive.google.com/drive/folders/1zkzZvmRefZetkRcDx6Ehi2_3OkAnj5Sy",
+      "level": "avanzado",
+      "number": 4
+    },
+    "alg-uni-c1-a05": {
+      "folderId": "1Eal9Dl4Lxi-hJKWtT2-vUoKA6KeZienx",
+      "folderUrl": "https://drive.google.com/drive/folders/1Eal9Dl4Lxi-hJKWtT2-vUoKA6KeZienx",
+      "level": "avanzado",
+      "number": 5
+    },
+    "alg-uni-c1-a06": {
+      "folderId": "1nL2LduzHbFPFeMlZV79GrxRu0p9dzRrl",
+      "folderUrl": "https://drive.google.com/drive/folders/1nL2LduzHbFPFeMlZV79GrxRu0p9dzRrl",
+      "level": "avanzado",
+      "number": 6
+    },
+    "alg-uni-c1-a07": {
+      "folderId": "1of-3a9GwCUKW-Px9cqMuR9WY-tRagdsk",
+      "folderUrl": "https://drive.google.com/drive/folders/1of-3a9GwCUKW-Px9cqMuR9WY-tRagdsk",
+      "level": "avanzado",
+      "number": 7
+    },
+    "alg-uni-c1-a08": {
+      "folderId": "1RGTbp3RURNsr_evkUTwucRDvVcUZwqn0",
+      "folderUrl": "https://drive.google.com/drive/folders/1RGTbp3RURNsr_evkUTwucRDvVcUZwqn0",
+      "level": "avanzado",
+      "number": 8
+    },
+    "alg-uni-c1-a09": {
+      "folderId": "12zknkHNQBTBLOyA18d-Am1txUBTXYRF8",
+      "folderUrl": "https://drive.google.com/drive/folders/12zknkHNQBTBLOyA18d-Am1txUBTXYRF8",
+      "level": "avanzado",
+      "number": 9
+    },
+    "alg-uni-c1-a10": {
+      "folderId": "1Lb10yvMx_avR7-BqugmjBj50xccb-hC_",
+      "folderUrl": "https://drive.google.com/drive/folders/1Lb10yvMx_avR7-BqugmjBj50xccb-hC_",
+      "level": "avanzado",
+      "number": 10
+    },
+    "alg-uni-c1-b01": {
+      "folderId": "1-UwOoGXcaCMvuBBWRxIPHu_IUBdfHL7L",
+      "folderUrl": "https://drive.google.com/drive/folders/1-UwOoGXcaCMvuBBWRxIPHu_IUBdfHL7L",
+      "level": "basico",
+      "number": 1
+    },
+    "alg-uni-c1-b02": {
+      "folderId": "1SZU8IgOwGaTAbasll_yw37OlxB7wx2A2",
+      "folderUrl": "https://drive.google.com/drive/folders/1SZU8IgOwGaTAbasll_yw37OlxB7wx2A2",
+      "level": "basico",
+      "number": 2
+    },
+    "alg-uni-c1-b03": {
+      "folderId": "1PrDOtEBEni_L1a5L_c1Szbp5nkjko789",
+      "folderUrl": "https://drive.google.com/drive/folders/1PrDOtEBEni_L1a5L_c1Szbp5nkjko789",
+      "level": "basico",
+      "number": 3
+    },
+    "alg-uni-c1-b04": {
+      "folderId": "1eKIvavp06BzCknqZmmAP8HkK83AWXYKr",
+      "folderUrl": "https://drive.google.com/drive/folders/1eKIvavp06BzCknqZmmAP8HkK83AWXYKr",
+      "level": "basico",
+      "number": 4
+    },
+    "alg-uni-c1-b05": {
+      "folderId": "1_v9wmbJIjfrpG-vYWZ9F6TrUW2tll1Uy",
+      "folderUrl": "https://drive.google.com/drive/folders/1_v9wmbJIjfrpG-vYWZ9F6TrUW2tll1Uy",
+      "level": "basico",
+      "number": 5
+    },
+    "alg-uni-c1-b06": {
+      "folderId": "15E67-8-yi8RElptpdtZYZSpdLO9tOlCt",
+      "folderUrl": "https://drive.google.com/drive/folders/15E67-8-yi8RElptpdtZYZSpdLO9tOlCt",
+      "level": "basico",
+      "number": 6
+    },
+    "alg-uni-c1-b07": {
+      "folderId": "1Nf1kdAmTAtgvC-Yrzy9Zm1vrXmNSifST",
+      "folderUrl": "https://drive.google.com/drive/folders/1Nf1kdAmTAtgvC-Yrzy9Zm1vrXmNSifST",
+      "level": "basico",
+      "number": 7
+    },
+    "alg-uni-c1-b08": {
+      "folderId": "1LGPH9y9uZ6L7ziP7YZPlE5nVLKrNvRe0",
+      "folderUrl": "https://drive.google.com/drive/folders/1LGPH9y9uZ6L7ziP7YZPlE5nVLKrNvRe0",
+      "level": "basico",
+      "number": 8
+    },
+    "alg-uni-c1-b09": {
+      "folderId": "1k-MXuM2XgwR9_0T8HU1kMu5SFePrDCP-",
+      "folderUrl": "https://drive.google.com/drive/folders/1k-MXuM2XgwR9_0T8HU1kMu5SFePrDCP-",
+      "level": "basico",
+      "number": 9
+    },
+    "alg-uni-c1-b10": {
+      "folderId": "1Pjy2riZ6_Z1aXpJzJ_t8SHI7wRz3s63q",
+      "folderUrl": "https://drive.google.com/drive/folders/1Pjy2riZ6_Z1aXpJzJ_t8SHI7wRz3s63q",
+      "level": "basico",
+      "number": 10
+    },
+    "alg-uni-c1-i01": {
+      "folderId": "1PSXhh6E3jjMF7jv6WnZWcXGr4al8KQFu",
+      "folderUrl": "https://drive.google.com/drive/folders/1PSXhh6E3jjMF7jv6WnZWcXGr4al8KQFu",
+      "level": "intermedio",
+      "number": 1
+    },
+    "alg-uni-c1-i02": {
+      "folderId": "1uSQ6yYDu3Amc51I364DdTnsOu00RWOlU",
+      "folderUrl": "https://drive.google.com/drive/folders/1uSQ6yYDu3Amc51I364DdTnsOu00RWOlU",
+      "level": "intermedio",
+      "number": 2
+    },
+    "alg-uni-c1-i03": {
+      "folderId": "1Lw2oLeRhOwk_hPvBv2qGBMEaOpq02hs2",
+      "folderUrl": "https://drive.google.com/drive/folders/1Lw2oLeRhOwk_hPvBv2qGBMEaOpq02hs2",
+      "level": "intermedio",
+      "number": 3
+    },
+    "alg-uni-c1-i04": {
+      "folderId": "1OIiGWnvbXmjFuCwynu_0XqP_kaAne3Ha",
+      "folderUrl": "https://drive.google.com/drive/folders/1OIiGWnvbXmjFuCwynu_0XqP_kaAne3Ha",
+      "level": "intermedio",
+      "number": 4
+    },
+    "alg-uni-c1-i05": {
+      "folderId": "1lP6oNZ1pnEB1DDCHWYRFWOQczgX0s44c",
+      "folderUrl": "https://drive.google.com/drive/folders/1lP6oNZ1pnEB1DDCHWYRFWOQczgX0s44c",
+      "level": "intermedio",
+      "number": 5
+    },
+    "alg-uni-c1-i06": {
+      "folderId": "1mVua6YtnS2f4wGAFtsucEX9S5w2RqJN5",
+      "folderUrl": "https://drive.google.com/drive/folders/1mVua6YtnS2f4wGAFtsucEX9S5w2RqJN5",
+      "level": "intermedio",
+      "number": 6
+    },
+    "alg-uni-c1-i07": {
+      "folderId": "1-bNjOYBwTHD4xDmMf7D8xgOuoibbIO-r",
+      "folderUrl": "https://drive.google.com/drive/folders/1-bNjOYBwTHD4xDmMf7D8xgOuoibbIO-r",
+      "level": "intermedio",
+      "number": 7
+    },
+    "alg-uni-c1-i08": {
+      "folderId": "1YCFp5fMCN67esck7kUO0qPfOY7JTF_NJ",
+      "folderUrl": "https://drive.google.com/drive/folders/1YCFp5fMCN67esck7kUO0qPfOY7JTF_NJ",
+      "level": "intermedio",
+      "number": 8
+    },
+    "alg-uni-c1-i09": {
+      "folderId": "1blfzjpbGVnLzcdhYzbH0CppMW6VhD1-g",
+      "folderUrl": "https://drive.google.com/drive/folders/1blfzjpbGVnLzcdhYzbH0CppMW6VhD1-g",
+      "level": "intermedio",
+      "number": 9
+    },
+    "alg-uni-c1-i10": {
+      "folderId": "1b7qsRIAouRZANA_wLWfposzPcS3nOEGZ",
+      "folderUrl": "https://drive.google.com/drive/folders/1b7qsRIAouRZANA_wLWfposzPcS3nOEGZ",
+      "level": "intermedio",
+      "number": 10
+    }
+  }
+}

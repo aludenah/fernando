@@ -1,308 +1,810 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "courses": [
+    {
+      "id": "algebra",
+      "title": "Álgebra",
+      "status": "active",
+      "description": "Del lenguaje de los números a las funciones y ecuaciones.",
+      "chapters": [
+        {
+          "number": 1,
+          "title": "Introducción al álgebra",
+          "bookPage": 9,
+          "pdfPage": 4,
+          "status": "active"
+        },
+        {
+          "number": 2,
+          "title": "Exponentes y radicales",
+          "bookPage": 19,
+          "pdfPage": 14,
+          "status": "planned"
+        },
+        {
+          "number": 3,
+          "title": "Productos notables",
+          "bookPage": 30,
+          "pdfPage": 25,
+          "status": "planned"
+        },
+        {
+          "number": 4,
+          "title": "Polinomios",
+          "bookPage": 42,
+          "pdfPage": 37,
+          "status": "planned"
+        },
+        {
+          "number": 5,
+          "title": "Divisiones algebraicas",
+          "bookPage": 56,
+          "pdfPage": 51,
+          "status": "planned"
+        },
+        {
+          "number": 6,
+          "title": "Divisibilidad de polinomios y cocientes notables",
+          "bookPage": 68,
+          "pdfPage": 63,
+          "status": "planned"
+        },
+        {
+          "number": 7,
+          "title": "Factorización",
+          "bookPage": 78,
+          "pdfPage": 73,
+          "status": "planned"
+        },
+        {
+          "number": 8,
+          "title": "Números complejos I",
+          "bookPage": 93,
+          "pdfPage": 88,
+          "status": "planned"
+        },
+        {
+          "number": 9,
+          "title": "Números complejos II",
+          "bookPage": 105,
+          "pdfPage": 100,
+          "status": "planned"
+        },
+        {
+          "number": 10,
+          "title": "Ecuaciones polinomiales",
+          "bookPage": 116,
+          "pdfPage": 111,
+          "status": "planned"
+        },
+        {
+          "number": 11,
+          "title": "Ecuaciones polinomiales de grado superior",
+          "bookPage": 127,
+          "pdfPage": 122,
+          "status": "planned"
+        },
+        {
+          "number": 12,
+          "title": "Desigualdades",
+          "bookPage": 141,
+          "pdfPage": 136,
+          "status": "planned"
+        },
+        {
+          "number": 13,
+          "title": "Inecuaciones",
+          "bookPage": 153,
+          "pdfPage": 148,
+          "status": "planned"
+        },
+        {
+          "number": 14,
+          "title": "Expresiones fraccionarias e irracionales",
+          "bookPage": 165,
+          "pdfPage": 160,
+          "status": "planned"
+        },
+        {
+          "number": 15,
+          "title": "Valor absoluto",
+          "bookPage": 176,
+          "pdfPage": 171,
+          "status": "planned"
+        },
+        {
+          "number": 16,
+          "title": "Logaritmos en ℝ",
+          "bookPage": 186,
+          "pdfPage": 181,
+          "status": "planned"
+        },
+        {
+          "number": 17,
+          "title": "Funciones",
+          "bookPage": 196,
+          "pdfPage": 191,
+          "status": "planned"
+        },
+        {
+          "number": 18,
+          "title": "Álgebra de funciones",
+          "bookPage": 211,
+          "pdfPage": 206,
+          "status": "planned"
+        },
+        {
+          "number": 19,
+          "title": "Funciones especiales",
+          "bookPage": 223,
+          "pdfPage": 218,
+          "status": "planned"
+        },
+        {
+          "number": 20,
+          "title": "Función inversa",
+          "bookPage": 237,
+          "pdfPage": 232,
+          "status": "planned"
+        },
+        {
+          "number": 21,
+          "title": "Límite de una función real de variable real",
+          "bookPage": 252,
+          "pdfPage": 247,
+          "status": "planned"
+        },
+        {
+          "number": 22,
+          "title": "Sucesiones",
+          "bookPage": 263,
+          "pdfPage": 258,
+          "status": "planned"
+        },
+        {
+          "number": 23,
+          "title": "Series",
+          "bookPage": 278,
+          "pdfPage": 273,
+          "status": "planned"
+        },
+        {
+          "number": 24,
+          "title": "Matrices",
+          "bookPage": 289,
+          "pdfPage": 284,
+          "status": "planned"
+        },
+        {
+          "number": 25,
+          "title": "Determinantes",
+          "bookPage": 301,
+          "pdfPage": 296,
+          "status": "planned"
+        },
+        {
+          "number": 26,
+          "title": "Matriz inversa y polinomio característico",
+          "bookPage": 311,
+          "pdfPage": 306,
+          "status": "planned"
+        },
+        {
+          "number": 27,
+          "title": "Sistema de ecuaciones",
+          "bookPage": 319,
+          "pdfPage": 314,
+          "status": "planned"
+        },
+        {
+          "number": 28,
+          "title": "Programación lineal bidimensional",
+          "bookPage": 332,
+          "pdfPage": 327,
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "aritmetica",
+      "title": "Aritmética",
+      "status": "planned",
+      "description": "Espacio preparado para el próximo curso.",
+      "chapters": []
+    },
+    {
+      "id": "geometria",
+      "title": "Geometría",
+      "status": "planned",
+      "description": "Espacio preparado para el próximo curso.",
+      "chapters": []
+    },
+    {
+      "id": "trigonometria",
+      "title": "Trigonometría",
+      "status": "planned",
+      "description": "Espacio preparado para el próximo curso.",
+      "chapters": []
+    }
+  ],
   "lesson": {
-    "id": "algebra-chapter-1",
-    "title": "Conjuntos numéricos",
+    "id": "algebra-uni-c1",
+    "title": "Introducción al álgebra",
     "subject": "Álgebra",
     "chapter": 1,
-    "source": "Álgebra · Colección Esencial, Lumbreras Editores. Capítulo 1: pp. 13–45 del libro; pp. 6–38 del PDF proporcionado.",
-    "convention": "Seguimos el libro: ℕ comienza en 1. El cero es entero, racional y real.",
+    "source": "Álgebra · Colección Compendios Académicos UNI, Lumbreras Editores. PDF ALGEBRA.pdf, 346 páginas. Índice: pp. 2–3 del PDF. Capítulo 1: pp. 9–18 del libro; pp. 4–13 del PDF.",
+    "convention": "Seguimos el libro: ℕ empieza en 1; ℕ₀ incluye al cero. I representa a los irracionales.",
     "objectives": [
-      "Reconocer los conjuntos numéricos y sus relaciones.",
-      "Operar con enteros y fracciones respetando signos y prioridades.",
-      "Aplicar propiedades e inversos y explicar el desarrollo."
+      "Reconocer naturales, enteros, racionales, irracionales, reales y complejos.",
+      "Operar con fracciones y decimales, distinguiendo opuestos y recíprocos.",
+      "Simplificar expresiones, resolver despejes y justificar las restricciones."
     ],
     "taskIds": [
-      "e7cac150-5d2e-5fca-aa5c-483340ebbdd7",
-      "efd51fa2-ad7d-5dc1-b193-f127643ee652",
-      "782654a9-cb80-51e3-be7b-bb2cd0952b48"
+      "algebra-uni-c1-basico",
+      "algebra-uni-c1-intermedio",
+      "algebra-uni-c1-avanzado"
     ],
     "topics": [
       {
-        "id": "naturales",
-        "title": "1. Números naturales",
-        "pages": "Libro: pp. 14–15 · PDF: pp. 7–8",
-        "concept": "Sirven para contar. En este libro, ℕ = {1; 2; 3; …}; por tanto, 0 no pertenece a ℕ. Sumar o multiplicar naturales siempre da un natural; restar o dividir no siempre.",
+        "id": "uni-c1-mapa",
+        "title": "1. El mapa de los números",
+        "concept": "Los conjuntos numéricos amplían los tipos de cantidades con los que podemos trabajar. Un mismo número puede pertenecer a varios conjuntos. El símbolo ∈ indica pertenencia; ⊂ indica inclusión de un conjunto en otro.",
         "formulas": [
-          "1 + 2 + … + n = n(n + 1)/2",
-          "1 + 3 + … + (2n − 1) = n²",
-          "2 + 4 + … + 2n = n(n + 1)"
+          "ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ",
+          "ℝ = ℚ ∪ I y ℚ ∩ I = ∅.",
+          "ℕ: naturales; ℤ: enteros; ℚ: racionales; I: irracionales; ℝ: reales; ℂ: complejos."
         ],
-        "example": "Ejemplo: 2 + 4 + … + 20 tiene 10 términos.\nS = 10(10 + 1) = 110.",
-        "tip": "En las fórmulas, n es la cantidad de términos. No siempre es el último número de la suma."
+        "example": "El número −6 pertenece a ℤ, ℚ, ℝ y ℂ.\nEntre esos conjuntos, el más pequeño es ℤ.\n√3 pertenece a I, ℝ y ℂ, pero no a ℚ.",
+        "tip": "Pertenecer a un conjunto no impide pertenecer a otro más amplio.",
+        "pages": "Libro: pp. 9 y 13 · PDF: pp. 4 y 8"
       },
       {
-        "id": "enteros",
-        "title": "2. Números enteros",
-        "pages": "Libro: pp. 15–20 · PDF: pp. 8–13",
-        "concept": "ℤ = {…; −3; −2; −1; 0; 1; 2; 3; …}. Incluye positivos, negativos y cero. En la recta numérica, el número situado más a la derecha es mayor.",
+        "id": "uni-c1-naturales",
+        "title": "2. Naturales, cero y paridad",
+        "concept": "Seguimos la convención de este libro: los naturales empiezan en 1. Para incluir el cero se usa ℕ₀. Un natural es par si es múltiplo de 2, e impar si deja residuo 1 al dividirse entre 2.",
         "formulas": [
-          "Restar equivale a sumar el opuesto: a − b = a + (−b).",
-          "En multiplicación y división: signos iguales → positivo; signos diferentes → negativo.",
-          "Orden: agrupaciones; potencias si aparecen; multiplicaciones y divisiones; sumas y restas. A igual prioridad, de izquierda a derecha."
+          "ℕ = {1; 2; 3; …}; ℕ₀ = {0; 1; 2; 3; …}.",
+          "Pares naturales: 2n. Impares naturales: 2n − 1, con n ∈ ℕ.",
+          "La suma y el producto de naturales son naturales. La resta y la división no siempre lo son."
         ],
-        "example": "Ejemplo: 4 − 3(2 − 5)\n1. Paréntesis: 2 − 5 = −3.\n2. Producto: 3(−3) = −9.\n3. Resta: 4 − (−9) = 13.",
-        "tip": "La regla de signos del producto no se aplica directamente a una suma: (−4) + (−3) = −7."
+        "example": "El séptimo par natural es 2×7 = 14.\nEl séptimo impar natural es 2×7−1 = 13.\n3−5 = −2 no es natural; 3÷2 tampoco.",
+        "tip": "El cero es entero, racional, real y complejo; en esta convención no pertenece a ℕ.",
+        "pages": "Libro: p. 10 · PDF: p. 5"
       },
       {
-        "id": "racionales",
-        "title": "3. Números racionales",
-        "pages": "Libro: pp. 20–25 · PDF: pp. 13–18",
-        "concept": "Un racional se escribe como a/b, con a y b enteros y b ≠ 0. Los enteros, los decimales exactos y los periódicos son racionales: 5 = 5/1; 0,25 = 1/4; 0,333… = 1/3.",
+        "id": "uni-c1-enteros",
+        "title": "3. Enteros, signos y opuestos",
+        "concept": "Los enteros reúnen a los naturales, sus opuestos y el cero. En la recta numérica, un número es mayor cuanto más a la derecha se encuentra.",
         "formulas": [
-          "a/b + c/d = (ad + bc)/(bd); a/b − c/d = (ad − bc)/(bd).",
-          "(a/b) × (c/d) = ac/(bd).",
-          "(a/b) ÷ (c/d) = ad/(bc), con b, c y d distintos de cero."
+          "ℤ = {…; −2; −1; 0; 1; 2; …}.",
+          "Opuesto de a: −a. Se cumple a + (−a) = 0.",
+          "a − b = a + (−b). En un producto o cociente, signos iguales dan positivo y signos distintos dan negativo."
         ],
-        "example": "Ejemplo: (2/3 + 1/6) ÷ (5/4)\n1. Suma: 4/6 + 1/6 = 5/6.\n2. Multiplica por el recíproco: (5/6) × (4/5).\n3. Simplifica: 20/30 = 2/3.",
-        "tip": "Al sumar no se suman los denominadores. El recíproco se usa al dividir. La división entre cero no está definida."
+        "example": "Calcula 5 − 2(3 − 7).\n1. Agrupación: 3−7 = −4.\n2. Producto: 2(−4) = −8.\n3. Resta: 5−(−8) = 13.",
+        "tip": "La regla de signos del producto no se aplica a una suma: (−4)+(−2) = −6.",
+        "pages": "Libro: p. 10 · PDF: p. 5"
       },
       {
-        "id": "irracionales",
-        "title": "4. Números irracionales",
-        "pages": "Libro: p. 25 · PDF: p. 18",
-        "concept": "No se pueden escribir como una fracción de enteros. Su desarrollo decimal es infinito y no periódico. Ejemplos: √2, √3 y π.",
+        "id": "uni-c1-racionales",
+        "title": "4. Racionales y recíprocos",
+        "concept": "Un racional puede escribirse como el cociente de dos enteros con denominador distinto de cero. Todo entero es racional, pues a = a/1.",
         "formulas": [
-          "√9 = 3 es racional, porque 9 es un cuadrado perfecto.",
-          "√5 es irracional, porque 5 no es un cuadrado perfecto."
+          "ℚ = {m/n: m, n ∈ ℤ; n ≠ 0}.",
+          "El inverso multiplicativo de a ≠ 0 es 1/a.",
+          "(a/b) ÷ (c/d) = (a/b) × (d/c), con b, c y d distintos de cero."
         ],
-        "example": "Ejemplo: clasifica √16 y √6.\n√16 = 4 pertenece a ℕ, ℤ, ℚ y ℝ.\n√6 es irracional y real.",
-        "tip": "Tener una raíz escrita no basta para ser irracional. Revisa si la raíz es exacta."
+        "example": "El recíproco de −3/7 es −7/3.\nComprueba: (−3/7)(−7/3) = 1.\n(4/5) ÷ (2/3) = (4/5)(3/2) = 6/5.",
+        "tip": "No confundas opuesto con recíproco. El cero tiene opuesto, pero no tiene inverso multiplicativo.",
+        "pages": "Libro: p. 11 · PDF: p. 6"
       },
       {
-        "id": "reales",
-        "title": "5. Números reales",
-        "pages": "Libro: pp. 25–26 · PDF: pp. 18–19",
-        "concept": "Los reales reúnen a los racionales y a los irracionales. Un número puede pertenecer a varios conjuntos. Si se pide una sola clasificación, identifica el conjunto más pequeño que lo contiene.",
+        "id": "uni-c1-decimales",
+        "title": "5. Decimales exactos y periódicos",
+        "concept": "Un racional tiene una expresión decimal que termina o que repite un bloque. Si la repetición comienza justo después de la coma es periódico puro; si antes hay cifras que no se repiten, es periódico mixto.",
         "formulas": [
-          "ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ",
-          "ℝ = ℚ ∪ I; ℚ ∩ I = ∅."
+          "Exacto: 0,45 = 45/100 = 9/20.",
+          "Periódico puro: 0,272727… = 27/99 = 3/11.",
+          "Periódico mixto: 0,13333… = (13−1)/90 = 2/15."
         ],
-        "example": "Clasificación en el conjunto más pequeño:\n8 → ℕ.\n−8 y 0 → ℤ, siguiendo la convención del libro.\n3/8 → ℚ.\n√8 → I.\nTodos los anteriores son reales.",
-        "tip": "Ningún número es racional e irracional a la vez."
+        "example": "Para y = 0,13333…:\n10y = 1,3333… y 100y = 13,3333….\nAl restar: 90y = 12.\nPor tanto, y = 12/90 = 2/15.",
+        "tip": "Aclara siempre qué dígitos se repiten. Un decimal infinito no es necesariamente irracional.",
+        "pages": "Libro: p. 11 · PDF: p. 6"
       },
       {
-        "id": "propiedades",
-        "title": "6. Propiedades e inversos",
-        "pages": "Libro: pp. 26–28 · PDF: pp. 19–21",
-        "concept": "Estas propiedades permiten reorganizar y simplificar operaciones sin cambiar su valor.",
+        "id": "uni-c1-reales",
+        "title": "6. Irracionales y reales",
+        "concept": "Los irracionales son reales que no pueden expresarse como fracción de enteros. Su decimal es infinito y no periódico. Los reales reúnen a los racionales y a los irracionales.",
         "formulas": [
-          "Conmutativa: a + b = b + a; ab = ba.",
-          "Asociativa: (a + b) + c = a + (b + c); (ab)c = a(bc).",
-          "Distributiva: a(b + c) = ab + ac.",
-          "Elementos neutros: a + 0 = a; a × 1 = a.",
-          "Inverso aditivo: −a. Inverso multiplicativo: 1/a, solo si a ≠ 0."
+          "√2, √3 y π son irracionales.",
+          "√16 = 4 es racional; el símbolo de raíz no garantiza irracionalidad.",
+          "La suma o el producto de dos irracionales puede ser racional o irracional."
         ],
-        "example": "Ejemplo: 4(x + 2) − x = 4x + 8 − x = 3x + 8.\nPara −2/3: su inverso aditivo es 2/3 y el multiplicativo es −3/2.",
-        "tip": "La resta y la división no son conmutativas ni asociativas. Cero no tiene inverso multiplicativo."
+        "example": "√2 + (−√2) = 0, que es racional.\n√2 × √2 = 2, que también es racional.\n√2 × √3 = √6, que es irracional.",
+        "tip": "Un racional no nulo multiplicado por un irracional da un irracional. La condición «no nulo» es necesaria.",
+        "pages": "Libro: p. 12 · PDF: p. 7"
       },
       {
-        "id": "estrategias",
-        "title": "7. Aplicaciones del capítulo",
-        "pages": "Libro: pp. 30–45 · PDF: pp. 23–38",
-        "concept": "Aplica las propiedades para simplificar fracciones, reconocer sumas que se cancelan y resolver situaciones cotidianas.",
+        "id": "uni-c1-complejos",
+        "title": "7. Primera mirada a los complejos",
+        "concept": "Un complejo se escribe a + bi, con a y b reales. Aquí a es la parte real y b es la parte imaginaria; i es la unidad imaginaria. En este capítulo aprenderemos a reconocerlos; sus operaciones se desarrollarán en los capítulos VIII y IX.",
         "formulas": [
-          "1/a + 1/b = (a + b)/(ab), con a ≠ 0 y b ≠ 0.",
-          "1/[k(k + 1)] = 1/k − 1/(k + 1), con k natural."
+          "i² = −1; z = a + bi, con a, b ∈ ℝ.",
+          "Si b = 0, z es real. Si a = 0 y b ≠ 0, es imaginario puro no nulo.",
+          "Si a = b = 0, z es el complejo nulo."
         ],
-        "example": "Ejemplo de cancelación:\n1/(1×2) + 1/(2×3) = (1 − 1/2) + (1/2 − 1/3) = 2/3.\nEjemplo cotidiano: si se consume 1/4 de una cantidad, queda 3/4 de esa cantidad.",
-        "tip": "Una fracción de una cantidad se calcula multiplicando. En una suma telescópica, escribe los términos y observa qué se cancela."
+        "example": "−5 + 0i = −5 es real.\n0 + 8i es imaginario puro.\n4 − 2i es complejo no real y no es imaginario puro.\n0 + 0i es cero; no es imaginario puro no nulo.",
+        "tip": "Para clasificar un complejo con parámetros, comprueba las dos condiciones: parte real y parte imaginaria.",
+        "pages": "Libro: pp. 12–13 · PDF: pp. 7–8"
+      },
+      {
+        "id": "uni-c1-operaciones",
+        "title": "8. Fracciones y orden de operaciones",
+        "concept": "Resuelve primero las agrupaciones más interiores; después productos y cocientes; finalmente sumas y restas. Las operaciones del mismo nivel se realizan de izquierda a derecha.",
+        "formulas": [
+          "a/b ± c/d = (ad ± bc)/(bd), con b ≠ 0 y d ≠ 0.",
+          "(a/b)(c/d) = ac/(bd). Simplifica factores comunes.",
+          "En fracciones anidadas, evalúa cada denominador desde dentro hacia fuera y verifica que ninguno sea cero."
+        ],
+        "example": "Calcula (5/6 − 1/4) ÷ (7/3).\n5/6 − 1/4 = 10/12 − 3/12 = 7/12.\n(7/12) ÷ (7/3) = (7/12)(3/7) = 1/4.",
+        "tip": "Se cancelan factores, no términos separados por + o −. Nunca dividas entre cero.",
+        "pages": "Libro: pp. 13–17 · PDF: pp. 8–12"
+      },
+      {
+        "id": "uni-c1-sumas",
+        "title": "9. Estrategias para las sumas",
+        "concept": "Algunas sumas largas se simplifican al escribir cada término como una diferencia. Las cantidades intermedias se cancelan: se llaman sumas telescópicas. También encontraremos sumas de los primeros naturales.",
+        "formulas": [
+          "1/[k(k+1)] = 1/k − 1/(k+1).",
+          "1/[u(u+d)] = (1/d)[1/u − 1/(u+d)], con denominadores y d distintos de cero.",
+          "Sₙ = 1+2+…+n = n(n+1)/2.",
+          "S₁+S₂+…+Sₙ = n(n+1)(n+2)/6. También puedes sumar los valores Sₖ directamente."
+        ],
+        "example": "1/(2×4) + 1/(4×6) + 1/(6×8)\n= (1/2)[(1/2−1/4)+(1/4−1/6)+(1/6−1/8)]\n= (1/2)(1/2−1/8) = 3/16.",
+        "tip": "Antes de usar una fórmula, identifica la diferencia entre los factores y cuántos términos hay.",
+        "pages": "Apoyo a los problemas del libro: pp. 14, 16–17 · PDF: pp. 9, 11–12"
+      },
+      {
+        "id": "uni-c1-despeje",
+        "title": "10. Simplificar, despejar y revisar restricciones",
+        "concept": "La distributiva permite quitar agrupaciones. Para despejar una incógnita, agrupa sus términos y realiza la misma operación en ambos miembros. Si divides entre una expresión, esa expresión debe ser distinta de cero.",
+        "formulas": [
+          "k(a+b) = ka+kb.",
+          "Si px = q y p ≠ 0, entonces x = q/p.",
+          "En 1/t = 1/u + 1/v se obtiene t = uv/(u+v), siempre que las expresiones originales estén definidas."
+        ],
+        "example": "Resuelve 2(x−3) = 5x+3.\n2x−6 = 5x+3.\n−9 = 3x; entonces x = −3.\nComprueba: 2(−3−3) = −12 y 5(−3)+3 = −12.",
+        "tip": "Una simplificación no elimina las restricciones de la expresión original. Comprueba la solución en el enunciado.",
+        "pages": "Apoyo a los problemas del libro: pp. 17–18 · PDF: pp. 12–13"
       }
     ]
   },
   "tasks": [
     {
-      "id": "e7cac150-5d2e-5fca-aa5c-483340ebbdd7",
-      "title": "01 · Naturales y enteros",
+      "id": "algebra-uni-c1-basico",
+      "title": "Nivel básico · 10 problemas",
+      "courseId": "algebra",
+      "chapterId": "algebra-uni-c1",
+      "level": "basico",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Secciones 1 y 2; libro, pp. 14–20 (PDF, pp. 7–13).\nTarea 1 de 3 · Inicio. Actividad adaptada al contenido del PDF; no reproduce todo el banco de ejercicios.\nMarca una alternativa por pregunta y adjunta fotos o un PDF con tu desarrollo. Explica las clasificaciones y muestra tus operaciones. Usamos ℕ = {1; 2; 3; …}.",
+      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y adjunta el solucionario en el espacio del problema correspondiente. Las actividades son originales y están adaptadas al alcance del capítulo 1 del PDF. Se usa ℕ = {1; 2; 3; …}.",
       "due": "",
       "published": true,
       "questions": [
         {
-          "text": "Entre ℕ, ℤ, ℚ, I y ℝ, ¿cuál es el conjunto más pequeño que contiene a −7?",
+          "id": "alg-uni-c1-b01",
+          "number": 1,
+          "text": "Entre ℕ, ℤ, ℚ, ℝ y ℂ, ¿cuál es el conjunto más pequeño que contiene a −11?",
           "options": [
-            "ℕ: naturales",
-            "ℤ: enteros",
-            "ℚ: racionales",
-            "I: irracionales",
-            "ℝ: reales"
+            "ℕ",
+            "ℤ",
+            "ℚ",
+            "ℝ",
+            "ℂ"
           ],
-          "id": "algebra-c1-t1-p1"
+          "topic": "Conjuntos numéricos"
         },
         {
-          "text": "Calcula la suma de los 15 primeros números naturales: 1 + 2 + 3 + … + 15.",
+          "id": "alg-uni-c1-b02",
+          "number": 2,
+          "text": "Usando la convención del libro, ¿cuál de las siguientes afirmaciones es verdadera?",
           "options": [
-            "105",
-            "115",
-            "120",
-            "225",
-            "240"
+            "√2 ∈ ℚ",
+            "0 ∈ ℕ",
+            "−3 ∈ ℕ",
+            "0 ∈ ℕ₀",
+            "1/2 ∈ ℤ"
           ],
-          "id": "algebra-c1-t1-p2"
+          "topic": "Naturales y cero"
         },
         {
-          "text": "Calcula 1 + 3 + 5 + … + 39.",
+          "id": "alg-uni-c1-b03",
+          "number": 3,
+          "text": "¿Cuál es el inverso aditivo (opuesto) de −9?",
           "options": [
-            "20",
-            "39",
-            "380",
-            "400",
-            "420"
+            "9",
+            "-1/9",
+            "0",
+            "-9",
+            "1/9"
           ],
-          "id": "algebra-c1-t1-p3"
+          "topic": "Inverso aditivo"
         },
         {
-          "text": "Ordena de menor a mayor los números −5; 3; 0; −8; 2.",
+          "id": "alg-uni-c1-b04",
+          "number": 4,
+          "text": "¿Cuál es el inverso multiplicativo de −5/8?",
           "options": [
-            "−8; −5; 0; 2; 3",
-            "−5; −8; 0; 2; 3",
-            "0; −8; −5; 2; 3",
-            "−8; 0; −5; 2; 3",
-            "3; 2; 0; −5; −8"
+            "-3/8",
+            "5/8",
+            "8/5",
+            "-5/8",
+            "-8/5"
           ],
-          "id": "algebra-c1-t1-p4"
+          "topic": "Recíproco"
         },
         {
-          "text": "Calcula 6 − 2[3 − (−4)] + 18 ÷ (−3).",
+          "id": "alg-uni-c1-b05",
+          "number": 5,
+          "text": "Calcula 7 − 3(2 − 5).",
           "options": [
-            "−2",
-            "2",
-            "14",
-            "−8",
-            "−14"
+            "4",
+            "10",
+            "16",
+            "-16",
+            "-2"
           ],
-          "id": "algebra-c1-t1-p5"
-        }
-      ]
-    },
-    {
-      "id": "efd51fa2-ad7d-5dc1-b193-f127643ee652",
-      "title": "02 · Operaciones con racionales",
-      "subject": "Álgebra · Capítulo 1",
-      "instructions": "Sección 3; libro, pp. 20–25 (PDF, pp. 13–18).\nTarea 2 de 3 · Práctica. Actividad adaptada al contenido del PDF; no reproduce todo el banco de ejercicios.\nMarca una alternativa por pregunta y adjunta fotos o un PDF con tu desarrollo. Explica las clasificaciones y muestra tus operaciones. Usamos ℕ = {1; 2; 3; …}.",
-      "due": "",
-      "published": true,
-      "questions": [
-        {
-          "text": "Calcula 3/4 + 5/6 y expresa el resultado como una fracción irreductible.",
-          "options": [
-            "8/10",
-            "19/12",
-            "19/24",
-            "4/5",
-            "9/12"
-          ],
-          "id": "algebra-c1-t2-p1"
+          "topic": "Operaciones con enteros"
         },
         {
-          "text": "Calcula 7/5 − 3/10.",
+          "id": "alg-uni-c1-b06",
+          "number": 6,
+          "text": "Calcula 2/3 + 1/6 y expresa el resultado en su forma irreductible.",
           "options": [
-            "4/5",
-            "1/2",
-            "11/10",
-            "4/15",
-            "17/10"
-          ],
-          "id": "algebra-c1-t2-p2"
-        },
-        {
-          "text": "Calcula (−3/7) × (14/9).",
-          "options": [
-            "−2/3",
-            "2/3",
-            "−6/7",
-            "−3/2",
-            "−1/3"
-          ],
-          "id": "algebra-c1-t2-p3"
-        },
-        {
-          "text": "Calcula (5/8) ÷ (−15/4).",
-          "options": [
-            "1/6",
-            "−3/2",
-            "−75/32",
-            "−1/6",
-            "−2/3"
-          ],
-          "id": "algebra-c1-t2-p4"
-        },
-        {
-          "text": "Calcula [1 − (2/3)] ÷ [(3/4) − (1/2)].",
-          "options": [
-            "1/12",
-            "3/4",
+            "5/6",
+            "3/2",
+            "7/6",
             "1/3",
-            "1",
-            "4/3"
+            "1/2"
           ],
-          "id": "algebra-c1-t2-p5"
+          "topic": "Suma de fracciones"
+        },
+        {
+          "id": "alg-uni-c1-b07",
+          "number": 7,
+          "text": "Calcula 7/8 − 1/4.",
+          "options": [
+            "7/4",
+            "3/8",
+            "5/8",
+            "3/4",
+            "1/2"
+          ],
+          "topic": "Resta de fracciones"
+        },
+        {
+          "id": "alg-uni-c1-b08",
+          "number": 8,
+          "text": "Calcula (−3/5) × (10/9).",
+          "options": [
+            "-6/5",
+            "-2/3",
+            "2/3",
+            "-3/2",
+            "-1/3"
+          ],
+          "topic": "Producto de fracciones"
+        },
+        {
+          "id": "alg-uni-c1-b09",
+          "number": 9,
+          "text": "Expresa el decimal exacto 0,375 como una fracción irreductible.",
+          "options": [
+            "5/8",
+            "7/20",
+            "1/4",
+            "3/4",
+            "3/8"
+          ],
+          "topic": "Decimal exacto"
+        },
+        {
+          "id": "alg-uni-c1-b10",
+          "number": 10,
+          "text": "¿Cuál de estos números es un imaginario puro no nulo?",
+          "options": [
+            "−4 + 0i",
+            "0 + 0i",
+            "3 + 2i",
+            "0 − 6i",
+            "7 + 0i"
+          ],
+          "topic": "Introducción a los complejos"
         }
       ]
     },
     {
-      "id": "782654a9-cb80-51e3-be7b-bb2cd0952b48",
-      "title": "03 · Reales, propiedades y aplicaciones",
+      "id": "algebra-uni-c1-intermedio",
+      "title": "Nivel intermedio · 10 problemas",
+      "courseId": "algebra",
+      "chapterId": "algebra-uni-c1",
+      "level": "intermedio",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Secciones 4 y 5 y aplicaciones; libro, pp. 25–45 (PDF, pp. 18–38).\nTarea 3 de 3 · Integración. Actividad adaptada al contenido del PDF; no reproduce todo el banco de ejercicios.\nMarca una alternativa por pregunta y adjunta fotos o un PDF con tu desarrollo. Explica las clasificaciones y muestra tus operaciones. Usamos ℕ = {1; 2; 3; …}.",
+      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y adjunta el solucionario en el espacio del problema correspondiente. Las actividades son originales y están adaptadas al alcance del capítulo 1 del PDF. Se usa ℕ = {1; 2; 3; …}.",
       "due": "",
       "published": true,
       "questions": [
         {
-          "text": "¿Cuál de los siguientes números es irracional?",
+          "id": "alg-uni-c1-i01",
+          "number": 1,
+          "text": "¿Cuántos de los siguientes números son racionales? −3; 0; 2; 3/4; √9; √5; 0,121212… (el bloque 12 se repite indefinidamente).",
           "options": [
-            "−5",
-            "0,125",
-            "√49",
-            "√7",
-            "2/3"
+            "7",
+            "3",
+            "4",
+            "5",
+            "6"
           ],
-          "id": "algebra-c1-t3-p1"
+          "topic": "Racionales e irracionales"
         },
         {
-          "text": "¿Cuáles son, respectivamente, el inverso aditivo y el inverso multiplicativo de −3/5?",
+          "id": "alg-uni-c1-i02",
+          "number": 2,
+          "text": "Indica la secuencia V/F. I. El producto de dos irracionales siempre es irracional. II. El producto de un racional no nulo y un irracional es irracional. III. Todo real es racional.",
           "options": [
-            "−3/5 y 5/3",
-            "3/5 y −5/3",
-            "5/3 y 3/5",
-            "3/5 y 5/3",
-            "−5/3 y 3/5"
+            "VVF",
+            "FVF",
+            "VFF",
+            "FFV",
+            "FFF"
           ],
-          "id": "algebra-c1-t3-p2"
+          "topic": "Propiedades de los conjuntos"
         },
         {
-          "text": "Aplica la propiedad distributiva y simplifica 3(x + 4) − 2x.",
+          "id": "alg-uni-c1-i03",
+          "number": 3,
+          "text": "Convierte a fracción irreductible 0,26666…; solo el dígito 6 se repite indefinidamente.",
           "options": [
-            "x + 12",
-            "x + 4",
-            "5x + 12",
-            "3x + 2",
-            "x − 12"
+            "8/25",
+            "1/3",
+            "2/9",
+            "4/15",
+            "13/45"
           ],
-          "id": "algebra-c1-t3-p3"
+          "topic": "Decimal periódico mixto"
         },
         {
-          "text": "Una botella contiene 3/4 de litro. Se consume la quinta parte de su contenido. ¿Cuántos litros quedan?",
+          "id": "alg-uni-c1-i04",
+          "number": 4,
+          "text": "Calcula (3/4 − 1/6) ÷ (7/8 + 1/4).",
           "options": [
-            "1/5 de litro",
-            "3/20 de litro",
-            "1/2 de litro",
-            "4/5 de litro",
-            "3/5 de litro"
+            "14/27",
+            "27/14",
+            "7/12",
+            "2/3",
+            "7/27"
           ],
-          "id": "algebra-c1-t3-p4"
+          "topic": "Operaciones combinadas"
         },
         {
-          "text": "Calcula 1/(1×2) + 1/(2×3) + 1/(3×4) + 1/(4×5).",
+          "id": "alg-uni-c1-i05",
+          "number": 5,
+          "text": "Calcula 2 − 1 / [1 − 1 / (2 − 1/2)].",
           "options": [
+            "3",
+            "-3",
+            "-1",
+            "1",
+            "2"
+          ],
+          "topic": "Fracciones anidadas"
+        },
+        {
+          "id": "alg-uni-c1-i06",
+          "number": 6,
+          "text": "Calcula (1/2 + 1/3) ÷ (1/2 − 1/3).",
+          "options": [
+            "6",
             "1/5",
+            "2",
+            "3",
+            "5"
+          ],
+          "topic": "División de fracciones"
+        },
+        {
+          "id": "alg-uni-c1-i07",
+          "number": 7,
+          "text": "Calcula S = 1/(1×2) + 1/(2×3) + 1/(3×4) + 1/(4×5) + 1/(5×6).",
+          "options": [
+            "5/6",
+            "1/6",
+            "2/3",
             "3/4",
-            "4/5",
-            "5/4",
+            "4/5"
+          ],
+          "topic": "Suma telescópica"
+        },
+        {
+          "id": "alg-uni-c1-i08",
+          "number": 8,
+          "text": "Se define Sₙ = 1 + 2 + … + n. Calcula S₁ + S₂ + S₃ + S₄ + S₅.",
+          "options": [
+            "15",
+            "25",
+            "30",
+            "35",
+            "40"
+          ],
+          "topic": "Sumas sucesivas"
+        },
+        {
+          "id": "alg-uni-c1-i09",
+          "number": 9,
+          "text": "¿Qué expresión equivale a 4(2x − 3) − 3(x − 5) para todo número real x?",
+          "options": [
+            "11·x - 27",
+            "5·x + 3",
+            "5·x - 27",
+            "11·x + 3",
+            "5·x - 3"
+          ],
+          "topic": "Simplificación algebraica"
+        },
+        {
+          "id": "alg-uni-c1-i10",
+          "number": 10,
+          "text": "Sea z = (t − 2) + (t + 1)i, con t real. ¿Qué valor de t hace que z sea un número real?",
+          "options": [
+            "2",
+            "-2",
+            "-1",
+            "0",
             "1"
           ],
-          "id": "algebra-c1-t3-p5"
+          "topic": "Complejos reales"
+        }
+      ]
+    },
+    {
+      "id": "algebra-uni-c1-avanzado",
+      "title": "Nivel avanzado · 10 problemas",
+      "courseId": "algebra",
+      "chapterId": "algebra-uni-c1",
+      "level": "avanzado",
+      "subject": "Álgebra · Capítulo 1",
+      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y adjunta el solucionario en el espacio del problema correspondiente. Las actividades son originales y están adaptadas al alcance del capítulo 1 del PDF. Se usa ℕ = {1; 2; 3; …}.",
+      "due": "",
+      "published": true,
+      "questions": [
+        {
+          "id": "alg-uni-c1-a01",
+          "number": 1,
+          "text": "Calcula E = 3 − 1 / {2 − [(1/2 − 1/3) ÷ (3/4 + 1/6)]}.",
+          "options": [
+            "29/20",
+            "5/2",
+            "49/20",
+            "51/20",
+            "20/49"
+          ],
+          "topic": "Operaciones anidadas"
+        },
+        {
+          "id": "alg-uni-c1-a02",
+          "number": 2,
+          "text": "Calcula (0,83333… − 0,125) ÷ (0,16666… + 0,25). En los decimales periódicos se repiten, respectivamente, solo 3 y solo 6.",
+          "options": [
+            "17/10",
+            "19/10",
+            "3/2",
+            "7/10",
+            "10/17"
+          ],
+          "topic": "Decimales y operaciones"
+        },
+        {
+          "id": "alg-uni-c1-a03",
+          "number": 3,
+          "text": "Calcula S = 1/(1×3) + 1/(3×5) + 1/(5×7) + … + 1/(15×17).",
+          "options": [
+            "16/17",
+            "8/15",
+            "17/8",
+            "4/17",
+            "8/17"
+          ],
+          "topic": "Telescópica con diferencia 2"
+        },
+        {
+          "id": "alg-uni-c1-a04",
+          "number": 4,
+          "text": "Si Sₙ = 1 + 2 + … + n, calcula S₁ + S₂ + … + S₁₂.",
+          "options": [
+            "312",
+            "364",
+            "650",
+            "78",
+            "286"
+          ],
+          "topic": "Sumas acumuladas"
+        },
+        {
+          "id": "alg-uni-c1-a05",
+          "number": 5,
+          "text": "Simplifica E = [3 + 1/(x − 2)] ÷ [1 − 4/(3x − 1)], para x ≠ 2, x ≠ 1/3 y x ≠ 5/3.",
+          "options": [
+            "(3·x - 5)/(x - 2)",
+            "(3·x + 1)/(x - 2)",
+            "(3·x - 1)/(x + 2)",
+            "(3·x - 1)/(x - 2)",
+            "(x - 2)/(3·x - 1)"
+          ],
+          "topic": "Expresiones racionales y dominio"
+        },
+        {
+          "id": "alg-uni-c1-a06",
+          "number": 6,
+          "text": "Sean P = 4 − 3/x y Q = x/(4x − 3) + 2x/(4x − 3) + 4x/(4x − 3), con x ≠ 0 y x ≠ 3/4. Calcula P·Q.",
+          "options": [
+            "4",
+            "7",
+            "7·x",
+            "4·x - 3",
+            "1"
+          ],
+          "topic": "Producto y cancelación"
+        },
+        {
+          "id": "alg-uni-c1-a07",
+          "number": 7,
+          "text": "Resuelve 3x − 2[1 − (3 − x) + x/2] = 2(x − 1) + 5. Luego calcula 6x + 1.",
+          "options": [
+            "5",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "topic": "Ecuación con agrupaciones"
+        },
+        {
+          "id": "alg-uni-c1-a08",
+          "number": 8,
+          "text": "Despeja x en (x − a)/b = (x + b)/a. Supón a ≠ 0, b ≠ 0 y a ≠ b.",
+          "options": [
+            "a - b",
+            "a + b",
+            "(a² + b²)/(a - b)",
+            "(a² - b²)/(a - b)",
+            "(a² + b²)/(a + b)"
+          ],
+          "topic": "Despeje con parámetros"
+        },
+        {
+          "id": "alg-uni-c1-a09",
+          "number": 9,
+          "text": "Dos resistencias en paralelo cumplen 1/R = 1/R₁ + 1/R₂. Para R₁ = 4 Ω y R₂ = 12 Ω, elige el despeje correcto junto con el valor de R.",
+          "options": [
+            "R = R₁ + R₂; R = 16 Ω",
+            "R = R₁R₂; R = 48 Ω",
+            "R = (R₁ + R₂)/(R₁R₂); R = 1/3 Ω",
+            "R = R₁R₂/(R₁ + R₂); R = 3 Ω",
+            "R = R₁R₂/(R₂ − R₁); R = 6 Ω"
+          ],
+          "topic": "Despeje de una fórmula"
+        },
+        {
+          "id": "alg-uni-c1-a10",
+          "number": 10,
+          "text": "Sea z = (m² − 9) + (m + 3)i, con m real. ¿Qué valor de m hace que z sea un imaginario puro no nulo?",
+          "options": [
+            "3",
+            "9",
+            "-9",
+            "-3",
+            "0"
+          ],
+          "topic": "Clasificación con condiciones"
         }
       ]
     }

@@ -16,17 +16,19 @@ const identifier = v => {
 export function normalizeTask(input) {
   if (!object(input) || !Array.isArray(input.questions) || !input.questions.length || input.questions.length > 30) throw new Error('Cada tarea necesita entre 1 y 30 preguntas.');
   const ids = new Set();
-  const questions = input.questions.map(q => {
+  const questions = input.questions.map((q, index) => {
     if (!object(q) || !Array.isArray(q.options) || q.options.length < 2 || q.options.length > 5) throw new Error('Cada pregunta necesita de 2 a 5 alternativas.');
     const id = identifier(q.id);
     if (ids.has(id)) throw new Error('Hay preguntas repetidas.');
     ids.add(id);
-    return { id, text: text(q.text, 3000, 'Pregunta'), options: q.options.map(o => text(o, 800, 'Alternativa')) };
+    return { id, number: index+1, topic: typeof q.topic==='string'?q.topic.slice(0,120):'', text: text(q.text, 3000, 'Pregunta'), options: q.options.map(o => text(o, 800, 'Alternativa')) };
   });
   const due = input.due || '';
   if (typeof due !== 'string' || (due && (!/^\d{4}-\d{2}-\d{2}$/.test(due) || Number.isNaN(Date.parse(`${due}T12:00:00Z`)) || new Date(`${due}T12:00:00Z`).toISOString().slice(0,10) !== due))) throw new Error('Fecha no válida.');
   return {
     id: identifier(input.id), title: text(input.title, 160, 'Título'),
+    courseId: identifier(input.courseId || 'algebra'), chapterId: identifier(input.chapterId || 'algebra-uni-c1'),
+    level: ['basico','intermedio','avanzado'].includes(input.level)?input.level:'personalizado',
     subject: text(input.subject || 'Álgebra · Capítulo 1', 120, 'Curso'),
     instructions: text(input.instructions, 6000, 'Indicaciones'), due, published: input.published !== false,
     questions,
@@ -44,9 +46,9 @@ export function normalizeAnswers(task, input = {}) {
   return result;
 }
 export const answerCount = (task, answers = {}) => task.questions.filter(q => Number.isInteger(answers[q.id]) && answers[q.id] >= 0 && answers[q.id] < q.options.length).length;
-export const isReady = (task, draft, files) => answerCount(task, draft?.answers) === task.questions.length && files.length > 0;
+export const isReady = (task, draft, files) => answerCount(task, draft?.answers) === task.questions.length && task.questions.every(q=>files.some(f=>f.questionId===q.id));
 export function validateFiles(files) {
-  if (files.length > MAX_FILES) throw new Error('Puedes adjuntar hasta 10 archivos por tarea.');
+  if (files.length > MAX_FILES) throw new Error('Puedes adjuntar hasta 10 archivos por problema.');
   let total = 0;
   for (const file of files) {
     if (typeof file.name !== 'string' || !file.name.trim() || file.name.length > 240) throw new Error('El nombre del archivo no es válido.');
@@ -64,29 +66,35 @@ export function matchesSignature(bytes, type) {
   return type === 'image/webp' && starts([82, 73, 70, 70]) && [87, 69, 66, 80].every((n, i) => bytes[i + 8] === n);
 }
 export function validateSubmission(input) {
-  if (!object(input) || input.format !== 'fernando-entrega' || input.version !== 1) throw new Error('Este archivo no es una entrega de Fernando.');
+  if (!object(input) || input.format !== 'fernando-entrega' || ![1,2].includes(input.version)) throw new Error('Este archivo no es una entrega de Fernando.');
   const task = normalizeTask(input.task);
   const answers = normalizeAnswers(task, input.answers);
   if (answerCount(task, answers) !== task.questions.length) throw new Error('La entrega tiene preguntas sin responder.');
   if (!Array.isArray(input.files) || input.files.length === 0) throw new Error('La entrega no incluye el solucionario.');
-  validateFiles(input.files);
+  if(input.version===2) {
+    if(input.files.length>task.questions.length*10)throw new Error('La entrega tiene demasiados archivos.');
+    if(input.files.reduce((total,f)=>total+f.size,0)>MAX_TOTAL_SIZE)throw new Error('La copia supera 40 MB; conserva los adjuntos más pesados en Drive.');
+    for(const q of task.questions)validateFiles(input.files.filter(f=>f.questionId===q.id));
+    if(input.files.some(f=>!task.questions.some(q=>q.id===f.questionId)))throw new Error('Un adjunto no corresponde a ningún problema.');
+    if(!task.questions.every(q=>input.files.some(f=>f.questionId===q.id)))throw new Error('Falta el solucionario de algún problema.');
+  } else validateFiles(input.files);
   const files = input.files.map(file => {
     if (typeof file.data !== 'string' || file.data.length !== 4 * Math.ceil(file.size / 3) || /[^A-Za-z0-9+/=]/.test(file.data)) throw new Error('Un adjunto está dañado.');
     let decoded;
     try { decoded = atob(file.data); } catch { throw new Error('Un adjunto está dañado.'); }
     const bytes = Uint8Array.from(decoded, c => c.charCodeAt(0));
     if (bytes.length !== file.size || !matchesSignature(bytes, file.type)) throw new Error('El contenido de un adjunto no coincide con su tipo.');
-    return { name: file.name, type: file.type, size: file.size, data: file.data };
+    return { name: file.name, type: file.type, size: file.size, data: file.data, ...(input.version===2?{questionId:file.questionId}:{}) };
   });
   if (typeof input.createdAt !== 'string' || Number.isNaN(Date.parse(input.createdAt))) throw new Error('Fecha de entrega no válida.');
   if (input.note != null && (typeof input.note !== 'string' || input.note.length > 4000)) throw new Error('El comentario es demasiado largo.');
-  return {format: 'fernando-entrega', version: 1, id: identifier(input.id), createdAt: input.createdAt, task, answers, note: input.note || '', files};
+  return {format: 'fernando-entrega', version: input.version, id: identifier(input.id), createdAt: input.createdAt, task, answers, note: input.note || '', files};
 }
 export function publicCourse(course, tasks) {
   if (!Array.isArray(tasks) || tasks.length > 100) throw new Error('El curso admite hasta 100 tareas.');
   const normalized = tasks.map(normalizeTask);
   if (new Set(normalized.map(t => t.id)).size !== normalized.length) throw new Error('Hay tareas repetidas.');
-  return {schemaVersion: 1, lesson: course.lesson, tasks: normalized};
+  return {schemaVersion: 2, courses: Array.isArray(course.courses)?course.courses:[], lesson: course.lesson, tasks: normalized};
 }
 export function html(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));

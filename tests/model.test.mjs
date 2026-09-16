@@ -10,14 +10,17 @@ const file={name:'solucionario.pdf',type:'application/pdf',size:pdf.length,data:
 const answers=Object.fromEntries(task.questions.map(q=>[q.id,0]));
 const submission=()=>({format:'fernando-entrega',version:1,id:'test-submission',createdAt:'2026-09-16T00:00:00Z',task,answers,note:'Necesito revisar los signos.',files:[file]});
 
-test('course preserves the chapter, seven topics, three tasks and fifteen questions',()=>{
-  assert.equal(course.lesson.title,'Conjuntos numéricos');
-  assert.equal(course.lesson.topics.length,7);
-  assert.match(course.lesson.convention,/comienza en 1/);
+test('course preserves the chapter, 28 chapters, ten theory sections and thirty levelled questions',()=>{
+  assert.equal(course.lesson.title,'Introducción al álgebra');
+  assert.equal(course.courses[0].chapters.length,28);
+  assert.equal(course.courses[0].chapters.filter(c=>c.status==='active').length,1);
+  assert.equal(course.courses.length,4);
+  assert.equal(course.lesson.topics.length,10);
+  assert.match(course.lesson.convention,/empieza en 1/);
   assert.equal(course.tasks.length,3);
-  assert.equal(course.tasks.flatMap(t=>t.questions).length,15);
+  assert.equal(course.tasks.flatMap(t=>t.questions).length,30);
   assert.deepEqual(course.lesson.taskIds,course.tasks.map(t=>t.id));
-  for(const task of course.tasks) assert.equal(normalizeTask(task).questions.length,5);
+  for(const task of course.tasks) assert.equal(normalizeTask(task).questions.length,10);
 });
 test('public content omits answer keys, private solutions and arbitrary input fields',()=>{
   const input=structuredClone(task);
@@ -30,13 +33,14 @@ test('public content omits answer keys, private solutions and arbitrary input fi
 });
 test('only current, in-range integer answers count',()=>{
   const normalized=normalizeAnswers(task,{...answers,'removed-question':2});
-  assert.equal(Object.keys(normalized).length,5);
-  assert.equal(answerCount(task,normalized),5);
+  assert.equal(Object.keys(normalized).length,10);
+  assert.equal(answerCount(task,normalized),10);
   assert.equal(answerCount(task,{[task.questions[0].id]:99}),0);
   for(const invalid of [-1,5,0.5,'1',null]) assert.throws(()=>normalizeAnswers(task,{[task.questions[0].id]:invalid}));
 });
 test('a downloadable submission requires all answers plus a solution file',()=>{
-  assert.equal(isReady(task,{answers},[file]),true);
+  assert.equal(isReady(task,{answers},task.questions.map(q=>({...file,questionId:q.id}))),true);
+  assert.equal(isReady(task,{answers},[{...file,questionId:task.questions[0].id}]),false);
   assert.equal(isReady(task,{answers},[]),false);
   assert.equal(isReady(task,{answers:{}},[file]),false);
 });
@@ -61,6 +65,14 @@ test('submission round-trip preserves answers, comments and file bytes',()=>{
   assert.deepEqual({...result.answers},answers);
   assert.equal(result.note,'Necesito revisar los signos.');
   assert.deepEqual(Buffer.from(result.files[0].data,'base64'),pdf);
+});
+test('version two requires a valid solution association for every problem',()=>{
+  const input={...submission(),version:2,files:task.questions.map(q=>({...file,questionId:q.id}))};
+  const result=validateSubmission(input);
+  assert.deepEqual(result.files.map(f=>f.questionId),task.questions.map(q=>q.id));
+  assert.throws(()=>validateSubmission({...input,files:input.files.slice(1)}),/Falta el solucionario/);
+  assert.throws(()=>validateSubmission({...input,files:[...input.files,{...file,questionId:'other-problem'}]}),/ningún problema/);
+  assert.throws(()=>validateSubmission({...input,files:[...input.files,...Array(10).fill(input.files[0])]}),/10 archivos/);
 });
 test('import rejects incomplete, oversized, malformed and mismatched files',()=>{
   assert.throws(()=>validateSubmission({}));
