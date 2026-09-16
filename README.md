@@ -16,7 +16,7 @@ Las instrucciones y los enunciados son autónomos: no remiten al libro ni al PDF
 
 ## Curso y contenido
 
-La referencia actual es **ALGEBRA.pdf · Colección Compendios Académicos UNI · Lumbreras Editores**. El temario conserva sus **28 capítulos**, con referencias a la página impresa y a la página del PDF. Solo está desarrollado el capítulo 1, **Introducción al álgebra**: libro pp. 9–18, PDF pp. 4–13.
+La referencia actual es **ALGEBRA.pdf · Colección Compendios Académicos UNI · Lumbreras Editores**. El temario conserva sus **28 capítulos**. Las referencias bibliográficas se conservan en los datos del curso y no se muestran en la web. Solo está desarrollado el capítulo 1, **Introducción al álgebra**: libro pp. 9–18, PDF pp. 4–13.
 
 - Diez apartados teóricos con explicaciones, fórmulas, ejemplos resueltos y recomendaciones: conjuntos numéricos, inversos, decimales, números complejos, operaciones, sumas telescópicas y despejes.
 - **30 problemas originales adaptados al contenido**: 10 básicos, 10 intermedios y 10 avanzados, con cinco alternativas por pregunta.
@@ -34,6 +34,15 @@ Las 30 carpetas ya existen, organizadas por curso, capítulo, nivel y problema. 
 **Los permisos públicos deben configurarse en Drive.** La conexión disponible permite organizar carpetas, pero no activar «Cualquier persona con el enlace» para carpetas. [Pasos para compartir todas desde la carpeta principal](integrations/google-drive/README.md).
 
 El material del profesor está separado de las entregas, en la carpeta privada **Fernando - Material del profesor** de Mi unidad. Así no hereda los permisos de la carpeta del aula.
+
+## Tareas en secuencia y avance
+
+- Se muestra una pregunta a la vez. La siguiente solo se habilita después de guardar una alternativa de la actual; no se exige acertar ni subir un archivo para avanzar.
+- Los botones numerados permiten revisar y cambiar respuestas anteriores. Las preguntas posteriores al primer hueco quedan bloqueadas, incluso si había respuestas dispersas de una versión anterior; esas respuestas se conservan.
+- Al volver a una tarea o recargar la web, se abre la primera pregunta pendiente. Si todas están respondidas, se abre la última para revisarlas.
+- Cada alternativa se guarda automáticamente en IndexedDB. Las tarjetas y el detalle muestran cuántas preguntas están respondidas y su porcentaje; el panel de Padres utiliza esos mismos datos.
+- Una pregunta solo desbloquea la siguiente cuando el guardado termina correctamente. Si falla, se conserva el estado anterior y se muestra el error.
+- Se conservan las respuestas y comentarios previos. El avance corresponde a este navegador; para otros equipos se mantiene el informe descargable.
 
 ## Respuestas y revisión
 

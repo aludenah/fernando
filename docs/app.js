@@ -1,4 +1,5 @@
 import {all, put, write, openDatabase} from './store.js';
+import {hasAnswer, questionSequence, canOpenQuestion} from './sequence.js';
 import {html as h, normalizeTask, normalizeAnswers, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js';
 import {courseCatalog, courseOutline} from './course-views.js';
 import {accessView,parentsView,studentReportPanel} from './family-views.js';
@@ -7,7 +8,7 @@ import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from
 const app = document.querySelector('#app');
 const message = document.querySelector('#message');
 const letters = ['A', 'B', 'C', 'D', 'E'];
-const state = {role:null,pendingRoute:null,parentReport:null,parentSource:'local',theoryUpdatedAt:null,course: null, drive:{problems:{}}, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
+const state = {activeTask:null,questionIndex:0,role:null,pendingRoute:null,parentReport:null,parentSource:'local',theoryUpdatedAt:null,course: null, drive:{problems:{}}, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
 const icons = {
   book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',
   arrow: '<path d="m9 18 6-6-6-6"/>',
@@ -29,7 +30,7 @@ const formatTime = date => new Date(date).toLocaleString('es-PE', {dateStyle:'me
 const taskName = task => task.title.replace(/^\d+ · /, '');
 const status = task => {
   const draft = draftFor(task.id);
-  if (draft.preparedAt) return ['prepared', 'Copia preparada'];
+  if (answersReady(task,draft)) return ['prepared', 'Respondida'];
   return answerCount(task, draft.answers) || filesFor(task.id).length ? ['progress', 'En progreso'] : ['', 'Pendiente'];
 };
 function notify(text, error = false) {
@@ -50,8 +51,8 @@ function heading() {
   <div class="stats"><div><span class="stat-icon blue">${icon('book')}</span><div><strong>${state.course.lesson.topics.length}</strong><span>Temas para aprender</span></div></div><div><span class="stat-icon amber">${icon('clock')}</span><div><strong>${tasks.length}</strong><span>Tareas de práctica</span></div></div><div><span class="stat-icon green">${icon('check')}</span><div><strong>${answered}<small> / ${tasks.reduce((n,t)=>n+t.questions.length,0)}</small></strong><span>Respuestas marcadas</span></div></div></div>`;
 }
 function taskCard(task, index, teacher = false) {
-  const [cls, label] = status(task);
-  return `<a class="task-card" href="#tarea/${h(task.id)}"><span class="task-index">${String(index + 1).padStart(2, '0')}</span><div class="task-content"><div class="task-tags"><span class="subject">${h(task.subject)}</span><span class="badge ${cls}">${h(label)}</span>${isLocal(task.id) ? '<span class="badge">Cambios locales</span>' : ''}${!task.published ? '<span class="badge">Borrador</span>':''}</div><h3>${h(task.title)}</h3><div class="task-meta"><span>${task.questions.length} preguntas</span><span>${h(formatDate(task.due))}</span>${teacher ? '<span>Ver y editar</span>' : ''}</div></div>${icon('arrow')}</a>`;
+  const [cls, label] = status(task), sequence = questionSequence(task,draftFor(task.id).answers);
+  return `<a class="task-card" href="#tarea/${h(task.id)}"><span class="task-index">${String(index + 1).padStart(2, '0')}</span><div class="task-content"><div class="task-tags"><span class="subject">${h(task.subject)}</span><span class="badge ${cls}">${h(label)}</span>${isLocal(task.id) ? '<span class="badge">Cambios locales</span>' : ''}${!task.published ? '<span class="badge">Borrador</span>':''}</div><h3>${h(task.title)}</h3><div class="task-meta"><span>${task.questions.length} preguntas</span><span>${h(formatDate(task.due))}</span>${teacher ? '<span>Ver y editar</span>' : ''}</div><div class="task-card-progress"><span>${sequence.answered} de ${sequence.total} respuestas · ${sequence.percent}%</span><span>${sequence.complete?'Revisar respuestas':`Continuar en la pregunta ${sequence.resumeAt+1}`}</span><progress max="${sequence.total}" value="${sequence.answered}" aria-label="Avance de ${h(task.title)}"></progress></div></div>${icon('arrow')}</a>`;
 }
 function renderCourse() {
   const lesson = state.course.lesson;
@@ -59,8 +60,8 @@ function renderCourse() {
   return `${heading()}${nav('curso')}
   <section class="chapter-heading"><div><p class="eyebrow">TU PRIMER CAPÍTULO</p><h2>${h(lesson.title)}</h2><p>Comprende los números y opera con seguridad, paso a paso.</p></div>${first ? `<a class="button" href="#tarea/${h(first.id)}">Empezar a practicar ${icon('arrow',18)}</a>`:''}</section>
   <div class="course-layout"><div><section class="panel course-objectives"><h2>Lo que aprenderemos</h2><ul>${lesson.objectives.map(o => `<li>${icon('check',18)}<span>${h(o)}</span></li>`).join('')}</ul><p class="course-convention">${h(lesson.convention)}</p></section>
-  <section class="panel chapter-guide"><div class="section-heading"><h2>Guía para la clase</h2><span>${state.learned.length} / ${lesson.topics.length} repasados</span></div>${lesson.topics.map((topic, i) => `<details class="topic" ${i === 0 ? 'open':''}><summary><span>${h(topic.title)}</span>${state.learned.includes(topic.id) ? `<span class="topic-check">${icon('check',17)}<span class="sr-only">Repasado</span></span>`:''}</summary><div class="topic-body"><p class="topic-concept">${h(topic.concept)}</p><ul class="formula-list">${topic.formulas.map(f=>`<li>${h(f)}</li>`).join('')}</ul><div class="worked-example"><strong>Veámoslo paso a paso</strong><p class="prewrap">${h(topic.example)}</p></div><p class="topic-tip"><strong>Recuerda:</strong> ${h(topic.tip)}</p><div class="topic-footer"><p class="source-note">${h(topic.pages)}</p><label class="learned"><input type="checkbox" data-topic="${h(topic.id)}" ${state.learned.includes(topic.id)?'checked':''} ${!state.storage?'disabled':''}>Tema repasado</label></div></div></details>`).join('')}</section></div>
-  <aside class="course-sequence"><section class="panel"><p class="eyebrow">DEL CONCEPTO A LA PRÁCTICA</p><h2>Tareas del capítulo</h2><p>Resuelve una tarea a la vez. Muestra cómo llegaste a cada respuesta.</p>${state.tasks.filter(t=>t.published).map((task,i)=>`<a class="chapter-task" href="#tarea/${h(task.id)}"><span class="chapter-step">${i+1}</span><span><strong>${h(taskName(task))}</strong><small>${task.questions.length} preguntas · ${h(status(task)[1])}</small></span>${icon('arrow',17)}</a>`).join('')}</section><div class="study-note"><span>UNA BUENA COSTUMBRE</span><h2>El desarrollo<br>también cuenta.</h2><p>Escribe cada paso, revisa los signos y comprueba tu resultado.</p><div class="math-mark" aria-hidden="true">ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ</div></div><p class="source-note">${h(lesson.source)}</p><p class="source-note">Guía resumida y ejercicios adaptados al PDF. La numeración del libro es distinta a la del archivo.</p></aside></div>${storageNote()}`;
+  <section class="panel chapter-guide"><div class="section-heading"><h2>Guía para la clase</h2><span>${state.learned.length} / ${lesson.topics.length} repasados</span></div>${lesson.topics.map((topic, i) => `<details class="topic" ${i === 0 ? 'open':''}><summary><span>${h(topic.title)}</span>${state.learned.includes(topic.id) ? `<span class="topic-check">${icon('check',17)}<span class="sr-only">Repasado</span></span>`:''}</summary><div class="topic-body"><p class="topic-concept">${h(topic.concept)}</p><ul class="formula-list">${topic.formulas.map(f=>`<li>${h(f)}</li>`).join('')}</ul><div class="worked-example"><strong>Veámoslo paso a paso</strong><p class="prewrap">${h(topic.example)}</p></div><p class="topic-tip"><strong>Recuerda:</strong> ${h(topic.tip)}</p><div class="topic-footer"><label class="learned"><input type="checkbox" data-topic="${h(topic.id)}" ${state.learned.includes(topic.id)?'checked':''} ${!state.storage?'disabled':''}>Tema repasado</label></div></div></details>`).join('')}</section></div>
+  <aside class="course-sequence"><section class="panel"><p class="eyebrow">DEL CONCEPTO A LA PRÁCTICA</p><h2>Tareas del capítulo</h2><p>Resuelve una tarea a la vez. Muestra cómo llegaste a cada respuesta.</p>${state.tasks.filter(t=>t.published).map((task,i)=>`<a class="chapter-task" href="#tarea/${h(task.id)}"><span class="chapter-step">${i+1}</span><span><strong>${h(taskName(task))}</strong><small>${task.questions.length} preguntas · ${h(status(task)[1])}</small></span>${icon('arrow',17)}</a>`).join('')}</section><div class="study-note"><span>UNA BUENA COSTUMBRE</span><h2>El desarrollo<br>también cuenta.</h2><p>Escribe cada paso, revisa los signos y comprueba tu resultado.</p><div class="math-mark" aria-hidden="true">ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ</div></div></aside></div>${storageNote()}`;
 }
 function renderTasks() {
   const tasks = state.tasks.filter(t=>t.published);
@@ -74,13 +75,45 @@ function questionWork(task,question) {
   const folder=state.drive.problems[question.id];
   return `<div class="problem-work">${folder?`<a class="button" href="${h(folder.folderUrl)}" target="_blank" rel="noopener noreferrer">Subir al Drive</a>`:'<button class="button" disabled title="El profesor debe asignar una carpeta a este problema.">Subir al Drive</button>'}</div>`;
 }
+function questionSteps(task) {
+  const draft=draftFor(task.id);
+  return task.questions.map((question,index)=>{
+    const available=canOpenQuestion(task,draft.answers,index),answered=hasAnswer(question,draft.answers),current=index===state.questionIndex;
+    const label=`Pregunta ${index+1}${!available?', bloqueada: responde las anteriores':answered?', respondida':', pendiente'}`;
+    return `<button type="button" class="question-step ${answered?'answered':''}" data-action="question-go" data-id="${index}" aria-label="${h(label)}" title="${h(label)}" ${current?'aria-current="step"':''} ${!available?'disabled':''}>${index+1}${answered?'<span aria-hidden="true">✓</span>':''}</button>`;
+  }).join('');
+}
+function questionNavigation(task) {
+  const index=state.questionIndex, draft=draftFor(task.id),last=index===task.questions.length-1;
+  return `<button class="button secondary" data-action="question-go" data-id="${index-1}" ${index===0?'disabled':''}>← Anterior</button>${last?`<a class="button" href="#tareas">Ver mis tareas</a>`:`<button class="button" data-action="question-go" data-id="${index+1}" ${!canOpenQuestion(task,draft.answers,index+1)?'disabled':''}>Siguiente pregunta →</button>`}`;
+}
+function questionSaveText(task) {
+  if(!state.storage)return 'No se puede guardar el avance en este navegador.';
+  const draft=draftFor(task.id),question=task.questions[state.questionIndex];
+  if(hasAnswer(question,draft.answers))return answersReady(task,draft)?'Todas tus respuestas están guardadas. Puedes revisarlas cuando quieras.':'Respuesta guardada. Ya puedes pasar a la siguiente pregunta.';
+  return state.questionIndex===task.questions.length-1?'Marca una alternativa para completar la tarea.':'Marca una alternativa para habilitar la siguiente pregunta.';
+}
+function renderQuestionStage(task) {
+  const index=state.questionIndex,question=task.questions[index],draft=draftFor(task.id);
+  return `<section class="panel sequence-panel"><div class="section-heading"><h2 id="question-heading" tabindex="-1">Pregunta ${index+1} de ${task.questions.length}</h2><span>PASO A PASO</span></div><p>Marca una respuesta para continuar. Puedes volver a las preguntas anteriores y revisarlas.</p><nav id="question-steps" class="question-steps" aria-label="Preguntas de la tarea">${questionSteps(task)}</nav></section>
+  <fieldset class="panel question-card" id="problem-${h(question.id)}"><legend><span class="question-number">${String(index+1).padStart(2,'0')}</span><span>${h(question.text)}</span></legend><div class="options">${question.options.map((option,i)=>`<label class="answer-option ${draft.answers[question.id]===i?'selected':''}"><input type="radio" name="${h(question.id)}" value="${i}" data-answer="${h(question.id)}" data-task="${h(task.id)}" ${draft.answers[question.id]===i?'checked':''} ${!state.storage?'disabled':''}><span class="option-letter">${letters[i]}</span><span>${h(option)}</span></label>`).join('')}</div><div id="work-${h(question.id)}">${questionWork(task,question)}</div><p id="question-save-status" class="save-status" aria-live="polite">${questionSaveText(task)}</p></fieldset>
+  <div class="question-navigation" id="question-navigation">${questionNavigation(task)}</div>`;
+}
+function updateQuestionControls(task) {
+  if(!document.querySelector('#question-stage'))return;
+  document.querySelector('#question-steps').innerHTML=questionSteps(task);
+  document.querySelector('#question-navigation').innerHTML=questionNavigation(task);
+  document.querySelector('#question-save-status').textContent=questionSaveText(task);
+}
 function renderTask(task) {
-  const draft = draftFor(task.id), count = answerCount(task, draft.answers);
-  return `<a class="back" href="#tareas">← Volver a mis tareas</a><div class="page-heading"><div><p class="eyebrow">${h(task.subject)}</p><h1>${h(taskName(task))}</h1><p>${task.questions.length} preguntas · ${h(formatDate(task.due))}</p></div>${state.role==='parent'?`<button class="button secondary" data-action="edit-task" data-id="${h(task.id)}">Editar tarea</button>`:''}</div>${isLocal(task.id)?'<p class="local-edit-notice">Esta versión tiene cambios guardados únicamente en este dispositivo.</p>':''}${storageNote()}
-  <div class="detail-layout"><div><section class="panel"><h2>Antes de empezar</h2><p class="prewrap instructions">${h(task.instructions)}</p></section>
-  ${task.questions.map((question,index)=>`<fieldset class="panel question-card" id="problem-${h(question.id)}"><legend><span class="question-number">${String(index+1).padStart(2,'0')}</span><span>${h(question.text)}</span></legend><div class="options">${question.options.map((option,i)=>`<label class="answer-option ${draft.answers[question.id]===i?'selected':''}"><input type="radio" name="${h(question.id)}" value="${i}" data-answer="${h(question.id)}" data-task="${h(task.id)}" ${draft.answers[question.id]===i?'checked':''} ${!state.storage?'disabled':''}><span class="option-letter">${letters[i]}</span><span>${h(option)}</span></label>`).join('')}</div><div id="work-${h(question.id)}">${questionWork(task,question)}</div></fieldset>`).join('')}
-  <section class="panel"><h2>Mi comentario sobre este nivel</h2><label class="field-label" for="student-note">¿Qué necesitas repasar?</label><textarea id="student-note" data-task="${h(task.id)}" rows="3" maxlength="4000" placeholder="Anota una duda para la próxima clase." ${!state.storage?'disabled':''}>${h(draft.note)}</textarea><p id="save-status" class="save-status" aria-live="polite">${state.storage?'Respuestas guardadas en este dispositivo.':'No se puede guardar en este navegador.'}</p></section></div>
-  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Prepara tu trabajo</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><button class="button secondary full" data-action="export-progress" ${!state.storage?'disabled':''}>Informe para mis padres</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>En Drive, usa «Nuevo → Subir archivo» y comprueba que aparezca tu foto o PDF. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section><div class="quiet-tip"><strong>Revisa antes de terminar</strong><p>¿Marcaste una alternativa por pregunta? ¿Se leen bien tus fotos? ¿Incluiste tus operaciones?</p></div></aside></div>`;
+  const draft = draftFor(task.id), sequence=questionSequence(task,draft.answers),count=sequence.answered;
+  if(state.activeTask!==task.id){state.activeTask=task.id;state.questionIndex=sequence.resumeAt;}
+  if(!canOpenQuestion(task,draft.answers,state.questionIndex))state.questionIndex=sequence.resumeAt;
+  return `<a class="back" href="#tareas">← Volver a mis tareas</a><div class="page-heading"><div><p class="eyebrow">${h(task.subject)}</p><h1>${h(taskName(task))}</h1><p>${task.questions.length} preguntas · ${h(formatDate(task.due))}</p></div>${state.role==='parent'?`<button class="button secondary" data-action="edit-task" data-id="${h(task.id)}">Editar tarea</button>`:''}</div>${isLocal(task.id)?'<p class="local-edit-notice">Esta versión tiene cambios guardados únicamente en este dispositivo.</p>':''}
+  <div class="detail-layout"><div><details class="panel task-instructions"><summary>Indicaciones de la tarea</summary><p class="prewrap instructions">${h(task.instructions)}</p></details>
+  <div id="question-stage">${renderQuestionStage(task)}</div>
+  <section class="panel"><h2>Mi comentario sobre este nivel</h2><label class="field-label" for="student-note">¿Qué necesitas repasar?</label><textarea id="student-note" data-task="${h(task.id)}" rows="3" maxlength="4000" placeholder="Anota una duda para la próxima clase." ${!state.storage?'disabled':''}>${h(draft.note)}</textarea><p id="save-status" class="save-status" aria-live="polite">${state.storage?'El avance se guarda automáticamente en este navegador.':'No se puede guardar en este navegador.'}</p></section></div>
+  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Tu tarea, paso a paso</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><div class="progress-caption"><strong id="answer-percent">${sequence.percent}%</strong><span id="task-progress-state">${sequence.complete?'Todas las preguntas respondidas':`${sequence.total-count} preguntas pendientes`}</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="last-saved" class="save-status">${draft.updatedAt?`Último avance guardado: ${h(formatTime(draft.updatedAt))}`:'Tu avance se guardará al marcar una respuesta.'}</p><p class="resume-note">Al volver a esta tarea, continuarás desde la primera pregunta pendiente.</p><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><button class="button secondary full" data-action="export-progress" ${!state.storage?'disabled':''}>Informe para mis padres</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>Usa «Subir al Drive» y añade tu foto o PDF en la carpeta. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section></aside></div>`;
 }
 function renderTeacher() {
   return `<div class="page-heading"><div><p class="eyebrow">HERRAMIENTAS DEL PROFESOR</p><h1>Prepara la próxima clase.</h1><p>Crea tareas y revisa copias de trabajo desde este dispositivo.</p></div><button class="button" data-action="new-task" ${!state.storage?'disabled':''}>${icon('plus',18)} Nueva tarea</button></div>${nav('profesor')}
@@ -116,6 +149,7 @@ function audienceBar() {
 function route(focus = false) {
   if (!state.course) return;
   const [tab,id] = location.hash.slice(1).split('/');
+  if(tab!=='tarea'||id!==state.activeTask)state.activeTask=null;
   if(tab==='inicio'||!tab) {state.role=null;state.pendingRoute=null;}
   else if(tab==='padres') {state.role='parent';state.pendingRoute=null;}
   else if(tab==='estudiante') {
@@ -169,6 +203,7 @@ async function saveDraft(taskId, changes) {
   const draft = {...draftFor(taskId),...changes,preparedAt:null,updatedAt:new Date().toISOString()};
   await put('drafts',draft);
   state.drafts = [...state.drafts.filter(d=>d.id!==taskId),draft];
+  if(message.classList.contains('error'))notify('');
   updateProgress(taskId);
   if(location.hash===`#tarea/${taskId}`)updateProblemControls(taskId);
   const saved = location.hash===`#tarea/${taskId}` ? document.querySelector('#save-status') : null;
@@ -179,7 +214,12 @@ function updateProgress(id) {
   if(location.hash!==`#tarea/${id}`)return;
   const task=taskFor(id),draft=draftFor(id);
   if(!task||!document.querySelector('#answer-count')) return;
-  document.querySelector('#answer-count').textContent=answerCount(task,draft.answers);
+  const sequence=questionSequence(task,draft.answers);
+  document.querySelector('#answer-count').textContent=sequence.answered;
+  document.querySelector('#answer-percent').textContent=`${sequence.percent}%`;
+  document.querySelector('#task-progress-state').textContent=sequence.complete?'Todas las preguntas respondidas':`${sequence.total-sequence.answered} preguntas pendientes`;
+  document.querySelector('#last-saved').textContent=draft.updatedAt?`Último avance guardado: ${formatTime(draft.updatedAt)}`:'Tu avance se guardará al marcar una respuesta.';
+  updateQuestionControls(task);
   document.querySelector('#answer-progress').value=answerCount(task,draft.answers);
   document.querySelector('#export-submission').disabled=!state.storage||!answersReady(task,draft);
   document.querySelector('#ready-note').textContent=answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.';
@@ -214,6 +254,14 @@ function captureEditor() {
 }
 const blankQuestion=()=>({id:crypto.randomUUID(),text:'',options:['','','','','']});
 async function action(name,id) {
+  if(name==='question-go') {
+    const [tab,taskId]=location.hash.slice(1).split('/'),task=taskFor(taskId),index=Number(id);
+    if(tab!=='tarea'||!task||!canOpenQuestion(task,draftFor(taskId).answers,index))throw new Error('Marca las respuestas anteriores antes de continuar.');
+    state.questionIndex=index;
+    document.querySelector('#question-stage').innerHTML=renderQuestionStage(task);
+    const heading=document.querySelector('#question-heading');heading.focus({preventScroll:true});heading.scrollIntoView({block:'start'});
+    return;
+  }
   if(name==='export-progress') {
     await refresh();const report=currentProgress();
     downloadJSON(report,`fernando-avance-${report.generatedAt.slice(0,10)}.json`);
@@ -265,7 +313,12 @@ app.addEventListener('change',event=>{
   if(target.matches('[data-answer]')) {
     const {task:id,answer:questionId}=target.dataset, selected=Number(target.value);
     target.closest('.options').querySelectorAll('label').forEach(label=>label.classList.toggle('selected',label.querySelector('input').checked));
-    enqueue(async()=>{try{await saveDraft(id,{answers:{...draftFor(id).answers,[questionId]:selected}});}catch(error){if(location.hash===`#tarea/${id}`)route();throw error;}});
+    document.querySelector('#question-save-status').textContent='Guardando respuesta…';
+    enqueue(async()=>{try{
+      const task=taskFor(id),index=task?.questions.findIndex(q=>q.id===questionId),question=task?.questions[index];
+      if(!question||!canOpenQuestion(task,draftFor(id).answers,index)||!Number.isInteger(selected)||selected<0||selected>=question.options.length)throw new Error('Responde las preguntas en orden.');
+      await saveDraft(id,{answers:{...draftFor(id).answers,[questionId]:selected}});
+    }catch(error){if(location.hash===`#tarea/${id}`)route();throw error;}});
   }
   if(target.matches('[data-topic]')) {
     const id=target.dataset.topic,checked=target.checked;
