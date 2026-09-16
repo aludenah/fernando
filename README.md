@@ -1,18 +1,28 @@
-# Fernando · Aula de Matemáticas
+# Profesor Alex Ludeña · Matemáticas y Física
 
 Web de clases particulares publicada en **[GitHub Pages](https://aludenah.github.io/fernando/)**, desde `main` y la carpeta `/docs`. No requiere correo ni inicio de sesión. Los accesos privados se incorporarán más adelante.
 
-## Acceso de padres y estudiante
+## Accesos de Fernando, Josué y padres
 
-La portada permite elegir **Padres** o **Estudiante**, ambos libres y sin correo ni contraseña. Son vistas de la misma aula; no constituyen autenticación ni protección de acceso.
+La portada permite elegir **Padres**, **Fernando** o **Josué**, sin correo ni contraseña. Los perfiles separan los datos de trabajo; no son autenticación ni impiden que alguien abra el otro acceso.
 
-- Estudiante conserva la teoría, los 30 problemas, el guardado de respuestas y los botones **Subir al Drive**.
-- Padres muestra el avance real de Fernando: respuestas marcadas y pendientes, tareas respondidas, temas repasados, última actividad, comentarios y detalle de cada pregunta. Marcar una alternativa no significa que sea correcta ni que el solucionario esté entregado.
-- En el mismo navegador, ambas vistas usan los mismos datos. El panel recibe cambios entre pestañas y vuelve a consultar el avance al recuperar el foco o pulsar **Actualizar vista**.
-- Desde otro dispositivo se utiliza **Informe para mis padres**, disponible en el inicio de Estudiante y en la lista de tareas, incluso con tareas incompletas. El padre importa ese JSON con **Abrir informe del estudiante**. El informe indica su fecha y no se actualiza automáticamente; no sustituye las respuestas locales del alumno.
+- Fernando conserva la teoría, los 30 problemas, el guardado de respuestas y los botones **Subir al Drive**.
+- Padres permite elegir al alumno y muestra su avance real: respuestas marcadas y pendientes, tareas respondidas, temas repasados, última actividad, comentarios y detalle de cada pregunta. Marcar una alternativa no significa que sea correcta ni que el solucionario esté entregado.
+- En el mismo navegador, el alumno y sus padres consultan los mismos datos de ese perfil. El panel recibe cambios entre pestañas y vuelve a consultar el avance al recuperar el foco o pulsar **Actualizar vista**.
+- Desde otro dispositivo se utiliza **Informe para mis padres**, disponible en el inicio de cada alumno y en su lista de tareas, incluso con tareas incompletas. El padre importa ese JSON con **Abrir informe del estudiante**. El informe indica su fecha y no se actualiza automáticamente; no sustituye las respuestas locales del alumno.
 - La sincronización automática entre dispositivos requiere un servicio de almacenamiento compartido que esta versión estática no tiene. No se publican respuestas ni informes personales en GitHub.
 
 Las instrucciones y los enunciados son autónomos: no remiten al libro ni al PDF para resolver los problemas.
+
+## Josué · 4.º de primaria
+
+Su espacio contiene una ruta de nueve unidades para preparar concursos, empezando por **Números, patrones y estrategias**. La unidad 1 incluye diez temas explicados y treinta problemas propios: diez básicos, diez intermedios y diez avanzados. Las demás unidades están identificadas como próximas. Las referencias y categorías se comprobaron en las páginas oficiales de [CONAMAT](https://www.conamat.edu.pe/concurso/descarga/25_Bases_y_Temarios_Conamat_2026_Web_2.0.pdf), [Canguro Matemático Perú](https://canmatperu.com/) y [CONEMATE](https://grupo-mate.com/iv-concurso-nacional-escolar-de-matematica-2026/). La web no inscribe a los alumnos en esos concursos.
+
+- `docs/data/josue-course.json` contiene su plan, teoría y práctica.
+- `docs/data/josue-drive.json` contiene sus treinta carpetas de solucionarios, separadas de las de Fernando. La carpeta principal requiere activar en Drive **Cualquier persona con el enlace → Editor**; `publicAccessPending` registra esta tarea pendiente.
+- El parámetro `alumno=fernando` o `alumno=josue` selecciona el contenido y una base de datos independiente. Cada página conserva ese perfil durante todos sus guardados.
+- Fernando sigue usando `fernando-aula-github-v1` sin migrar ni borrar sus respuestas anteriores; Josué usa `josue-aula-github-v1`. Se separan respuestas, teoría, tareas editadas, archivos, informes y revisiones.
+- Los informes nuevos identifican al alumno con formato `aula-avance`, versión 2. Los informes antiguos `fernando-avance`, versión 1, siguen funcionando. Un informe de otro alumno se rechaza antes de guardarlo, indicando a qué perfil corresponde.
 
 ## Curso y contenido
 
@@ -76,12 +86,13 @@ Los archivos de `docs/vendor/katex` proceden del paquete oficial `katex@0.18.7`.
 Con Node 22 o superior y Python 3:
 
 ```sh
+npm ci
 npm test
 npm run check
 npm start
 ```
 
-Abre `http://localhost:4173`. La aplicación estática no tiene dependencias de paquetes ni necesita compilación. Las pruebas comprueban el contenido público y la compatibilidad de las copias de respuestas. El código y las pruebas de la antigua recepción con Apps Script se conservan como referencia, pero ya no se utilizan desde la web.
+Abre `http://localhost:4173`. La aplicación estática no necesita compilación. Las pruebas de aislamiento usan `fake-indexeddb` como dependencia de desarrollo. Las pruebas comprueban el contenido público y la compatibilidad de las copias de respuestas. El código y las pruebas de la antigua recepción con Apps Script se conservan como referencia, pero ya no se utilizan desde la web.
 
 | Ruta | Contenido |
 | --- | --- |

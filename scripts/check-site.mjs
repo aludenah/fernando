@@ -37,6 +37,25 @@ function validateMath(value) {
   } else if(value&&typeof value==='object')for(const child of Object.values(value))validateMath(child);
 }
 validateMath(content);
+const josue=JSON.parse(await readFile(resolve(root,'data/josue-course.json'),'utf8'));
+publicCourse(josue,josue.tasks);
+validateMath(josue);
+assert.equal(josue.courses[0].chapters.length,9);
+assert.equal(josue.lesson.topics.length,10);
+assert.deepEqual(josue.tasks.map(task=>task.questions.length),[10,10,10]);
+assert.deepEqual(josue.tasks.map(task=>task.level),['basico','intermedio','avanzado']);
+const allQuestionIds=new Set(questions.map(q=>q.id));
+const allFolders=new Set(Object.values(drive.problems).map(folder=>folder.folderId));
+const josueDrive=JSON.parse(await readFile(resolve(root,'data/josue-drive.json'),'utf8'));
+for(const task of josue.tasks)for(const q of task.questions){
+ assert.ok(!allQuestionIds.has(q.id),'Different students must not share question IDs.');allQuestionIds.add(q.id);
+ assert.equal(q.options.length,5);assert.equal(new Set(q.options).size,5);
+ const folder=josueDrive.problems[q.id];assert.ok(folder);
+ assert.ok(!allFolders.has(folder.folderId),'Every problem must own its Drive folder.');allFolders.add(folder.folderId);
+ assert.equal(folder.folderUrl,'https://drive.google.com/drive/folders/'+folder.folderId);
+}
+assert.doesNotMatch(JSON.stringify(josue),/"correct"|"solution"|@gmail\.com|appgprj_/);
+
 const css=await readFile(resolve(root,'vendor/katex/katex.min.css'),'utf8');
 for(const [,font] of css.matchAll(/url\(([^)]+)\)/g))await access(resolve(root,'vendor/katex',font));
-console.log(`Sitio comprobado: 28 capítulos, 30 problemas, 30 carpetas, ${expressions} expresiones LaTeX válidas y sus fuentes locales.`);
+console.log(`Sitio comprobado: 2 alumnos, 60 problemas, 60 carpetas, ${expressions} expresiones LaTeX válidas y sus fuentes locales.`);

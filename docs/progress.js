@@ -1,4 +1,5 @@
 import {normalizeTask, normalizeAnswers, answerCount} from './model.js';
+import {studentProfile} from './students.js';
 
 export const MAX_PROGRESS_FILE_SIZE = 2 * 1024 * 1024;
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -17,8 +18,10 @@ function date(value, optional=false) {
 }
 
 // A report is a snapshot for parents. Importing it never changes student drafts.
-export function validateProgressReport(input) {
-  if(!object(input)||input.format!=='fernando-avance'||input.version!==1||input.studentId!=='fernando')throw new Error('Selecciona un informe de avance de Fernando.');
+export function validateProgressReport(input,expectedStudentId=null) {
+  if(!object(input)||!((input.format==='fernando-avance'&&input.version===1&&input.studentId==='fernando')||(input.format==='aula-avance'&&input.version===2)))throw new Error('Selecciona un informe de avance del aula.');
+  const student=studentProfile(input.studentId);
+  if(expectedStudentId&&student.id!==expectedStudentId)throw new Error(`Este informe pertenece a ${student.name}. Selecciona su nombre en el acceso a padres.`);
   if(!object(input.lesson)||!Array.isArray(input.lesson.topics)||input.lesson.topics.length>500)throw new Error('El informe no contiene un capítulo válido.');
   const topicIds=new Set();
   const topics=input.lesson.topics.map(topic=>{
@@ -38,12 +41,12 @@ export function validateProgressReport(input) {
     if(entry.note!=null&&(typeof entry.note!=='string'||entry.note.length>4000))throw new Error('El comentario del estudiante es demasiado largo.');
     return {task,answers,note:entry.note||'',updatedAt:date(entry.updatedAt,true)};
   });
-  return {format:'fernando-avance',version:1,studentId:'fernando',generatedAt:date(input.generatedAt),lesson:{id:identifier(input.lesson.id),title:boundedText(input.lesson.title,200,'Título del capítulo'),topics},learned:[...input.learned],theoryUpdatedAt:date(input.theoryUpdatedAt,true),tasks};
+  return {format:input.format,version:input.version,studentId:student.id,generatedAt:date(input.generatedAt),lesson:{id:identifier(input.lesson.id),title:boundedText(input.lesson.title,200,'Título del capítulo'),topics},learned:[...input.learned],theoryUpdatedAt:date(input.theoryUpdatedAt,true),tasks};
 }
 
-export function createProgressReport(course,tasks,drafts,learned,theoryUpdatedAt=null,now=new Date().toISOString()) {
+export function createProgressReport(course,tasks,drafts,learned,theoryUpdatedAt=null,now=new Date().toISOString(),studentId='fernando') {
   const draftMap=new Map(drafts.map(d=>[d.id,d]));
-  return validateProgressReport({format:'fernando-avance',version:1,studentId:'fernando',generatedAt:now,
+  return validateProgressReport({format:'aula-avance',version:2,studentId,generatedAt:now,
     lesson:{id:course.lesson.id,title:course.lesson.title,topics:course.lesson.topics.map(({id,title})=>({id,title}))},
     learned:learned.filter(id=>course.lesson.topics.some(t=>t.id===id)),theoryUpdatedAt,
     tasks:tasks.filter(t=>t.published).map(task=>{const draft=draftMap.get(task.id);return {task,answers:draft?.answers||{},note:draft?.note||'',updatedAt:draft?.updatedAt||null};})

@@ -1,0 +1,666 @@
+{
+  "schemaVersion": 2,
+  "courses": [
+    {
+      "id": "concursos",
+      "title": "Matemática para concursos · 4.º de primaria",
+      "description": "Números, razonamiento y estrategias para resolver retos con confianza.",
+      "status": "active",
+      "chapters": [
+        {
+          "id": "josue-primaria4-u1",
+          "number": 1,
+          "title": "Números, patrones y estrategias",
+          "description": "Numeración, cálculo, operaciones inversas y primeros retos.",
+          "status": "active"
+        },
+        {
+          "id": "josue-primaria4-u2",
+          "number": 2,
+          "title": "Fracciones y decimales",
+          "description": "Equivalencias, comparaciones, sumas y diferencias.",
+          "status": "planned"
+        },
+        {
+          "id": "josue-primaria4-u3",
+          "number": 3,
+          "title": "Dinero y proporcionalidad",
+          "description": "Canjes, compras y tablas de proporcionalidad directa.",
+          "status": "planned"
+        },
+        {
+          "id": "josue-primaria4-u4",
+          "number": 4,
+          "title": "Lógica y regularidades",
+          "description": "Secuencias, condiciones, ordenamientos y deducciones.",
+          "status": "planned"
+        },
+        {
+          "id": "josue-primaria4-u5",
+          "number": 5,
+          "title": "Geometría plana y medidas",
+          "description": "Segmentos, ángulos, polígonos, círculo y figuras compuestas.",
+          "status": "planned"
+        },
+        {
+          "id": "josue-primaria4-u6",
+          "number": 6,
+          "title": "Geometría espacial",
+          "description": "Cubos, prismas, caras, aristas y vistas.",
+          "status": "planned"
+        },
+        {
+          "id": "josue-primaria4-u7",
+          "number": 7,
+          "title": "Datos y azar",
+          "description": "Tablas, gráficos, pictogramas y sucesos posibles.",
+          "status": "planned"
+        },
+        {
+          "id": "josue-primaria4-u8",
+          "number": 8,
+          "title": "Conteo y estrategias de concurso",
+          "description": "Listas organizadas, casos, paridad y caminos.",
+          "status": "planned"
+        },
+        {
+          "id": "josue-primaria4-u9",
+          "number": 9,
+          "title": "Prácticas integradoras",
+          "description": "Retos variados y revisión de estrategias antes de los simulacros.",
+          "status": "planned"
+        }
+      ]
+    }
+  ],
+  "lesson": {
+    "id": "josue-primaria4-u1",
+    "title": "Números, patrones y estrategias",
+    "objectives": [
+      "Leer con atención y elegir una estrategia antes de calcular.",
+      "Dominar la numeración, las operaciones y los patrones sencillos.",
+      "Resolver retos en varios pasos y comprobar la respuesta."
+    ],
+    "convention": "Trabajamos con números naturales. Primero comprende, después representa y al final comprueba. En esta primera unidad puedes resolver sin calculadora.",
+    "topics": [
+      {
+        "id": "josue-p4-u1-t01",
+        "title": "1. Comprender antes de calcular",
+        "concept": "Distingue los datos de la pregunta. Una operación tiene sentido cuando sabes qué representa cada cantidad.",
+        "formulas": [
+          "Datos → representación → operación → comprobación."
+        ],
+        "example": "Hay 3 bolsas con 5 canicas cada una y 2 canicas sueltas. Primero contamos las bolsas: \\(3\\times5=15\\). Después añadimos las sueltas: \\(15+2=17\\).",
+        "tip": "Subraya lo que te preguntan y escribe la unidad de tu respuesta."
+      },
+      {
+        "id": "josue-p4-u1-t02",
+        "title": "2. El valor de cada cifra",
+        "concept": "Una misma cifra vale diferente según el lugar que ocupa: unidades, decenas, centenas o unidades de millar.",
+        "formulas": [
+          "\\[3624=3000+600+20+4\\]",
+          "\\[3624=3\\times1000+6\\times100+2\\times10+4\\]"
+        ],
+        "example": "En \\(5812\\), la cifra 8 representa 8 centenas: su valor es \\(800\\).",
+        "tip": "No confundas la cifra con el valor que representa."
+      },
+      {
+        "id": "josue-p4-u1-t03",
+        "title": "3. Formar y comparar números",
+        "concept": "Para formar el mayor número, ordena las cifras de mayor a menor. Para el menor, empieza con la menor cifra distinta de cero.",
+        "formulas": [
+          "\\[0<3<6<8\\]"
+        ],
+        "example": "Con las cifras 0, 3, 6 y 8, una vez cada una, el mayor número es \\(8630\\) y el menor de cuatro cifras es \\(3068\\).",
+        "tip": "Un número de cuatro cifras no puede empezar con cero."
+      },
+      {
+        "id": "josue-p4-u1-t04",
+        "title": "4. Calcular por partes",
+        "concept": "Descomponer una cantidad puede hacer más sencilla una cuenta sin cambiar su resultado.",
+        "formulas": [
+          "\\[39+26=40+26-1=65\\]",
+          "\\[7\\times18=7\\times(20-2)=140-14=126\\]"
+        ],
+        "example": "Para calcular \\(198+47\\), completa 200: \\(200+47-2=245\\).",
+        "tip": "Si añades algo para facilitar la cuenta, recuerda compensarlo después."
+      },
+      {
+        "id": "josue-p4-u1-t05",
+        "title": "5. Respetar el orden de las operaciones",
+        "concept": "Resuelve primero los paréntesis. Después, multiplicaciones y divisiones de izquierda a derecha. Al final, sumas y restas de izquierda a derecha.",
+        "formulas": [
+          "\\[24-3\\times(8-4)=24-12=12\\]"
+        ],
+        "example": "En \\(16+12\\div4\\), la división se hace primero: \\(16+3=19\\).",
+        "tip": "Avanza un paso por línea para no perder signos ni cantidades."
+      },
+      {
+        "id": "josue-p4-u1-t06",
+        "title": "6. Encontrar el dato que falta",
+        "concept": "Las operaciones inversas permiten deshacer un cálculo. La suma se deshace con una resta y la multiplicación, con una división.",
+        "formulas": [
+          "\\[\\square+85=200\\quad\\Rightarrow\\quad\\square=200-85=115\\]",
+          "\\[6\\times\\square=54\\quad\\Rightarrow\\quad\\square=54\\div6=9\\]"
+        ],
+        "example": "Si después de gastar 17 soles te quedan 28, al principio tenías \\(28+17=45\\) soles.",
+        "tip": "Sustituye tu respuesta en la cuenta original y comprueba que se cumple."
+      },
+      {
+        "id": "josue-p4-u1-t07",
+        "title": "7. Descubrir patrones",
+        "concept": "Busca una regla que explique todos los pasos. Comprueba si se suma siempre lo mismo, se multiplica o se repite un grupo.",
+        "formulas": [
+          "\\[7,12,17,22,\\ldots\\quad(+5)\\]",
+          "\\[3,6,12,24,\\ldots\\quad(\\times2)\\]"
+        ],
+        "example": "En una fila que repite rojo, azul y verde, cada grupo tiene 3 lugares. El lugar 11 viene después de 3 grupos completos y ocupa el segundo lugar: azul.",
+        "tip": "Una regla debe funcionar en todos los pasos indicados, no solo en el último."
+      },
+      {
+        "id": "josue-p4-u1-t08",
+        "title": "8. Paridad y repartos",
+        "concept": "Los números pares pueden formar parejas sin que sobre ninguno. En un reparto, diferencia los grupos completos de lo que sobra.",
+        "formulas": [
+          "\\[29=6\\times4+5\\]",
+          "En 29 objetos se forman 4 grupos de 6 y sobran 5."
+        ],
+        "example": "Al repartir 23 fichas entre 5 niños, cada uno recibe 4 y sobran 3: \\(23=5\\times4+3\\).",
+        "tip": "El resto siempre es menor que el tamaño del grupo o la cantidad de personas."
+      },
+      {
+        "id": "josue-p4-u1-t09",
+        "title": "9. Contar sin repetir",
+        "concept": "Organiza los casos por una característica: la primera cifra, el último lugar o una elección inicial. Una lista ordenada evita olvidos.",
+        "formulas": [
+          "\\[12,13,21,23,31,32\\]"
+        ],
+        "example": "Con las cifras 1, 2 y 3, sin repetir, esos son todos los números de dos cifras. Hay 2 que empiezan en 1, 2 que empiezan en 2 y 2 que empiezan en 3: \\(2+2+2=6\\).",
+        "tip": "Si un caso aparece dos veces, tu cuenta será demasiado grande."
+      },
+      {
+        "id": "josue-p4-u1-t10",
+        "title": "10. Trabajar hacia atrás y comprobar",
+        "concept": "Cuando conoces el resultado final, deshaz cada paso en orden contrario. Para comprobar, vuelve a recorrer el camino original.",
+        "formulas": [
+          "\\[\\text{inicio}\\ \\xrightarrow{\\times3}\\ \\xrightarrow{+4}\\ 25\\]",
+          "\\[25-4=21,\\qquad21\\div3=7\\]"
+        ],
+        "example": "El número inicial es 7. Verificación: \\(7\\times3+4=25\\).",
+        "tip": "Antes de marcar, revisa si respondiste exactamente lo que se preguntó."
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "id": "josue-p4-u1-basico",
+      "title": "Nivel básico · 10 problemas",
+      "courseId": "concursos",
+      "chapterId": "josue-primaria4-u1",
+      "level": "basico",
+      "subject": "Concursos · 4.º de primaria · Unidad 1",
+      "instructions": "Lee con calma. Resuelve en tu cuaderno, marca una alternativa y continúa a la siguiente pregunta. Explica los pasos de tu solución y comprueba la respuesta. Puedes usar dibujos o listas. No necesitas calculadora.",
+      "due": "",
+      "published": true,
+      "questions": [
+        {
+          "id": "josue-p4-u1-b01",
+          "number": 1,
+          "text": "En el número \\(4706\\), ¿qué valor representa la cifra 7?",
+          "options": [
+            "\\(70\\)",
+            "\\(7\\)",
+            "\\(700\\)",
+            "\\(7000\\)",
+            "\\(706\\)"
+          ],
+          "topic": "Valor posicional"
+        },
+        {
+          "id": "josue-p4-u1-b02",
+          "number": 2,
+          "text": "Con las cifras 2, 0, 8 y 5, una vez cada una, ¿cuál es el mayor número de cuatro cifras que se puede formar?",
+          "options": [
+            "\\(8250\\)",
+            "\\(8502\\)",
+            "\\(8520\\)",
+            "\\(8205\\)",
+            "\\(8052\\)"
+          ],
+          "topic": "Formación de números"
+        },
+        {
+          "id": "josue-p4-u1-b03",
+          "number": 3,
+          "text": "Calcula: \\[48+27\\]",
+          "options": [
+            "\\(65\\)",
+            "\\(75\\)",
+            "\\(85\\)",
+            "\\(71\\)",
+            "\\(74\\)"
+          ],
+          "topic": "Cálculo mental"
+        },
+        {
+          "id": "josue-p4-u1-b04",
+          "number": 4,
+          "text": "Calcula: \\[9\\times7-8\\]",
+          "options": [
+            "\\(47\\)",
+            "\\(54\\)",
+            "\\(56\\)",
+            "\\(55\\)",
+            "\\(63\\)"
+          ],
+          "topic": "Orden de operaciones"
+        },
+        {
+          "id": "josue-p4-u1-b05",
+          "number": 5,
+          "text": "Se reparten 84 fichas por igual entre 6 niños. ¿Cuántas recibe cada uno?",
+          "options": [
+            "\\(12\\)",
+            "\\(13\\)",
+            "\\(14\\)",
+            "\\(16\\)",
+            "\\(18\\)"
+          ],
+          "topic": "Repartos"
+        },
+        {
+          "id": "josue-p4-u1-b06",
+          "number": 6,
+          "text": "¿Qué número falta? \\[125+\\square=300\\]",
+          "options": [
+            "\\(175\\)",
+            "\\(185\\)",
+            "\\(225\\)",
+            "\\(165\\)",
+            "\\(125\\)"
+          ],
+          "topic": "Operación inversa"
+        },
+        {
+          "id": "josue-p4-u1-b07",
+          "number": 7,
+          "text": "La secuencia aumenta de 4 en 4. ¿Qué número sigue? \\[6,10,14,18,\\ldots\\]",
+          "options": [
+            "\\(19\\)",
+            "\\(20\\)",
+            "\\(21\\)",
+            "\\(24\\)",
+            "\\(22\\)"
+          ],
+          "topic": "Patrones"
+        },
+        {
+          "id": "josue-p4-u1-b08",
+          "number": 8,
+          "text": "Hay 2 cajas con 6 lápices cada una y 5 lápices sueltos. ¿Cuántos lápices hay en total?",
+          "options": [
+            "\\(11\\)",
+            "\\(17\\)",
+            "\\(18\\)",
+            "\\(16\\)",
+            "\\(12\\)"
+          ],
+          "topic": "Dos pasos"
+        },
+        {
+          "id": "josue-p4-u1-b09",
+          "number": 9,
+          "text": "¿Cuál de estos números es par?",
+          "options": [
+            "\\(23\\)",
+            "\\(41\\)",
+            "\\(57\\)",
+            "\\(36\\)",
+            "\\(75\\)"
+          ],
+          "topic": "Paridad"
+        },
+        {
+          "id": "josue-p4-u1-b10",
+          "number": 10,
+          "text": "En 4 bolsas hay 8 canicas por bolsa. Se retiran 9 canicas en total. ¿Cuántas quedan?",
+          "options": [
+            "\\(23\\)",
+            "\\(24\\)",
+            "\\(31\\)",
+            "\\(17\\)",
+            "\\(32\\)"
+          ],
+          "topic": "Dos pasos"
+        }
+      ]
+    },
+    {
+      "id": "josue-p4-u1-intermedio",
+      "title": "Nivel intermedio · 10 problemas",
+      "courseId": "concursos",
+      "chapterId": "josue-primaria4-u1",
+      "level": "intermedio",
+      "subject": "Concursos · 4.º de primaria · Unidad 1",
+      "instructions": "Lee con calma. Resuelve en tu cuaderno, marca una alternativa y continúa a la siguiente pregunta. Explica los pasos de tu solución y comprueba la respuesta. Puedes usar dibujos o listas. No necesitas calculadora.",
+      "due": "",
+      "published": true,
+      "questions": [
+        {
+          "id": "josue-p4-u1-i01",
+          "number": 1,
+          "text": "Con las cifras 3, 0, 5 y 8, una vez cada una, ¿cuál es el menor número par de cuatro cifras?",
+          "options": [
+            "\\(3508\\)",
+            "\\(3085\\)",
+            "\\(3058\\)",
+            "\\(3580\\)",
+            "\\(5038\\)"
+          ],
+          "topic": "Numeración y paridad"
+        },
+        {
+          "id": "josue-p4-u1-i02",
+          "number": 2,
+          "text": "En un número de dos cifras, la cifra de las decenas es 3 mayor que la de las unidades. Las dos cifras suman 11. ¿Cuál es el número?",
+          "options": [
+            "\\(47\\)",
+            "\\(65\\)",
+            "\\(83\\)",
+            "\\(74\\)",
+            "\\(92\\)"
+          ],
+          "topic": "Condiciones sobre cifras"
+        },
+        {
+          "id": "josue-p4-u1-i03",
+          "number": 3,
+          "text": "Calcula: \\[18+6\\times(15-9)\\]",
+          "options": [
+            "\\(48\\)",
+            "\\(54\\)",
+            "\\(144\\)",
+            "\\(60\\)",
+            "\\(72\\)"
+          ],
+          "topic": "Operaciones combinadas"
+        },
+        {
+          "id": "josue-p4-u1-i04",
+          "number": 4,
+          "text": "Josué tiene 8 sobres con 6 tarjetas cada uno. Regala 19 tarjetas. ¿Cuántas le quedan?",
+          "options": [
+            "\\(29\\)",
+            "\\(27\\)",
+            "\\(31\\)",
+            "\\(39\\)",
+            "\\(48\\)"
+          ],
+          "topic": "Problemas en dos pasos"
+        },
+        {
+          "id": "josue-p4-u1-i05",
+          "number": 5,
+          "text": "Una familia lleva 200 soles. Compra 3 juegos de 27 soles cada uno y un libro de 46 soles. ¿Cuántos soles le quedan?",
+          "options": [
+            "\\(81\\)",
+            "\\(119\\)",
+            "\\(127\\)",
+            "\\(63\\)",
+            "\\(73\\)"
+          ],
+          "topic": "Compras"
+        },
+        {
+          "id": "josue-p4-u1-i06",
+          "number": 6,
+          "text": "Cada término es el doble del anterior. ¿Qué número sigue? \\[5,10,20,40,\\ldots\\]",
+          "options": [
+            "\\(45\\)",
+            "\\(60\\)",
+            "\\(80\\)",
+            "\\(100\\)",
+            "\\(120\\)"
+          ],
+          "topic": "Patrones multiplicativos"
+        },
+        {
+          "id": "josue-p4-u1-i07",
+          "number": 7,
+          "text": "Los aumentos de esta secuencia son 3, 4, 5 y luego 6. ¿Qué número sigue? \\[3,6,10,15,\\ldots\\]",
+          "options": [
+            "\\(18\\)",
+            "\\(20\\)",
+            "\\(22\\)",
+            "\\(21\\)",
+            "\\(24\\)"
+          ],
+          "topic": "Patrones con aumentos"
+        },
+        {
+          "id": "josue-p4-u1-i08",
+          "number": 8,
+          "text": "Se numeran tarjetas del 1 al 40. ¿Cuántas tienen un número que termina en 0 o en 5?",
+          "options": [
+            "\\(8\\)",
+            "\\(7\\)",
+            "\\(9\\)",
+            "\\(6\\)",
+            "\\(10\\)"
+          ],
+          "topic": "Conteo ordenado"
+        },
+        {
+          "id": "josue-p4-u1-i09",
+          "number": 9,
+          "text": "Se juntan 7 bolsas con 9 semillas cada una. Luego se reparten todas por igual en 3 macetas. ¿Cuántas semillas van en cada maceta?",
+          "options": [
+            "\\(18\\)",
+            "\\(21\\)",
+            "\\(24\\)",
+            "\\(27\\)",
+            "\\(63\\)"
+          ],
+          "topic": "Multiplicar y repartir"
+        },
+        {
+          "id": "josue-p4-u1-i10",
+          "number": 10,
+          "text": "Ana y Luis tienen 46 figuritas entre los dos. Ana tiene 8 más que Luis. ¿Cuántas tiene Ana?",
+          "options": [
+            "\\(19\\)",
+            "\\(23\\)",
+            "\\(25\\)",
+            "\\(31\\)",
+            "\\(27\\)"
+          ],
+          "topic": "Suma y diferencia"
+        }
+      ]
+    },
+    {
+      "id": "josue-p4-u1-avanzado",
+      "title": "Nivel avanzado · 10 problemas",
+      "courseId": "concursos",
+      "chapterId": "josue-primaria4-u1",
+      "level": "avanzado",
+      "subject": "Concursos · 4.º de primaria · Unidad 1",
+      "instructions": "Lee con calma. Resuelve en tu cuaderno, marca una alternativa y continúa a la siguiente pregunta. Explica los pasos de tu solución y comprueba la respuesta. Puedes usar dibujos o listas. No necesitas calculadora.",
+      "due": "",
+      "published": true,
+      "questions": [
+        {
+          "id": "josue-p4-u1-a01",
+          "number": 1,
+          "text": "Con las cifras 0, 2, 5 y 7 se forman números pares de tres cifras, sin repetir cifras. ¿Cuántos números diferentes se pueden formar?",
+          "options": [
+            "\\(8\\)",
+            "\\(10\\)",
+            "\\(12\\)",
+            "\\(14\\)",
+            "\\(18\\)"
+          ],
+          "topic": "Conteo por casos"
+        },
+        {
+          "id": "josue-p4-u1-a02",
+          "number": 2,
+          "text": "Una fila repite siempre este grupo de colores: rojo, azul, verde y amarillo. Si el primer lugar es rojo, ¿de qué color es el lugar 38?",
+          "options": [
+            "Rojo",
+            "Verde",
+            "Amarillo",
+            "Azul",
+            "Naranja"
+          ],
+          "topic": "Patrones cíclicos"
+        },
+        {
+          "id": "josue-p4-u1-a03",
+          "number": 3,
+          "text": "Se compran 8 cuadernos: unos cuestan 3 soles y otros, 5 soles. Si se paga 30 soles en total, ¿cuántos cuadernos de 5 soles se compraron?",
+          "options": [
+            "\\(2\\)",
+            "\\(4\\)",
+            "\\(3\\)",
+            "\\(5\\)",
+            "\\(6\\)"
+          ],
+          "topic": "Resolver mediante casos"
+        },
+        {
+          "id": "josue-p4-u1-a04",
+          "number": 4,
+          "text": "Pienso en un número, lo multiplico por 2, sumo 6 y divido el resultado entre 3. Obtengo 10. ¿En qué número pensé?",
+          "options": [
+            "\\(8\\)",
+            "\\(9\\)",
+            "\\(10\\)",
+            "\\(15\\)",
+            "\\(12\\)"
+          ],
+          "topic": "Trabajar hacia atrás"
+        },
+        {
+          "id": "josue-p4-u1-a05",
+          "number": 5,
+          "text": "Un número de dos cifras es igual a 4 veces la suma de sus cifras. ¿Cuál es el mayor número que cumple esta condición?",
+          "options": [
+            "\\(48\\)",
+            "\\(36\\)",
+            "\\(24\\)",
+            "\\(64\\)",
+            "\\(84\\)"
+          ],
+          "topic": "Restricciones sobre cifras"
+        },
+        {
+          "id": "josue-p4-u1-a06",
+          "number": 6,
+          "text": "Se escriben todos los números del 1 al 50. ¿Cuántas veces se escribe la cifra 3? Si un número tiene dos cifras 3, se cuentan ambas.",
+          "options": [
+            "\\(14\\)",
+            "\\(15\\)",
+            "\\(16\\)",
+            "\\(13\\)",
+            "\\(20\\)"
+          ],
+          "topic": "Conteo sin omisiones"
+        },
+        {
+          "id": "josue-p4-u1-a07",
+          "number": 7,
+          "text": "Calcula la suma de todos los números naturales del 1 al 20: \\[1+2+3+\\cdots+20\\]",
+          "options": [
+            "\\(190\\)",
+            "\\(200\\)",
+            "\\(220\\)",
+            "\\(210\\)",
+            "\\(230\\)"
+          ],
+          "topic": "Agrupación de sumas"
+        },
+        {
+          "id": "josue-p4-u1-a08",
+          "number": 8,
+          "text": "Con las cifras 1, 2 y 3, una vez cada una, se forman números de tres cifras mayores que 200. ¿Cuántos números distintos hay?",
+          "options": [
+            "\\(2\\)",
+            "\\(3\\)",
+            "\\(4\\)",
+            "\\(5\\)",
+            "\\(6\\)"
+          ],
+          "topic": "Conteo organizado"
+        },
+        {
+          "id": "josue-p4-u1-a09",
+          "number": 9,
+          "text": "En un corral hay gallinas y conejos. Hay 10 animales y 28 patas en total. Cada gallina tiene 2 patas y cada conejo, 4. ¿Cuántos conejos hay?",
+          "options": [
+            "\\(4\\)",
+            "\\(3\\)",
+            "\\(5\\)",
+            "\\(6\\)",
+            "\\(7\\)"
+          ],
+          "topic": "Suposición y ajuste"
+        },
+        {
+          "id": "josue-p4-u1-a10",
+          "number": 10,
+          "text": "Dos cajas contienen 32 fichas en total. Una tiene el triple de fichas que la otra. Se pasan 4 fichas de la caja con más fichas a la otra. ¿Cuántas fichas más tiene ahora la caja que inicialmente tenía más?",
+          "options": [
+            "\\(4\\)",
+            "\\(12\\)",
+            "\\(16\\)",
+            "\\(20\\)",
+            "\\(8\\)"
+          ],
+          "topic": "Cambios de cantidades"
+        }
+      ]
+    }
+  ],
+  "preparation": {
+    "grade": "4.º de primaria",
+    "intro": "Una preparación progresiva: primero construimos una buena base y después combinamos estrategias en retos de concurso.",
+    "competitions": [
+      {
+        "name": "CONAMAT",
+        "category": "4.º de primaria",
+        "description": "Referencia para trabajar numeración, operaciones, fracciones, proporcionalidad, geometría y lectura de datos.",
+        "url": "https://www.conamat.edu.pe/concurso/descarga/25_Bases_y_Temarios_Conamat_2026_Web_2.0.pdf",
+        "linkLabel": "Bases y temario 2026"
+      },
+      {
+        "name": "Canguro Matemático Perú",
+        "category": "Nivel 2 · 4.º de primaria",
+        "description": "Referencia para practicar ingenio, lógica y problemas que admiten estrategias breves.",
+        "url": "https://canmatperu.com/",
+        "linkLabel": "Página oficial"
+      },
+      {
+        "name": "CONEMATE",
+        "category": "Participación desde 3.º de primaria",
+        "description": "Otro concurso nacional de referencia para ampliar la práctica de resolución de problemas.",
+        "url": "https://grupo-mate.com/iv-concurso-nacional-escolar-de-matematica-2026/",
+        "linkLabel": "Convocatoria oficial 2026"
+      }
+    ],
+    "routine": [
+      {
+        "title": "Comprende",
+        "text": "Lee el problema y explica con tus palabras qué debes encontrar."
+      },
+      {
+        "title": "Representa",
+        "text": "Haz un dibujo, una tabla o una lista de casos. Elige una estrategia."
+      },
+      {
+        "title": "Resuelve y revisa",
+        "text": "Calcula, comprueba y explica por qué tu respuesta funciona."
+      }
+    ]
+  }
+}

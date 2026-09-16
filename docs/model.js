@@ -65,7 +65,8 @@ export function matchesSignature(bytes, type) {
   if (type === 'image/jpeg') return starts([255, 216, 255]);
   return type === 'image/webp' && starts([82, 73, 70, 70]) && [87, 69, 66, 80].every((n, i) => bytes[i + 8] === n);
 }
-export function validateSubmission(input) {
+export function validateSubmission(input,expectedStudentId='fernando') {
+  if((input?.studentId||'fernando')!==expectedStudentId)throw new Error('Esta entrega pertenece a otro estudiante.');
   if (!object(input) || input.format !== 'fernando-entrega' || ![1,2,3].includes(input.version)) throw new Error('Este archivo no es una entrega de Fernando.');
   const task = normalizeTask(input.task);
   const answers = normalizeAnswers(task, input.answers);
@@ -94,7 +95,7 @@ export function publicCourse(course, tasks) {
   if (!Array.isArray(tasks) || tasks.length > 100) throw new Error('El curso admite hasta 100 tareas.');
   const normalized = tasks.map(normalizeTask);
   if (new Set(normalized.map(t => t.id)).size !== normalized.length) throw new Error('Hay tareas repetidas.');
-  return {schemaVersion: 2, courses: Array.isArray(course.courses)?course.courses:[], lesson: course.lesson, tasks: normalized};
+  return {schemaVersion: 2, courses: Array.isArray(course.courses)?course.courses:[], lesson: course.lesson, tasks: normalized,...(object(course.preparation)?{preparation:course.preparation}:{})};
 }
 export function html(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));

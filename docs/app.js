@@ -1,15 +1,21 @@
 import {math as m} from './math.js';
-import {all, put, write, openDatabase} from './store.js';
+import {createStudentStore} from './store.js?v=students-1';
+import {students,studentProfile} from './students.js';
+import {competitionHome,preparationOutline} from './competition-views.js';
 import {hasAnswer, questionSequence, canOpenQuestion} from './sequence.js';
-import {html as h, normalizeTask, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js';
+import {html as h, normalizeTask, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js?v=students-1';
 import {courseCatalog, courseOutline} from './course-views.js?v=latex-1';
-import {accessView,parentsView,studentReportPanel} from './family-views.js?v=latex-1';
-import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from './progress.js';
+import {accessView,parentsView,studentReportPanel} from './family-views.js?v=students-1';
+import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from './progress.js?v=students-1';
 
+const selectedStudent=new URLSearchParams(location.search).get('alumno');
+const explicitStudent=Object.hasOwn(students,selectedStudent);
+const student=studentProfile(explicitStudent?selectedStudent:'fernando');
+const {all,put,write,openDatabase}=createStudentStore(student.id);
 const app = document.querySelector('#app');
 const message = document.querySelector('#message');
 const letters = ['A', 'B', 'C', 'D', 'E'];
-const state = {activeTask:null,questionIndex:0,role:null,pendingRoute:null,parentReport:null,parentSource:'local',theoryUpdatedAt:null,course: null, drive:{problems:{}}, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
+const state = {activeTask:null,questionIndex:0,role:explicitStudent?'student':null,pendingRoute:null,parentReport:null,parentSource:'local',theoryUpdatedAt:null,course: null, drive:{problems:{}}, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
 const icons = {
   book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',
   arrow: '<path d="m9 18 6-6-6-6"/>',
@@ -43,12 +49,12 @@ function storageNote() {
   return `<div class="local-note">${icon('file',18)}<p>Marca tus respuestas aquí. Para entregar el desarrollo, pulsa <strong>Subir al Drive</strong> en cada problema y añade el archivo a su carpeta. Las respuestas se conservan en este dispositivo.</p></div>`;
 }
 function nav(tab) {
-  return `<nav class="tabs" aria-label="Secciones del aula">${[['cursos','Mis cursos'],['temario/algebra','Temario'],['curso','Capítulo 1'],['tareas','Práctica']].map(([id,label]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
+  return `<nav class="tabs" aria-label="Secciones del aula">${[['cursos',student.id==='josue'?'Mi preparación':'Mis cursos'],[`temario/${student.courseId}`,student.id==='josue'?'Plan':'Temario'],['curso',`${student.unit} 1`],['tareas','Práctica']].map(([id,label]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
 }
 function heading() {
   const tasks = state.tasks.filter(t => t.published);
   const answered = tasks.reduce((n, t) => n + answerCount(t, draftFor(t.id).answers), 0);
-  return `<div class="page-heading"><div><p class="eyebrow">CLASES PARTICULARES · ÁLGEBRA</p><h1>El aula de Fernando.</h1><p>Entiende la idea. Practica con calma. Explica tu solución.</p></div><span class="chapter-badge">CAPÍTULO <strong>01</strong></span></div>
+  return `<div class="page-heading"><div><p class="eyebrow">${h(student.subject)}</p><h1>El aula de ${h(student.name)}.</h1><p>Entiende la idea. Practica con calma. Explica tu solución.</p></div><span class="chapter-badge">${h(student.unit.toUpperCase())} <strong>01</strong></span></div>
   <div class="stats"><div><span class="stat-icon blue">${icon('book')}</span><div><strong>${state.course.lesson.topics.length}</strong><span>Temas para aprender</span></div></div><div><span class="stat-icon amber">${icon('clock')}</span><div><strong>${tasks.length}</strong><span>Tareas de práctica</span></div></div><div><span class="stat-icon green">${icon('check')}</span><div><strong>${answered}<small> / ${tasks.reduce((n,t)=>n+t.questions.length,0)}</small></strong><span>Respuestas marcadas</span></div></div></div>`;
 }
 function taskCard(task, index, teacher = false) {
@@ -59,10 +65,10 @@ function renderCourse() {
   const lesson = state.course.lesson;
   const first = state.tasks.find(t => t.published);
   return `${heading()}${nav('curso')}
-  <section class="chapter-heading"><div><p class="eyebrow">TU PRIMER CAPÍTULO</p><h2>${h(lesson.title)}</h2><p>Comprende los números y opera con seguridad, paso a paso.</p></div>${first ? `<a class="button" href="#tarea/${h(first.id)}">Empezar a practicar ${icon('arrow',18)}</a>`:''}</section>
+  <section class="chapter-heading"><div><p class="eyebrow">${student.id==='josue'?'TU PRIMERA UNIDAD':'TU PRIMER CAPÍTULO'}</p><h2>${h(lesson.title)}</h2><p>${h(student.description)}</p></div>${first ? `<a class="button" href="#tarea/${h(first.id)}">Empezar a practicar ${icon('arrow',18)}</a>`:''}</section>
   <div class="course-layout"><div><section class="panel course-objectives"><h2>Lo que aprenderemos</h2><ul>${lesson.objectives.map(o => `<li>${icon('check',18)}<span>${h(o)}</span></li>`).join('')}</ul><p class="course-convention">${m(lesson.convention)}</p></section>
   <section class="panel chapter-guide"><div class="section-heading"><h2>Guía para la clase</h2><span>${state.learned.length} / ${lesson.topics.length} repasados</span></div>${lesson.topics.map((topic, i) => `<details class="topic" ${i === 0 ? 'open':''}><summary><span>${h(topic.title)}</span>${state.learned.includes(topic.id) ? `<span class="topic-check">${icon('check',17)}<span class="sr-only">Repasado</span></span>`:''}</summary><div class="topic-body"><p class="topic-concept">${m(topic.concept)}</p><ul class="formula-list">${topic.formulas.map(f=>`<li>${m(f)}</li>`).join('')}</ul><div class="worked-example"><strong>Veámoslo paso a paso</strong><p class="prewrap">${m(topic.example)}</p></div><p class="topic-tip"><strong>Recuerda:</strong> ${m(topic.tip)}</p><div class="topic-footer"><label class="learned"><input type="checkbox" data-topic="${h(topic.id)}" ${state.learned.includes(topic.id)?'checked':''} ${!state.storage?'disabled':''}>Tema repasado</label></div></div></details>`).join('')}</section></div>
-  <aside class="course-sequence"><section class="panel"><p class="eyebrow">DEL CONCEPTO A LA PRÁCTICA</p><h2>Tareas del capítulo</h2><p>Resuelve una tarea a la vez. Muestra cómo llegaste a cada respuesta.</p>${state.tasks.filter(t=>t.published).map((task,i)=>`<a class="chapter-task" href="#tarea/${h(task.id)}"><span class="chapter-step">${i+1}</span><span><strong>${h(taskName(task))}</strong><small>${task.questions.length} preguntas · ${h(status(task)[1])}</small></span>${icon('arrow',17)}</a>`).join('')}</section><div class="study-note"><span>UNA BUENA COSTUMBRE</span><h2>El desarrollo<br>también cuenta.</h2><p>Escribe cada paso, revisa los signos y comprueba tu resultado.</p><div class="math-mark" aria-hidden="true">${m(String.raw`\(\mathbb{N}\subset\mathbb{Z}\subset\mathbb{Q}\subset\mathbb{R}\subset\mathbb{C}\)`)}</div></div></aside></div>${storageNote()}`;
+  <aside class="course-sequence"><section class="panel"><p class="eyebrow">DEL CONCEPTO A LA PRÁCTICA</p><h2>Tareas ${student.id==='josue'?'de la unidad':'del capítulo'} 1</h2><p>Resuelve una tarea a la vez. Muestra cómo llegaste a cada respuesta.</p>${state.tasks.filter(t=>t.published).map((task,i)=>`<a class="chapter-task" href="#tarea/${h(task.id)}"><span class="chapter-step">${i+1}</span><span><strong>${h(taskName(task))}</strong><small>${task.questions.length} preguntas · ${h(status(task)[1])}</small></span>${icon('arrow',17)}</a>`).join('')}</section><div class="study-note"><span>UNA BUENA COSTUMBRE</span><h2>El desarrollo<br>también cuenta.</h2><p>Escribe cada paso, revisa los signos y comprueba tu resultado.</p><div class="math-mark" aria-hidden="true">${m(student.id==='josue'?String.raw`\(1+2+\cdots+10=55\)`:String.raw`\(\mathbb{N}\subset\mathbb{Z}\subset\mathbb{Q}\subset\mathbb{R}\subset\mathbb{C}\)`)}</div></div></aside></div>${storageNote()}`;
 }
 function renderTasks() {
   const tasks = state.tasks.filter(t=>t.published);
@@ -118,14 +124,14 @@ function renderTask(task) {
 }
 function renderTeacher() {
   return `<div class="page-heading"><div><p class="eyebrow">HERRAMIENTAS DEL PROFESOR</p><h1>Prepara la próxima clase.</h1><p>Crea tareas y revisa copias de trabajo desde este dispositivo.</p></div><button class="button" data-action="new-task" ${!state.storage?'disabled':''}>${icon('plus',18)} Nueva tarea</button></div>${nav('profesor')}
-  <div class="local-note"><p><strong>Este editor guarda cambios locales.</strong> Para compartir las tareas con Fernando, descarga el contenido y actualízalo en tu repositorio. El acceso privado se configurará después.</p></div>
-  ${renderDriveSettings()}<div class="teacher-grid"><section class="panel"><h2>Publicar las tareas</h2><p>La web carga sus tareas desde tu repositorio de GitHub.</p><ol class="steps"><li>Prepara y guarda las tareas aquí.</li><li>Descarga <strong>course.json</strong>.</li><li>Súbelo a <strong>docs/data</strong> en GitHub y confirma el cambio.</li></ol><div class="button-row"><button class="button" data-action="export-course">${icon('download',18)} Descargar contenido</button><a class="button secondary" href="https://github.com/aludenah/fernando/upload/main/docs/data" target="_blank" rel="noopener noreferrer">Abrir carpeta en GitHub ↗</a></div><p class="source-note">Las tareas marcadas como borrador también se incluyen en el archivo público. Guárdalo solo cuando estén listas para compartirse; no añadas datos privados ni claves de respuestas.</p></section>
-  <section class="panel"><h2>Revisar una copia de trabajo</h2><p>Puedes abrir el archivo que Fernando descargó desde una tarea. Se leerá en este dispositivo.</p><label class="upload-box compact">${icon('file',24)}<strong>Importar trabajo para revisar</strong><span>Archivo .json generado por el aula</span><input type="file" id="import-review" accept=".json,application/json" aria-label="Importar trabajo para revisar" ${!state.storage?'disabled':''}></label><p class="source-note">Los archivos y las notas de revisión permanecen en este navegador.</p></section></div>
+  <div class="local-note"><p><strong>Este editor guarda cambios locales.</strong> Para compartir las tareas con ${h(student.name)}, descarga el contenido y actualízalo en tu repositorio. El acceso privado se configurará después.</p></div>
+  ${renderDriveSettings()}<div class="teacher-grid"><section class="panel"><h2>Publicar las tareas</h2><p>La web carga sus tareas desde tu repositorio de GitHub.</p><ol class="steps"><li>Prepara y guarda las tareas aquí.</li><li>Descarga <strong>${h(student.courseFile)}</strong>.</li><li>Súbelo a <strong>docs/data</strong> en GitHub y confirma el cambio.</li></ol><div class="button-row"><button class="button" data-action="export-course">${icon('download',18)} Descargar contenido</button><a class="button secondary" href="https://github.com/aludenah/fernando/upload/main/docs/data" target="_blank" rel="noopener noreferrer">Abrir carpeta en GitHub ↗</a></div><p class="source-note">Las tareas marcadas como borrador también se incluyen en el archivo público. Guárdalo solo cuando estén listas para compartirse; no añadas datos privados ni claves de respuestas.</p></section>
+  <section class="panel"><h2>Revisar una copia de trabajo</h2><p>Puedes abrir el archivo que ${h(student.name)} descargó desde una tarea. Se leerá en este dispositivo.</p><label class="upload-box compact">${icon('file',24)}<strong>Importar trabajo para revisar</strong><span>Archivo .json generado por el aula</span><input type="file" id="import-review" accept=".json,application/json" aria-label="Importar trabajo para revisar" ${!state.storage?'disabled':''}></label><p class="source-note">Los archivos y las notas de revisión permanecen en este navegador.</p></section></div>
   <div class="section-heading"><h2>Tareas preparadas</h2><span>${state.tasks.length} tareas · ${state.localTasks.length} con cambios locales</span></div>${state.tasks.map((t,i)=>taskCard(t,i,true)).join('')}
   <section class="panel"><h2>Trabajos importados</h2>${state.reviews.length?state.reviews.map(r=>`<button class="review-row" data-action="open-review" data-id="${h(r.id)}"><span><strong>${h(r.task.title)}</strong><small>${h(formatTime(r.createdAt))}</small></span><span class="badge ${r.score!=null?'prepared':''}">${r.score!=null?`${r.score}/20`:'Por revisar'}</span>${icon('arrow',18)}</button>`).join(''):'<p class="muted">Aún no has importado trabajos para revisar.</p>'}</section>`;
 }
 function renderDriveSettings() {
-  return `<section class="panel drive-settings"><h2>Solucionarios en Google Drive</h2><p>Cada botón «Subir al Drive» abre la carpeta de su problema en una pestaña nueva.</p><a class="button secondary" href="${h(state.drive.rootFolderUrl)}" target="_blank" rel="noopener noreferrer">Abrir carpetas del aula ↗</a><h3>Permisos de las carpetas</h3><p>En la carpeta principal, selecciona Compartir → Acceso general → Cualquier persona con el enlace → Editor. Los permisos se aplican a sus subcarpetas.</p><p class="source-note">El permiso Editor permite subir, modificar y eliminar archivos. Para subir archivos, Fernando debe iniciar sesión en Google. El material del profesor se guarda por separado.</p></section>`;
+  return `<section class="panel drive-settings"><h2>Solucionarios en Google Drive</h2><p>Cada botón «Subir al Drive» abre la carpeta de su problema en una pestaña nueva.</p><a class="button secondary" href="${h(state.drive.rootFolderUrl)}" target="_blank" rel="noopener noreferrer">Abrir carpetas del aula ↗</a><h3>Permisos de las carpetas</h3><p>En la carpeta principal, selecciona Compartir → Acceso general → Cualquier persona con el enlace → Editor. Los permisos se aplican a sus subcarpetas.</p><p class="source-note">El permiso Editor permite subir, modificar y eliminar archivos. Para subir archivos, ${h(student.name)} debe iniciar sesión en Google. El material del profesor se guarda por separado.</p></section>`;
 }
 function editorQuestion(question, index) {
   return `<fieldset class="panel edit-question" data-question="${h(question.id)}"><legend>Pregunta ${index+1}</legend><label class="field-label">Enunciado<textarea data-field="text" rows="2" required maxlength="3000">${h(question.text)}</textarea></label><div class="edit-options">${question.options.map((option,i)=>`<label><span>${letters[i]}</span><input data-option="${i}" aria-label="Pregunta ${index+1}, alternativa ${letters[i]}" value="${h(option)}" required maxlength="800"></label>`).join('')}</div><button class="text-button" type="button" data-action="remove-question" data-id="${h(question.id)}">Quitar pregunta</button></fieldset>`;
@@ -135,17 +141,17 @@ function renderEditor() {
   return `<a class="back" href="#profesor">← Volver a preparar clase</a><div class="page-heading"><div><p class="eyebrow">PREPARACIÓN DE TAREAS</p><h1>${taskFor(task.id)?'Editar tarea':'Nueva tarea'}</h1><p>Los cambios se guardan aquí; luego puedes publicarlos en GitHub.</p></div></div><form id="task-editor"><div class="editor-layout"><div><section class="panel"><h2>Datos de la tarea</h2><label class="field-label">Título<input name="title" value="${h(task.title)}" required maxlength="160" placeholder="Ejemplo: Practicamos con fracciones"></label><div class="form-grid"><label class="field-label">Curso<input name="subject" value="${h(task.subject)}" required maxlength="120"></label><label class="field-label">Fecha límite (opcional)<input type="date" name="due" value="${h(task.due)}"></label></div><label class="field-label">Indicaciones<textarea name="instructions" rows="4" required maxlength="6000">${h(task.instructions)}</textarea></label><label class="checkbox-label"><input type="checkbox" name="published" ${task.published?'checked':''}>Mostrar en la lista de tareas</label></section><div id="editor-questions">${task.questions.map(editorQuestion).join('')}</div><button class="button secondary" type="button" data-action="add-question">${icon('plus',18)} Añadir pregunta</button></div><aside class="panel editor-summary"><h2>Lista para practicar</h2><p>Revisa que cada pregunta tenga enunciado y alternativas claras.</p><button type="submit" class="button full" ${!state.storage?'disabled':''}>Guardar en este dispositivo</button><a class="button secondary full" href="#profesor">Cancelar</a><p class="source-note">Publicar el contenido requiere confirmar el cambio desde tu cuenta de GitHub.</p></aside></div></form>`;
 }
 function renderReview(review) {
-  return `<a class="back" href="#profesor">← Volver a preparar clase</a><div class="page-heading"><div><p class="eyebrow">REVISIÓN LOCAL</p><h1>${h(taskName(review.task))}</h1><p>Copia preparada el ${h(formatTime(review.createdAt))}</p></div></div><div class="detail-layout"><div>${review.task.questions.map((q,i)=>`<section class="panel"><p class="eyebrow">PREGUNTA ${i+1}</p><h2>${m(q.text)}</h2><p class="review-answer"><strong>Respuesta marcada: ${letters[review.answers[q.id]]}</strong> · ${m(q.options[review.answers[q.id]])}</p></section>`).join('')}<section class="panel"><h2>Solucionario adjunto</h2>${attachmentRows(review.files,true)}${review.note?`<h3>Comentario de Fernando</h3><p class="prewrap">${h(review.note)}</p>`:''}</section></div><aside class="panel detail-aside"><h2>Tu revisión</h2><form id="review-form" data-id="${h(review.id)}"><label class="field-label">Nota sobre 20<input name="score" type="number" min="0" max="20" step="0.1" value="${review.score??''}" required></label><label class="field-label">Comentarios<textarea name="feedback" rows="6" maxlength="6000">${h(review.feedback||'')}</textarea></label><button class="button full" type="submit">Guardar revisión</button></form><button class="button secondary full" data-action="export-review" data-id="${h(review.id)}">${icon('download',18)} Descargar comentarios</button><p class="source-note">La revisión se guarda aquí. No se envía automáticamente a Fernando.</p></aside></div>`;
+  return `<a class="back" href="#profesor">← Volver a preparar clase</a><div class="page-heading"><div><p class="eyebrow">REVISIÓN LOCAL</p><h1>${h(taskName(review.task))}</h1><p>Copia preparada el ${h(formatTime(review.createdAt))}</p></div></div><div class="detail-layout"><div>${review.task.questions.map((q,i)=>`<section class="panel"><p class="eyebrow">PREGUNTA ${i+1}</p><h2>${m(q.text)}</h2><p class="review-answer"><strong>Respuesta marcada: ${letters[review.answers[q.id]]}</strong> · ${m(q.options[review.answers[q.id]])}</p></section>`).join('')}<section class="panel"><h2>Solucionario adjunto</h2>${attachmentRows(review.files,true)}${review.note?`<h3>Comentario de ${h(student.name)}</h3><p class="prewrap">${h(review.note)}</p>`:''}</section></div><aside class="panel detail-aside"><h2>Tu revisión</h2><form id="review-form" data-id="${h(review.id)}"><label class="field-label">Nota sobre 20<input name="score" type="number" min="0" max="20" step="0.1" value="${review.score??''}" required></label><label class="field-label">Comentarios<textarea name="feedback" rows="6" maxlength="6000">${h(review.feedback||'')}</textarea></label><button class="button full" type="submit">Guardar revisión</button></form><button class="button secondary full" data-action="export-review" data-id="${h(review.id)}">${icon('download',18)} Descargar comentarios</button><p class="source-note">La revisión se guarda aquí. No se envía automáticamente a ${h(student.name)}.</p></aside></div>`;
 }
 function currentProgress() {
-  return createProgressReport(state.course,state.tasks,state.drafts,state.learned,state.theoryUpdatedAt);
+  return createProgressReport(state.course,state.tasks,state.drafts,state.learned,state.theoryUpdatedAt,undefined,student.id);
 }
 function renderParents() {
   const source=state.parentSource==='report'&&state.parentReport?'report':'local';
-  return parentsView(source==='report'?state.parentReport:currentProgress(),{source,hasReport:Boolean(state.parentReport),drive:state.drive,storage:state.storage});
+  return parentsView(source==='report'?state.parentReport:currentProgress(),{source,hasReport:Boolean(state.parentReport),drive:state.drive,storage:state.storage,search:location.search});
 }
 function audienceBar() {
-  return `<div class="audience-bar"><span class="audience-badge">${state.role==='parent'?'ACCESO A PADRES':'ACCESO A ESTUDIANTE'}</span><a href="#inicio">Cambiar de acceso</a></div>`;
+  return `<div class="audience-bar"><span class="audience-badge">${state.role==='parent'?'ACCESO A PADRES':`ACCESO DE ${h(student.name.toUpperCase())}`}</span><a href="#inicio">Cambiar de acceso</a></div>`;
 }
 function route(focus = false) {
   if (!state.course) return;
@@ -161,7 +167,7 @@ function route(focus = false) {
   if (tab !== 'revision') state.review = null;
   if(!state.role) {
     if(['curso','cursos','temario','tarea','tareas'].includes(tab))state.pendingRoute=location.hash;
-    app.innerHTML=accessView();
+    app.innerHTML=accessView(location.search);
   }
   else if(tab==='padres')app.innerHTML=renderParents();
   else {
@@ -172,8 +178,8 @@ function route(focus = false) {
     else if (tab === 'editar' && state.editor) content = renderEditor();
     else if (tab === 'revision' && state.reviews.some(r=>r.id===id)) {state.review=state.reviews.find(r=>r.id===id);content=renderReview(state.review);}
     else if(tab==='curso')content=renderCourse();
-    else if(tab==='temario')content=nav('temario/algebra')+courseOutline(state.course.courses.find(c=>c.id===id));
-    else content=nav('cursos')+courseCatalog(state.course.courses)+studentReportPanel(state.storage);
+    else if(tab==='temario')content=nav(`temario/${student.courseId}`)+(student.id==='josue'?preparationOutline(state.course):courseOutline(state.course.courses.find(c=>c.id===id)));
+    else content=nav('cursos')+(student.id==='josue'?competitionHome({...state.course,tasks:state.tasks},state.drafts,state.learned):courseCatalog(state.course.courses))+studentReportPanel(state.storage);
     app.innerHTML=audienceBar()+content;
   }
   if (focus) {document.querySelector('#main').focus({preventScroll:true}); window.scrollTo({top:0});}
@@ -182,7 +188,7 @@ async function refresh() {
   [state.drafts,state.files,state.localTasks,state.reviews] = await Promise.all(['drafts','files','tasks','reviews'].map(all));
   const settings = await all('settings');
   const received=settings.find(item=>item.id==='parent-report')?.report;
-  try{state.parentReport=received?validateProgressReport(received):null;}catch{state.parentReport=null;}
+  try{state.parentReport=received?validateProgressReport(received,student.id):null;}catch{state.parentReport=null;}
   state.theoryUpdatedAt=settings.find(item=>item.id==='learned')?.updatedAt||null;
   state.learned = (settings.find(s=>s.id==='learned')?.topics||[]).filter(id=>state.course.lesson.topics.some(t=>t.id===id));
   const merged = new Map(state.course.tasks.map(t=>[t.id,t]));
@@ -252,7 +258,7 @@ async function action(name,id) {
   }
   if(name==='export-progress') {
     await refresh();const report=currentProgress();
-    downloadJSON(report,`fernando-avance-${report.generatedAt.slice(0,10)}.json`);
+    downloadJSON(report,`${student.id}-avance-${report.generatedAt.slice(0,10)}.json`);
     notify('Informe descargado. En otro dispositivo, entra a Padres y selecciona «Abrir informe del estudiante».');return;
   }
   if(name==='refresh-parents'){await refresh();route();notify(state.parentSource==='report'?'Se muestra la copia recibida. Abre un informe nuevo para consultar cambios posteriores.':'Avance actualizado desde este navegador.');return;}
@@ -260,7 +266,7 @@ async function action(name,id) {
   if(name==='parent-report'&&state.parentReport){state.parentSource='report';route();return;}
 
   if(name==='new-task'||name==='edit-task') {
-    state.editor=name==='edit-task'?structuredClone(taskFor(id)):{id:crypto.randomUUID(),title:'',subject:'Álgebra · Capítulo 1',instructions:'Resuelve cada pregunta, marca una alternativa y usa «Subir al Drive» para entregar tu desarrollo en la carpeta del problema.',due:'',published:true,questions:[blankQuestion()]};
+    state.editor=name==='edit-task'?structuredClone(taskFor(id)):{id:crypto.randomUUID(),title:'',subject:student.subject,courseId:student.courseId,chapterId:state.course.lesson.id,instructions:'Resuelve cada pregunta, marca una alternativa y usa «Subir al Drive» para entregar tu desarrollo en la carpeta del problema.',due:'',published:true,questions:[blankQuestion()]};
     location.hash='editar';route(true);return;
   }
   if(name==='add-question') {captureEditor();if(state.editor.questions.length>=30) throw new Error('El máximo es 30 preguntas.');state.editor.questions.push(blankQuestion());document.querySelector('#editor-questions').innerHTML=state.editor.questions.map(editorQuestion).join('');document.querySelector('.edit-question:last-child textarea').focus();return;}
@@ -271,7 +277,7 @@ async function action(name,id) {
     await write([{store:'files',id,remove:true},{store:'drafts',value:{...draftFor(file.taskId),preparedAt:null}}]);await refresh();
     if(location.hash===`#tarea/${file.taskId}`){updateProblemControls(file.taskId);updateProgress(file.taskId);}return;
   }
-  if(name==='export-course') {downloadJSON(publicCourse(state.course,state.tasks),'course.json');notify('Contenido descargado. Súbelo a docs/data en GitHub y confirma el cambio para actualizar la web.');return;}
+  if(name==='export-course') {downloadJSON(publicCourse(state.course,state.tasks),student.courseFile);notify('Contenido descargado. Súbelo a docs/data en GitHub y confirma el cambio para actualizar la web.');return;}
   if(name==='open-review') {location.hash=`revision/${id}`;return;}
   if(name==='review-file') {
     const file=state.review?.files[Number(id)];if(!file)return;
@@ -311,8 +317,8 @@ app.addEventListener('change',event=>{
     const file=target.files[0];target.value='';if(!file)return;
     enqueue(async()=>{
       if(file.size>MAX_PROGRESS_FILE_SIZE)throw new Error('El informe de avance debe pesar hasta 2 MB.');
-      let parsed;try{parsed=JSON.parse(await file.text());}catch{throw new Error('No se pudo leer el informe. Selecciona el archivo JSON descargado desde Estudiante.');}
-      const report=validateProgressReport(parsed);
+      let parsed;try{parsed=JSON.parse(await file.text());}catch{throw new Error('No se pudo leer el informe. Selecciona el archivo JSON descargado desde el acceso del alumno.');}
+      const report=validateProgressReport(parsed,student.id);
       await put('settings',{id:'parent-report',report});state.parentReport=report;state.parentSource='report';
       route();notify('Informe abierto. Estás viendo una copia del avance guardado en la fecha indicada.');
     });
@@ -322,7 +328,7 @@ app.addEventListener('change',event=>{
     enqueue(async()=>{
       if(file.size>MAX_PACKAGE_SIZE)throw new Error('El archivo de entrega supera los 60 MB.');
       let input;try{input=JSON.parse(await file.text());}catch{throw new Error('No se pudo leer el archivo JSON.');}
-      const data=validateSubmission(input);
+      const data=validateSubmission(input,student.id);
       const existing=state.reviews.find(r=>r.id===data.id);
       if(existing) {notify('Este trabajo ya estaba importado. Se conserva tu revisión.');location.hash=`revision/${data.id}`;return;}
       await put('reviews',data);await refresh();location.hash=`revision/${data.id}`;notify('Trabajo importado. Puedes descargar los adjuntos y guardar tu revisión aquí.');
@@ -350,7 +356,7 @@ app.addEventListener('submit',event=>{
   }
 });
 let progressChannel;
-try{if(typeof BroadcastChannel==='function')progressChannel=new BroadcastChannel('fernando-progress');}catch{}
+try{if(typeof BroadcastChannel==='function')progressChannel=new BroadcastChannel(`${student.id}-progress`);}catch{}
 function signalProgress(){try{progressChannel?.postMessage({type:'progress-updated'});}catch{}}
 function refreshParentsFromStorage(){
   if(location.hash!=='#padres'||!state.storage)return;
@@ -367,10 +373,10 @@ window.addEventListener('hashchange',()=>enqueue(async()=>{if(location.hash==='#
 window.addEventListener('beforeunload',event=>{if(state.editor||state.pending){event.preventDefault();event.returnValue='';}});
 async function init() {
   try {
-    const response=await fetch(new URL('./data/course.json',import.meta.url),{cache:'no-cache'});
+    const response=await fetch(new URL(`./data/${student.courseFile}`,import.meta.url),{cache:'no-cache'});
     if(!response.ok)throw new Error('No se pudo cargar el curso. Vuelve a cargar la página.');
     const content=await response.json();
-    const driveResponse=await fetch(new URL('./data/drive.json',import.meta.url),{cache:'no-cache'});
+    const driveResponse=await fetch(new URL(`./data/${student.driveFile}`,import.meta.url),{cache:'no-cache'});
     if(!driveResponse.ok)throw new Error('No se pudo cargar la configuración de Drive.');
     state.drive=await driveResponse.json();
     state.course=publicCourse(content,content.tasks);state.tasks=state.course.tasks;

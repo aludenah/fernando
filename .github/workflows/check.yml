@@ -18,6 +18,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Instalar dependencias de comprobación
+        run: npm ci --ignore-scripts
       - name: Verificar JavaScript y contenido
         run: |
           node --check docs/app.js
@@ -25,6 +27,8 @@ jobs:
           node --check docs/sequence.js
           node --check docs/model.js
           node --check docs/store.js
+          node --check docs/students.js
+          node --check docs/competition-views.js
           node --check docs/course-views.js
           node --check docs/drive.js
           node --check docs/progress.js
