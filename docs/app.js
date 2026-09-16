@@ -1,12 +1,11 @@
 import {all, put, write, openDatabase} from './store.js';
-import {html as h, normalizeTask, normalizeAnswers, answerCount, isReady, validateFiles, matchesSignature, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js';
+import {html as h, normalizeTask, normalizeAnswers, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js';
 import {courseCatalog, courseOutline} from './course-views.js';
-import {uploadEndpoint, makeUploadUrl, validateReceipt} from './drive.js';
 
 const app = document.querySelector('#app');
 const message = document.querySelector('#message');
 const letters = ['A', 'B', 'C', 'D', 'E'];
-const state = {course: null, drive:{uploadUrl:'',problems:{}}, receipts:[], upload:null, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
+const state = {course: null, drive:{problems:{}}, tasks: [], localTasks: [], drafts: [], files: [], reviews: [], learned: [], storage: true, pending: 0, editor: null, review: null};
 const icons = {
   book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',
   arrow: '<path d="m9 18 6-6-6-6"/>',
@@ -20,6 +19,7 @@ const icons = {
 const icon = (name, size = 20) => `<svg aria-hidden="true" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${icons[name] || icons.book}</svg>`;
 const draftFor = id => state.drafts.find(d => d.id === id) || {id, answers: {}, note: ''};
 const filesFor = (id,questionId) => state.files.filter(f => f.taskId === id && (!questionId||f.questionId===questionId));
+const answersReady = (task,draft) => answerCount(task,draft?.answers) === task.questions.length;
 const taskFor = id => state.tasks.find(t => t.id === id);
 const isLocal = id => state.localTasks.some(t => t.id === id);
 const formatDate = date => date ? new Date(`${date}T12:00:00`).toLocaleDateString('es-PE', {day:'numeric', month:'short', year:'numeric'}) : 'Sin fecha límite';
@@ -36,7 +36,7 @@ function notify(text, error = false) {
   message.textContent = text;
 }
 function storageNote() {
-  return `<div class="local-note">${icon('file',18)}<p><strong>Un solucionario por problema.</strong> Las respuestas y copias locales se conservan en este dispositivo. ${state.drive.uploadUrl?'Usa «Subir a Drive» para enviar la respuesta marcada y tu desarrollo al profesor.':'Las carpetas de Drive están preparadas; la subida directa está pendiente de activación. Hasta entonces, los adjuntos solo se guardan aquí.'}</p></div>`;
+  return `<div class="local-note">${icon('file',18)}<p>Marca tus respuestas aquí. Para entregar el desarrollo, pulsa <strong>Subir al Drive</strong> en cada problema y añade el archivo a su carpeta. Las respuestas se conservan en este dispositivo.</p></div>`;
 }
 function nav(tab) {
   return `<nav class="tabs" aria-label="Secciones del aula">${[['cursos','Mis cursos'],['temario/algebra','Temario'],['curso','Capítulo 1'],['tareas','Práctica'],['profesor','Preparar clase']].map(([id,label]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
@@ -65,21 +65,20 @@ function renderTasks() {
   return `${heading()}${nav('tareas')}<div class="section-heading"><h2>Un paso más en cada tarea</h2><span>${tasks.length} tareas</span></div>${tasks.map((t,i)=>taskCard(t,i)).join('')}${storageNote()}`;
 }
 function attachmentRows(files, review = false) {
-  if (!files.length) return '<p class="muted">Todavía no has adjuntado archivos.</p>';
+  if (!files.length) return '<p class="muted">Esta copia contiene las respuestas. Revisa los solucionarios en las carpetas de Drive de cada problema.</p>';
   return files.map((file, index)=>`<div class="file-row">${icon('file')}<span class="file-name"><strong>${h(file.name)}</strong><small>${review&&file.questionId?`Problema ${state.review?.task.questions.findIndex(q=>q.id===file.questionId)+1} · `:''}${(file.size/1024/1024).toFixed(2)} MB</small></span><button class="icon-button" data-action="${review?'review-file':'download-file'}" data-id="${review?index:h(file.id)}" aria-label="Descargar ${h(file.name)}">${icon('download',18)}</button>${!review?`<button class="icon-button remove-file" data-action="remove-file" data-id="${h(file.id)}" aria-label="Quitar ${h(file.name)}">×</button>`:''}</div>`).join('');
 }
 function questionWork(task,question) {
-  const folder=state.drive.problems[question.id],answer=draftFor(task.id).answers[question.id];
-  const receipts=state.receipts.filter(r=>r.questionId===question.id);
-  return `<div class="problem-work"><div class="section-heading"><h3>Solucionario del problema ${question.number}</h3>${receipts.some(r=>r.answer===answer)?'<span class="badge prepared">Enviado a Drive</span>':''}</div><div id="files-${h(question.id)}">${attachmentRows(filesFor(task.id,question.id))}</div><div class="problem-actions"><label class="button secondary file-picker">${icon('file',17)} Adjuntar copia local<input type="file" data-solution="${h(question.id)}" data-task="${h(task.id)}" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" aria-label="Adjuntar solucionario del problema ${question.number}" ${!state.storage?'disabled':''}></label><button class="button" data-action="upload-drive" data-id="${h(question.id)}" ${!folder||!state.drive.uploadUrl||!Number.isInteger(answer)||!state.storage?'disabled':''}>${icon('upload',17)} Subir a Drive</button>${folder?`<a class="folder-link" href="${h(folder.folderUrl)}" target="_blank" rel="noopener noreferrer">Carpeta del problema ↗</a>`:''}</div><p class="problem-upload-note">PDF o foto · hasta 10 MB por archivo. ${!folder?'Carpeta de Drive pendiente para este problema.':!state.drive.uploadUrl?'Subida directa pendiente de activación; abrir la carpeta requiere una cuenta autorizada.':!Number.isInteger(answer)?'Marca primero una respuesta para enviarla junto con tu solucionario.':'El envío usa un código de entrega que te dará el profesor.'}</p>${receipts.length?`<ul class="drive-receipts">${receipts.map(r=>`<li><a href="${h(r.fileUrl)}" target="_blank" rel="noopener noreferrer">${h(r.name)}</a><span>${r.answer===answer?`Alternativa ${letters[r.answer]} enviada`:'La respuesta cambió: envía de nuevo'} · ${h(formatTime(r.uploadedAt))}</span></li>`).join('')}</ul>`:''}</div>`;
+  const folder=state.drive.problems[question.id];
+  return `<div class="problem-work">${folder?`<a class="button" href="${h(folder.folderUrl)}" target="_blank" rel="noopener noreferrer">Subir al Drive</a>`:'<button class="button" disabled title="El profesor debe asignar una carpeta a este problema.">Subir al Drive</button>'}</div>`;
 }
 function renderTask(task) {
-  const draft = draftFor(task.id), files = filesFor(task.id), count = answerCount(task, draft.answers);
+  const draft = draftFor(task.id), count = answerCount(task, draft.answers);
   return `<a class="back" href="#tareas">← Volver a mis tareas</a><div class="page-heading"><div><p class="eyebrow">${h(task.subject)}</p><h1>${h(taskName(task))}</h1><p>${task.questions.length} preguntas · ${h(formatDate(task.due))}</p></div><button class="button secondary" data-action="edit-task" data-id="${h(task.id)}">Editar tarea</button></div>${isLocal(task.id)?'<p class="local-edit-notice">Esta versión tiene cambios guardados únicamente en este dispositivo.</p>':''}${storageNote()}
   <div class="detail-layout"><div><section class="panel"><h2>Antes de empezar</h2><p class="prewrap instructions">${h(task.instructions)}</p></section>
   ${task.questions.map((question,index)=>`<fieldset class="panel question-card" id="problem-${h(question.id)}"><legend><span class="question-number">${String(index+1).padStart(2,'0')}</span><span>${h(question.text)}</span></legend><div class="options">${question.options.map((option,i)=>`<label class="answer-option ${draft.answers[question.id]===i?'selected':''}"><input type="radio" name="${h(question.id)}" value="${i}" data-answer="${h(question.id)}" data-task="${h(task.id)}" ${draft.answers[question.id]===i?'checked':''} ${!state.storage?'disabled':''}><span class="option-letter">${letters[i]}</span><span>${h(option)}</span></label>`).join('')}</div><div id="work-${h(question.id)}">${questionWork(task,question)}</div></fieldset>`).join('')}
-  <section class="panel"><h2>Mi comentario sobre este nivel</h2><label class="field-label" for="student-note">¿Qué necesitas repasar?</label><textarea id="student-note" data-task="${h(task.id)}" rows="3" maxlength="4000" placeholder="Anota una duda para la próxima clase." ${!state.storage?'disabled':''}>${h(draft.note)}</textarea><p id="save-status" class="save-status" aria-live="polite">${state.storage?'Respuestas y copias locales guardadas en este dispositivo.':'No se puede guardar en este navegador.'}</p></section></div>
-  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Prepara tu trabajo</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="attachment-count" class="progress-check">${icon('file',18)} ${files.length} archivo${files.length===1?'':'s'} adjunto${files.length===1?'':'s'}</p><p id="drive-count" class="progress-check">${task.questions.filter(q=>state.receipts.some(r=>r.questionId===q.id&&r.answer===draft.answers[q.id])).length} de ${task.questions.length} problemas enviados a Drive</p><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!isReady(task,draft,files)?'disabled':''}>${icon('download',18)} Descargar mi trabajo</button><p id="ready-note" class="muted">${isReady(task,draft,files)?'Tu copia incluirá las respuestas y todos los adjuntos.':'Marca todas las respuestas y adjunta una copia local para cada problema.'}</p><div class="delivery-note"><strong>Descargar y enviar son acciones distintas.</strong><p>La descarga conserva una copia local. Solo los archivos con confirmación «Enviado a Drive» han llegado a la carpeta del profesor.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section><div class="quiet-tip"><strong>Revisa antes de terminar</strong><p>¿Marcaste una alternativa por pregunta? ¿Se leen bien tus fotos? ¿Incluiste tus operaciones?</p></div></aside></div>`;
+  <section class="panel"><h2>Mi comentario sobre este nivel</h2><label class="field-label" for="student-note">¿Qué necesitas repasar?</label><textarea id="student-note" data-task="${h(task.id)}" rows="3" maxlength="4000" placeholder="Anota una duda para la próxima clase." ${!state.storage?'disabled':''}>${h(draft.note)}</textarea><p id="save-status" class="save-status" aria-live="polite">${state.storage?'Respuestas guardadas en este dispositivo.':'No se puede guardar en este navegador.'}</p></section></div>
+  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Prepara tu trabajo</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>En Drive, usa «Nuevo → Subir archivo» y comprueba que aparezca tu foto o PDF. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section><div class="quiet-tip"><strong>Revisa antes de terminar</strong><p>¿Marcaste una alternativa por pregunta? ¿Se leen bien tus fotos? ¿Incluiste tus operaciones?</p></div></aside></div>`;
 }
 function renderTeacher() {
   return `<div class="page-heading"><div><p class="eyebrow">HERRAMIENTAS DEL PROFESOR</p><h1>Prepara la próxima clase.</h1><p>Crea tareas y revisa copias de trabajo desde este dispositivo.</p></div><button class="button" data-action="new-task" ${!state.storage?'disabled':''}>${icon('plus',18)} Nueva tarea</button></div>${nav('profesor')}
@@ -90,7 +89,7 @@ function renderTeacher() {
   <section class="panel"><h2>Trabajos importados</h2>${state.reviews.length?state.reviews.map(r=>`<button class="review-row" data-action="open-review" data-id="${h(r.id)}"><span><strong>${h(r.task.title)}</strong><small>${h(formatTime(r.createdAt))}</small></span><span class="badge ${r.score!=null?'prepared':''}">${r.score!=null?`${r.score}/20`:'Por revisar'}</span>${icon('arrow',18)}</button>`).join(''):'<p class="muted">Aún no has importado trabajos para revisar.</p>'}</section>`;
 }
 function renderDriveSettings() {
-  return `<section class="panel drive-settings"><div class="section-heading"><h2>Solucionarios en Google Drive</h2><span class="badge ${state.drive.uploadUrl?'prepared':''}">${state.drive.uploadUrl?'URL configurada':'Pendiente de activación'}</span></div><p>Las 30 carpetas ya están preparadas. La subida desde cada problema necesita autorizar una aplicación de Google Apps Script en tu cuenta.</p><div class="button-row"><a class="button secondary" href="${h(state.drive.rootFolderUrl)}" target="_blank" rel="noopener noreferrer">Abrir carpetas del aula ↗</a><a class="button secondary" href="https://github.com/aludenah/fernando/blob/main/integrations/google-drive/README.md" target="_blank" rel="noopener noreferrer">Ver instrucciones de activación ↗</a></div><form id="drive-settings"><label class="field-label" for="drive-url">URL de la aplicación de Google Apps Script</label><input type="url" id="drive-url" name="url" value="${h(state.drive.uploadUrl)}" placeholder="https://script.google.com/macros/s/…/exec" required><p class="source-note">Pega solo la URL de tu propia aplicación. El código de entrega se configura en Google, nunca en el repositorio.</p><button class="button" type="submit">Guardar conexión en este dispositivo</button><button class="button secondary" type="button" data-action="export-drive-config">Descargar drive.json para publicar</button></form><p class="source-note">Para activar la conexión en todos los dispositivos, reemplaza docs/data/drive.json en GitHub con el archivo descargado. La primera subida confirmará el funcionamiento.</p></section>`;
+  return `<section class="panel drive-settings"><h2>Solucionarios en Google Drive</h2><p>Cada botón «Subir al Drive» abre la carpeta de su problema en una pestaña nueva.</p><a class="button secondary" href="${h(state.drive.rootFolderUrl)}" target="_blank" rel="noopener noreferrer">Abrir carpetas del aula ↗</a><h3>Permisos de las carpetas</h3><p>En la carpeta principal, selecciona Compartir → Acceso general → Cualquier persona con el enlace → Editor. Los permisos se aplican a sus subcarpetas.</p><p class="source-note">El permiso Editor permite subir, modificar y eliminar archivos. Para subir archivos, Fernando debe iniciar sesión en Google. El material del profesor se guarda por separado.</p></section>`;
 }
 function editorQuestion(question, index) {
   return `<fieldset class="panel edit-question" data-question="${h(question.id)}"><legend>Pregunta ${index+1}</legend><label class="field-label">Enunciado<textarea data-field="text" rows="2" required maxlength="3000">${h(question.text)}</textarea></label><div class="edit-options">${question.options.map((option,i)=>`<label><span>${letters[i]}</span><input data-option="${i}" aria-label="Pregunta ${index+1}, alternativa ${letters[i]}" value="${h(option)}" required maxlength="800"></label>`).join('')}</div><button class="text-button" type="button" data-action="remove-question" data-id="${h(question.id)}">Quitar pregunta</button></fieldset>`;
@@ -104,7 +103,6 @@ function renderReview(review) {
 }
 function route(focus = false) {
   if (!state.course) return;
-  state.upload=null;
   const [tab,id] = location.hash.slice(1).split('/');
   if (tab !== 'editar') state.editor = null;
   if (tab !== 'revision') state.review = null;
@@ -121,9 +119,6 @@ function route(focus = false) {
 async function refresh() {
   [state.drafts,state.files,state.localTasks,state.reviews] = await Promise.all(['drafts','files','tasks','reviews'].map(all));
   const settings = await all('settings');
-  state.receipts=settings.find(s=>s.id==='drive-receipts')?.items||[];
-  const localUpload=settings.find(s=>s.id==='drive-upload-url')?.url;
-  if(localUpload)state.drive.uploadUrl=uploadEndpoint(localUpload);
   state.learned = (settings.find(s=>s.id==='learned')?.topics||[]).filter(id=>state.course.lesson.topics.some(t=>t.id===id));
   const merged = new Map(state.course.tasks.map(t=>[t.id,t]));
   for (const task of state.localTasks) merged.set(task.id,normalizeTask(task));
@@ -149,16 +144,14 @@ async function saveDraft(taskId, changes) {
 }
 function updateProgress(id) {
   if(location.hash!==`#tarea/${id}`)return;
-  const task=taskFor(id),draft=draftFor(id),files=filesFor(id);
+  const task=taskFor(id),draft=draftFor(id);
   if(!task||!document.querySelector('#answer-count')) return;
   document.querySelector('#answer-count').textContent=answerCount(task,draft.answers);
   document.querySelector('#answer-progress').value=answerCount(task,draft.answers);
-  document.querySelector('#attachment-count').innerHTML=`${icon('file',18)} ${files.length} archivo${files.length===1?'':'s'} adjunto${files.length===1?'':'s'}`;
-  document.querySelector('#export-submission').disabled=!state.storage||!isReady(task,draft,files);
-  document.querySelector('#ready-note').textContent=isReady(task,draft,files)?'Tu copia incluirá las respuestas y todos los adjuntos.':'Marca todas las respuestas y adjunta una copia local para cada problema.';
+  document.querySelector('#export-submission').disabled=!state.storage||!answersReady(task,draft);
+  document.querySelector('#ready-note').textContent=answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.';
   document.querySelector('#prepared-note').textContent=draft.preparedAt?`Última copia: ${formatTime(draft.preparedAt)}`:'';
-  const driveCount=document.querySelector('#drive-count');
-  if(driveCount)driveCount.textContent=`${task.questions.filter(q=>state.receipts.some(r=>r.questionId===q.id&&r.answer===draft.answers[q.id])).length} de ${task.questions.length} problemas enviados a Drive`;
+
 }
 function updateProblemControls(taskId) {
   if(location.hash!==`#tarea/${taskId}`)return;
@@ -167,17 +160,6 @@ function updateProblemControls(taskId) {
     const target=document.getElementById(`work-${question.id}`);
     if(target)target.innerHTML=questionWork(task,question);
   }
-}
-function openDriveUpload(questionId) {
-  const task=state.tasks.find(t=>t.questions.some(q=>q.id===questionId));
-  if(!task||!state.drive.problems[questionId]||!state.drive.uploadUrl)throw new Error('La subida a Drive todavía no está activada.');
-  const answer=draftFor(task.id).answers[questionId];
-  if(!Number.isInteger(answer))throw new Error('Marca una alternativa antes de enviar el solucionario.');
-  state.upload={questionId,taskId:task.id,answer,nonce:crypto.randomUUID()};
-  document.querySelector('#drive-upload-dialog')?.remove();
-  const dialog=document.createElement('dialog');dialog.id='drive-upload-dialog';dialog.className='upload-dialog';
-  dialog.innerHTML=`<div class="dialog-heading"><div><p class="eyebrow">SOLUCIONARIO INDIVIDUAL</p><h2>Enviar el problema ${task.questions.findIndex(q=>q.id===questionId)+1}</h2></div><button class="icon-button" data-action="close-drive" aria-label="Cerrar subida">×</button></div><p>Se enviará la alternativa ${letters[answer]} junto con el archivo que selecciones.</p><iframe title="Subir el solucionario a Google Drive" src="${h(makeUploadUrl(state.drive.uploadUrl,state.upload))}" referrerpolicy="no-referrer" allow="clipboard-write"></iframe><p class="source-note">Espera la confirmación de Google antes de cerrar esta ventana.</p>`;
-  app.append(dialog);dialog.addEventListener('close',()=>{state.upload=null;});dialog.showModal();
 }
 function download(blob,name) {
   const url=URL.createObjectURL(blob),a=document.createElement('a');
@@ -191,23 +173,6 @@ async function base64(blob) {
   for(let offset=0;offset<bytes.length;offset+=32768) chunks.push(String.fromCharCode(...bytes.subarray(offset,offset+32768)));
   return btoa(chunks.join(''));
 }
-async function upload(files,taskId,questionId) {
-  const selected=Array.from(files);
-  if(!selected.length) return;
-  if(!taskFor(taskId)?.questions.some(q=>q.id===questionId))throw new Error('Problema no válido.');
-  validateFiles([...filesFor(taskId,questionId),...selected]);
-  if([...filesFor(taskId),...selected].reduce((n,f)=>n+f.size,0)>40*1024*1024)throw new Error('La copia local de este nivel no puede superar 40 MB.');
-  const prepared=[];
-  for(const file of selected) {
-    if(!matchesSignature(new Uint8Array(await file.slice(0,16).arrayBuffer()),file.type)) throw new Error(`${file.name}: el contenido no corresponde al tipo de archivo.`);
-    prepared.push({id:crypto.randomUUID(),taskId,questionId,name:file.name,type:file.type,size:file.size,blob:file});
-  }
-  const draft={...draftFor(taskId),preparedAt:null,updatedAt:new Date().toISOString()};
-  await write([...prepared.map(value=>({store:'files',value})),{store:'drafts',value:draft}]);
-  await refresh();
-  if(location.hash===`#tarea/${taskId}`) {updateProblemControls(taskId);updateProgress(taskId);}
-  notify(`${selected.length} archivo${selected.length===1?'':'s'} guardado${selected.length===1?'':'s'} en este dispositivo. Aún no se ha enviado al profesor.`);
-}
 function captureEditor() {
   const form=document.querySelector('#task-editor');
   if(!form||!state.editor) return;
@@ -216,11 +181,8 @@ function captureEditor() {
 }
 const blankQuestion=()=>({id:crypto.randomUUID(),text:'',options:['','','','','']});
 async function action(name,id) {
-  if(name==='upload-drive'){openDriveUpload(id);return;}
-  if(name==='close-drive'){document.querySelector('#drive-upload-dialog')?.close();return;}
-  if(name==='export-drive-config'){downloadJSON({...state.drive,status:state.drive.uploadUrl?'configured':'pending'},'drive.json');notify('Sube drive.json a docs/data en GitHub para compartir la conexión con todos los dispositivos.');return;}
   if(name==='new-task'||name==='edit-task') {
-    state.editor=name==='edit-task'?structuredClone(taskFor(id)):{id:crypto.randomUUID(),title:'',subject:'Álgebra · Capítulo 1',instructions:'Resuelve cada pregunta, marca una alternativa y adjunta fotos o un PDF con tu desarrollo.',due:'',published:true,questions:[blankQuestion()]};
+    state.editor=name==='edit-task'?structuredClone(taskFor(id)):{id:crypto.randomUUID(),title:'',subject:'Álgebra · Capítulo 1',instructions:'Resuelve cada pregunta, marca una alternativa y usa «Subir al Drive» para entregar tu desarrollo en la carpeta del problema.',due:'',published:true,questions:[blankQuestion()]};
     location.hash='editar';route(true);return;
   }
   if(name==='add-question') {captureEditor();if(state.editor.questions.length>=30) throw new Error('El máximo es 30 preguntas.');state.editor.questions.push(blankQuestion());document.querySelector('#editor-questions').innerHTML=state.editor.questions.map(editorQuestion).join('');document.querySelector('.edit-question:last-child textarea').focus();return;}
@@ -234,11 +196,11 @@ async function action(name,id) {
   if(name==='export-course') {downloadJSON(publicCourse(state.course,state.tasks),'course.json');notify('Contenido descargado. Súbelo a docs/data en GitHub y confirma el cambio para actualizar la web.');return;}
   if(name==='export-submission') {
     const task=taskFor(id),draft=draftFor(id),files=filesFor(id);
-    if(!isReady(task,draft,files)) throw new Error('Completa las respuestas y adjunta tu solucionario.');
+    if(!answersReady(task,draft)) throw new Error('Completa todas las respuestas antes de descargar la copia.');
     const createdAt=new Date().toISOString();
-    const data={format:'fernando-entrega',version:2,id:crypto.randomUUID(),createdAt,task:normalizeTask(task),answers:normalizeAnswers(task,draft.answers),note:draft.note||'',files:await Promise.all(files.map(async f=>({name:f.name,type:f.type,size:f.size,questionId:f.questionId,data:await base64(f.blob)})))};
+    const data={format:'fernando-entrega',version:3,id:crypto.randomUUID(),createdAt,task:normalizeTask(task),answers:normalizeAnswers(task,draft.answers),note:draft.note||'',files:await Promise.all(files.map(async f=>({name:f.name,type:f.type,size:f.size,questionId:f.questionId,data:await base64(f.blob)})))};
     downloadJSON(data,`fernando-${task.id}-${createdAt.slice(0,10)}.json`);
-    await put('drafts',{...draft,preparedAt:createdAt});await refresh();updateProgress(id);notify('Copia descargada con respuestas y archivos. Todavía no se ha enviado al profesor.');return;
+    await put('drafts',{...draft,preparedAt:createdAt});await refresh();updateProgress(id);notify('Copia descargada. Los solucionarios se entregan desde «Subir al Drive» en cada problema.');return;
   }
   if(name==='open-review') {location.hash=`revision/${id}`;return;}
   if(name==='review-file') {
@@ -263,7 +225,6 @@ app.addEventListener('change',event=>{
     target.closest('.options').querySelectorAll('label').forEach(label=>label.classList.toggle('selected',label.querySelector('input').checked));
     enqueue(async()=>{try{await saveDraft(id,{answers:{...draftFor(id).answers,[questionId]:selected}});}catch(error){if(location.hash===`#tarea/${id}`)route();throw error;}});
   }
-  if(target.matches('[data-solution]')) {const files=Array.from(target.files),id=target.dataset.task,questionId=target.dataset.solution;target.value='';enqueue(()=>upload(files,id,questionId));}
   if(target.matches('[data-topic]')) {
     const id=target.dataset.topic,checked=target.checked;
     enqueue(async()=>{
@@ -292,10 +253,6 @@ app.addEventListener('input',event=>{
 });
 app.addEventListener('submit',event=>{
   event.preventDefault();const form=event.target;
-  if(form.id==='drive-settings') {
-    const url=new FormData(form).get('url');
-    enqueue(async()=>{const valid=uploadEndpoint(url);await put('settings',{id:'drive-upload-url',url:valid});state.drive.uploadUrl=valid;route();notify('URL guardada en este dispositivo. Descarga drive.json para publicarla en GitHub; comprueba la conexión con la primera subida.');});
-  }
   if(form.id==='task-editor') {
     captureEditor();const input=structuredClone(state.editor);
     enqueue(async()=>{
@@ -315,18 +272,6 @@ app.addEventListener('submit',event=>{
   }
 });
 window.addEventListener('hashchange',()=>route(true));
-window.addEventListener('message',event=>{
-  let receipt;try{receipt=validateReceipt(event,state.upload);}catch{return;}
-  if(!receipt)return;
-  const taskId=state.upload.taskId;
-  enqueue(async()=>{
-    const items=[...state.receipts.filter(r=>r.id!==receipt.id),receipt];
-    await put('settings',{id:'drive-receipts',items});state.receipts=items;
-    updateProblemControls(taskId);updateProgress(taskId);
-    document.querySelector('#drive-upload-dialog')?.close();
-    notify('Solucionario y respuesta enviados a Google Drive. El profesor ya puede revisarlos.');
-  });
-});
 window.addEventListener('beforeunload',event=>{if(state.editor||state.pending){event.preventDefault();event.returnValue='';}});
 async function init() {
   try {
@@ -335,7 +280,7 @@ async function init() {
     const content=await response.json();
     const driveResponse=await fetch(new URL('./data/drive.json',import.meta.url),{cache:'no-cache'});
     if(!driveResponse.ok)throw new Error('No se pudo cargar la configuración de Drive.');
-    state.drive=await driveResponse.json();state.drive.uploadUrl=uploadEndpoint(state.drive.uploadUrl||'');
+    state.drive=await driveResponse.json();
     state.course=publicCourse(content,content.tasks);state.tasks=state.course.tasks;
     try{await openDatabase();await refresh();}catch(error){state.storage=false;notify(`Puedes leer el curso, pero no guardar respuestas o archivos. ${storageError(error)}`,true);}
     route();

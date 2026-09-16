@@ -66,17 +66,17 @@ export function matchesSignature(bytes, type) {
   return type === 'image/webp' && starts([82, 73, 70, 70]) && [87, 69, 66, 80].every((n, i) => bytes[i + 8] === n);
 }
 export function validateSubmission(input) {
-  if (!object(input) || input.format !== 'fernando-entrega' || ![1,2].includes(input.version)) throw new Error('Este archivo no es una entrega de Fernando.');
+  if (!object(input) || input.format !== 'fernando-entrega' || ![1,2,3].includes(input.version)) throw new Error('Este archivo no es una entrega de Fernando.');
   const task = normalizeTask(input.task);
   const answers = normalizeAnswers(task, input.answers);
   if (answerCount(task, answers) !== task.questions.length) throw new Error('La entrega tiene preguntas sin responder.');
-  if (!Array.isArray(input.files) || input.files.length === 0) throw new Error('La entrega no incluye el solucionario.');
-  if(input.version===2) {
+  if (!Array.isArray(input.files) || (input.files.length === 0 && input.version !== 3)) throw new Error('La entrega no incluye el solucionario.');
+  if(input.version>=2) {
     if(input.files.length>task.questions.length*10)throw new Error('La entrega tiene demasiados archivos.');
     if(input.files.reduce((total,f)=>total+f.size,0)>MAX_TOTAL_SIZE)throw new Error('La copia supera 40 MB; conserva los adjuntos más pesados en Drive.');
     for(const q of task.questions)validateFiles(input.files.filter(f=>f.questionId===q.id));
     if(input.files.some(f=>!task.questions.some(q=>q.id===f.questionId)))throw new Error('Un adjunto no corresponde a ningún problema.');
-    if(!task.questions.every(q=>input.files.some(f=>f.questionId===q.id)))throw new Error('Falta el solucionario de algún problema.');
+    if(input.version===2&&!task.questions.every(q=>input.files.some(f=>f.questionId===q.id)))throw new Error('Falta el solucionario de algún problema.');
   } else validateFiles(input.files);
   const files = input.files.map(file => {
     if (typeof file.data !== 'string' || file.data.length !== 4 * Math.ceil(file.size / 3) || /[^A-Za-z0-9+/=]/.test(file.data)) throw new Error('Un adjunto está dañado.');
@@ -84,7 +84,7 @@ export function validateSubmission(input) {
     try { decoded = atob(file.data); } catch { throw new Error('Un adjunto está dañado.'); }
     const bytes = Uint8Array.from(decoded, c => c.charCodeAt(0));
     if (bytes.length !== file.size || !matchesSignature(bytes, file.type)) throw new Error('El contenido de un adjunto no coincide con su tipo.');
-    return { name: file.name, type: file.type, size: file.size, data: file.data, ...(input.version===2?{questionId:file.questionId}:{}) };
+    return { name: file.name, type: file.type, size: file.size, data: file.data, ...(input.version>=2?{questionId:file.questionId}:{}) };
   });
   if (typeof input.createdAt !== 'string' || Number.isNaN(Date.parse(input.createdAt))) throw new Error('Fecha de entrega no válida.');
   if (input.note != null && (typeof input.note !== 'string' || input.note.length > 4000)) throw new Error('El comentario es demasiado largo.');

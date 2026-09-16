@@ -15,27 +15,28 @@ Los naturales empiezan en 1, según la convención del libro; ℕ₀ incluye el 
 
 ## Solucionarios en Google Drive
 
-Las carpetas ya se crearon en el Drive del profesor, organizadas por curso, capítulo, nivel y problema. `docs/data/drive.json` contiene los enlaces exactos a las 30 carpetas de ejercicios.
+Cada problema muestra un único botón **Subir al Drive**, que abre su carpeta específica en una pestaña nueva. Fernando añade allí la foto o PDF mediante **Nuevo → Subir archivo**. No se requiere Apps Script, URL de implementación ni código de entrega.
 
-**La subida directa está preparada, pendiente de la autorización y publicación inicial de Google Apps Script por el propietario de Drive.** Hasta esa activación, el botón de envío permanece deshabilitado y la web explica que los adjuntos solo se guardan en este dispositivo.
+Las 30 carpetas ya existen, organizadas por curso, capítulo, nivel y problema. Sus enlaces están en `docs/data/drive.json`.
 
-[Instrucciones y código para activar la recepción](integrations/google-drive/README.md). La implementación utiliza un código de entrega elegido por el profesor, sin pedir correo ni una cuenta de Google a Fernando. El código se configura en Google; nunca se publica en GitHub. Las carpetas mantienen sus permisos privados.
+**Los permisos públicos deben configurarse en Drive.** La conexión disponible permite organizar carpetas, pero no activar «Cualquier persona con el enlace» para carpetas. [Pasos para compartir todas desde la carpeta principal](integrations/google-drive/README.md).
 
-Tras activar la conexión, cada envío guarda el PDF o foto y un registro con el enunciado, la alternativa marcada, el comentario y la fecha. La página muestra **Enviado a Drive** únicamente al recibir una confirmación válida del servidor. Si la respuesta cambia, solicita un nuevo envío. Una copia local o una descarga no equivale a una entrega al profesor.
+El material del profesor está separado de las entregas, en la carpeta privada **Fernando - Material del profesor** de Mi unidad. Así no hereda los permisos de la carpeta del aula.
 
-## Trabajo local y revisión
+## Respuestas y revisión
 
-- Respuestas, comentarios, temas repasados y archivos locales se conservan en IndexedDB de este navegador. No se sincronizan entre dispositivos.
-- Se aceptan PDF, JPG, PNG y WEBP, hasta 10 MB por archivo y 10 archivos por problema. La copia local de un nivel admite 40 MB en total.
-- **Descargar mi trabajo** genera una copia JSON con las respuestas y los adjuntos, identificando a qué problema corresponde cada archivo. Requiere responder los diez problemas y adjuntar un archivo local para cada uno.
-- **Preparar clase** permite importar esa copia, descargar sus adjuntos, anotar una calificación sobre 20 y exportar los comentarios del profesor. También admite las copias de la versión anterior.
+- Las alternativas y comentarios se guardan en el navegador de Fernando.
+- **Descargar mis respuestas** permite conservar una copia cuando estén respondidas las diez preguntas del nivel. No exige adjuntar archivos locales.
+- La copia JSON versión 3 puede incluir archivos locales conservados de versiones anteriores. El profesor puede importarla desde **Preparar clase** para revisar las respuestas, puntuar sobre 20 y descargar sus comentarios.
+- Las copias de trabajo de las versiones 1 y 2 siguen siendo compatibles.
+- Los solucionarios se suben dentro de Drive. Abrir una carpeta no confirma una entrega; la página no consulta sus archivos ni registra una subida automática.
 - Las herramientas del profesor son un editor local; no son una zona autenticada. Las claves privadas no se incluyen en la web.
 
 ## Añadir y publicar contenido
 
 1. En **Preparar clase**, crea o edita una tarea y guárdala en el dispositivo.
 2. Descarga `course.json` y reemplaza `docs/data/course.json` en GitHub, confirmando el cambio.
-3. Para habilitar envíos en preguntas nuevas o modificadas, actualiza también el mapa de problemas de Apps Script y `drive.json`, según las instrucciones de la integración.
+3. Para habilitar envíos en preguntas nuevas o modificadas, crea sus carpetas y añade los enlaces correspondientes a `drive.json`.
 
 Los borradores también forman parte del archivo público. No incluyas datos privados ni claves de respuestas. Los cursos y capítulos tienen identificadores propios, para ampliar la colección sin mezclar entregas. Las preguntas modificadas deben recibir un identificador nuevo si cambia su significado o sus alternativas.
 
@@ -51,15 +52,15 @@ npm run check
 npm start
 ```
 
-Abre `http://localhost:4173`. La aplicación estática no tiene dependencias de paquetes ni necesita compilación. Las pruebas comprueban el contenido público, los archivos por problema, las confirmaciones de envío y la validación del receptor de Apps Script con servicios simulados. Las pruebas locales no sustituyen la primera entrega real tras autorizar Google.
+Abre `http://localhost:4173`. La aplicación estática no tiene dependencias de paquetes ni necesita compilación. Las pruebas comprueban el contenido público y la compatibilidad de las copias de respuestas. El código y las pruebas de la antigua recepción con Apps Script se conservan como referencia, pero ya no se utilizan desde la web.
 
 | Ruta | Contenido |
 | --- | --- |
 | `docs/data/course.json` | Catálogo, 28 capítulos, teoría y 30 problemas |
-| `docs/data/drive.json` | Carpeta de cada problema y URL del receptor |
+| `docs/data/drive.json` | Enlace a la carpeta de cada problema |
 | `docs/app.js` | Respuestas, archivos, editor y revisión |
 | `docs/course-views.js` | Catálogo de cursos y temario |
-| `docs/drive.js` | Enlace de subida y comprobación de confirmaciones |
+| `docs/drive.js` | Utilidades de la integración anterior, sin uso en la web |
 | `docs/model.js`, `docs/store.js` | Validaciones y almacenamiento local |
-| `integrations/google-drive/` | Receptor de archivos y activación inicial |
+| `integrations/google-drive/` | Guía de permisos y receptor anterior conservado |
 | `tests/` | Pruebas automáticas |
