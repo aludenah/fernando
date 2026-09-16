@@ -1,19 +1,20 @@
 import { z } from 'zod';
 import { AppError,context,db,errorResponse,secureWrite,teacher } from '@/lib/classroom-server';
 export const dynamic='force-dynamic';
-const question=z.object({id:z.string().min(1).max(80),text:z.string().trim().min(1).max(4000),options:z.array(z.string().trim().min(1).max(1000)).min(2).max(5),correct:z.number().int().min(0).max(4)}).refine(q=>q.correct<q.options.length);
-const taskSchema=z.object({id:z.string().uuid().optional(),title:z.string().trim().min(1).max(160),subject:z.string().trim().min(1).max(80),instructions:z.string().max(8000),due:z.string().regex(/^$|^\d{4}-\d{2}-\d{2}$/),questions:z.array(question).min(1).max(60),published:z.boolean()}).refine(t=>new Set(t.questions.map(q=>q.id)).size===t.questions.length);
+import { taskSchema } from '@/lib/task-schema';
+import { configuredChapter,ensureChapterTasks } from '@/lib/course-server';
 export async function GET(){try{
- const c=await context();if(c.role==='setup')return Response.json({role:'setup',email:c.user.email,tasks:[],submissions:[],files:[]},{headers:{'Cache-Control':'no-store'}});
+ const c=await context();const course=configuredChapter();if(c.role==='teacher'&&course)await ensureChapterTasks(course.tasks);if(c.role==='setup')return Response.json({role:'setup',email:c.user.email,tasks:[],submissions:[],files:[]},{headers:{'Cache-Control':'no-store'}});
  const all=await db().prepare(c.role==='teacher'?'SELECT * FROM tasks ORDER BY created DESC':'SELECT * FROM tasks WHERE published=1 ORDER BY created DESC').all<any>();
  const subs=await db().prepare(c.role==='teacher'?'SELECT * FROM submissions':'SELECT s.* FROM submissions s JOIN tasks t ON t.id=s.task WHERE t.published=1 AND s.student=?').bind(...(c.role==='teacher'?[]:[c.user.userId])).all<any>();
  const attached=await db().prepare(c.role==='teacher'?'SELECT id,task,kind,name,mime,size FROM files':"SELECT f.id,f.task,f.kind,f.name,f.mime,f.size FROM files f JOIN tasks t ON t.id=f.task WHERE t.published=1 AND (f.kind='material' OR f.owner=?)").bind(...(c.role==='teacher'?[]:[c.user.userId])).all<any>();
- const tasks=all.results.map(t=>({...t,published:!!t.published,questions:JSON.parse(t.questions).map((q:any)=>{if(c.role==='teacher'||subs.results.some(s=>s.task===t.id&&s.state==='reviewed'))return q;const {correct,...safe}=q;return safe;})}));
- return Response.json({role:c.role,email:c.user.email,studentEmail:c.role==='teacher'?c.room.student_email:undefined,tasks,files:attached.results,submissions:subs.results.map(s=>({...s,answers:JSON.parse(s.answers)}))},{headers:{'Cache-Control':'no-store'}});
+ const tasks=all.results.map(t=>({...t,published:!!t.published,questions:JSON.parse(t.questions).map((q:any)=>{if(c.role==='teacher'||subs.results.some(s=>s.task===t.id&&s.state==='reviewed'))return q;const {correct,solution,...safe}=q;return safe;})}));
+ return Response.json({lesson:course?.lesson||null,role:c.role,email:c.user.email,studentEmail:c.role==='teacher'?c.room.student_email:undefined,tasks,files:attached.results,submissions:subs.results.map(s=>({...s,answers:JSON.parse(s.answers)}))},{headers:{'Cache-Control':'no-store'}});
 }catch(e){return errorResponse(e);}}
 export async function POST(request:Request){try{
  secureWrite(request);if(Number(request.headers.get('content-length')||0)>300000)throw new AppError('El contenido es demasiado grande.');const raw=await request.text();if(raw.length>300000)throw new AppError('El contenido es demasiado grande.');let b:any;try{b=JSON.parse(raw);}catch{throw new AppError('Datos no válidos.');}const c=await context();
  if(b.action==='setup'){
+  if(c.role==='teacher')return Response.json({ok:true});
   if(c.role!=='setup')throw new AppError('El aula ya está configurada.',409);
   // Setup identity is checked against the owner email configured server-side.
   await db().prepare('INSERT INTO classroom (id,teacher,teacher_email,student_email) VALUES (?,?,?,?)').bind('main',c.user.userId,c.user.email,'').run();return Response.json({ok:true});

@@ -5,8 +5,8 @@ export function bucket():R2Bucket { const v=(env as unknown as {BUCKET?:R2Bucket
 export class AppError extends Error { constructor(message:string,public status=400){super(message);} }
 export async function context() {
  const user=await getChatGPTUser();if(!user)throw new AppError('Inicia sesión para entrar al aula.',401);
- const room=await db().prepare('SELECT * FROM classroom WHERE id=?').bind('main').first<any>();
- if(!room){const expected=(env as unknown as {TEACHER_EMAIL?:string}).TEACHER_EMAIL?.toLowerCase();if(!expected)throw new AppError('El acceso del profesor no está configurado.',503);if(user.email.toLowerCase()!==expected)throw new AppError('El profesor debe activar el aula primero.',403);return {user,room:null,role:'setup'};}
+ let room=await db().prepare('SELECT * FROM classroom WHERE id=?').bind('main').first<any>();
+ if(!room){const expected=(env as unknown as {TEACHER_EMAIL?:string}).TEACHER_EMAIL?.toLowerCase();if(!expected)throw new AppError('El acceso del profesor no está configurado.',503);if(user.email.toLowerCase()!==expected)throw new AppError('El profesor debe activar el aula primero.',403);await db().prepare('INSERT INTO classroom (id,teacher,teacher_email,student_email) VALUES (?,?,?,?) ON CONFLICT(id) DO NOTHING').bind('main',user.userId,user.email,'').run();room=await db().prepare('SELECT * FROM classroom WHERE id=?').bind('main').first<any>();if(!room)throw new AppError('No se pudo iniciar el aula.',503);}
  if(room.teacher===user.userId)return {user,room,role:'teacher'};
  if(room.student===user.userId)return {user,room,role:'student'};
  if(!room.student&&room.student_email&&room.student_email===user.email.toLowerCase()){
