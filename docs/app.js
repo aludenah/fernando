@@ -112,8 +112,8 @@ function renderTask(task) {
   return `<a class="back" href="#tareas">← Volver a mis tareas</a><div class="page-heading"><div><p class="eyebrow">${h(task.subject)}</p><h1>${h(taskName(task))}</h1><p>${task.questions.length} preguntas · ${h(formatDate(task.due))}</p></div>${state.role==='parent'?`<button class="button secondary" data-action="edit-task" data-id="${h(task.id)}">Editar tarea</button>`:''}</div>${isLocal(task.id)?'<p class="local-edit-notice">Esta versión tiene cambios guardados únicamente en este dispositivo.</p>':''}
   <div class="detail-layout"><div><details class="panel task-instructions"><summary>Indicaciones de la tarea</summary><p class="prewrap instructions">${h(task.instructions)}</p></details>
   <div id="question-stage">${renderQuestionStage(task)}</div>
-  <section class="panel"><h2>Mi comentario sobre este nivel</h2><label class="field-label" for="student-note">¿Qué necesitas repasar?</label><textarea id="student-note" data-task="${h(task.id)}" rows="3" maxlength="4000" placeholder="Anota una duda para la próxima clase." ${!state.storage?'disabled':''}>${h(draft.note)}</textarea><p id="save-status" class="save-status" aria-live="polite">${state.storage?'El avance se guarda automáticamente en este navegador.':'No se puede guardar en este navegador.'}</p></section></div>
-  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Tu tarea, paso a paso</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><div class="progress-caption"><strong id="answer-percent">${sequence.percent}%</strong><span id="task-progress-state">${sequence.complete?'Todas las preguntas respondidas':`${sequence.total-count} preguntas pendientes`}</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="last-saved" class="save-status">${draft.updatedAt?`Último avance guardado: ${h(formatTime(draft.updatedAt))}`:'Tu avance se guardará al marcar una respuesta.'}</p><p class="resume-note">Al volver a esta tarea, continuarás desde la primera pregunta pendiente.</p><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><button class="button secondary full" data-action="export-progress" ${!state.storage?'disabled':''}>Informe para mis padres</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>Usa «Subir al Drive» y añade tu foto o PDF en la carpeta. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section></aside></div>`;
+  </div>
+  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Tu tarea, paso a paso</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><div class="progress-caption"><strong id="answer-percent">${sequence.percent}%</strong><span id="task-progress-state">${sequence.complete?'Todas las preguntas respondidas':`${sequence.total-count} preguntas pendientes`}</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="last-saved" class="save-status">${draft.updatedAt?`Último avance guardado: ${h(formatTime(draft.updatedAt))}`:'Tu avance se guardará al marcar una respuesta.'}</p><p class="resume-note">Al volver a esta tarea, continuarás desde la primera pregunta pendiente.</p><button class="button full" id="export-submission" data-action="export-submission" data-id="${h(task.id)}" ${!state.storage||!answersReady(task,draft)?'disabled':''}>${icon('download',18)} Descargar mis respuestas</button><button class="button secondary full" data-action="export-progress" ${!state.storage?'disabled':''}>Informe para mis padres</button><p id="ready-note" class="muted">${answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas.':'Marca todas las respuestas para descargar una copia.'}</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>Usa «Subir al Drive» y añade tu foto o PDF en la carpeta. Esta página no verifica los archivos subidos a Drive.</p></div>${draft.preparedAt?`<p class="source-note" id="prepared-note">Última copia: ${h(formatTime(draft.preparedAt))}</p>`:'<p class="source-note" id="prepared-note"></p>'}</section></aside></div>`;
 }
 function renderTeacher() {
   return `<div class="page-heading"><div><p class="eyebrow">HERRAMIENTAS DEL PROFESOR</p><h1>Prepara la próxima clase.</h1><p>Crea tareas y revisa copias de trabajo desde este dispositivo.</p></div><button class="button" data-action="new-task" ${!state.storage?'disabled':''}>${icon('plus',18)} Nueva tarea</button></div>${nav('profesor')}
@@ -206,8 +206,6 @@ async function saveDraft(taskId, changes) {
   if(message.classList.contains('error'))notify('');
   updateProgress(taskId);
   if(location.hash===`#tarea/${taskId}`)updateProblemControls(taskId);
-  const saved = location.hash===`#tarea/${taskId}` ? document.querySelector('#save-status') : null;
-  if (saved) saved.textContent = 'Guardado en este dispositivo.';
   signalProgress();
 }
 function updateProgress(id) {
@@ -222,7 +220,7 @@ function updateProgress(id) {
   updateQuestionControls(task);
   document.querySelector('#answer-progress').value=answerCount(task,draft.answers);
   document.querySelector('#export-submission').disabled=!state.storage||!answersReady(task,draft);
-  document.querySelector('#ready-note').textContent=answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas y tu comentario.':'Marca todas las respuestas para descargar una copia.';
+  document.querySelector('#ready-note').textContent=answersReady(task,draft)?'Tu copia incluirá las respuestas marcadas.':'Marca todas las respuestas para descargar una copia.';
   document.querySelector('#prepared-note').textContent=draft.preparedAt?`Última copia: ${formatTime(draft.preparedAt)}`:'';
 
 }
@@ -347,13 +345,6 @@ app.addEventListener('change',event=>{
       if(existing) {notify('Este trabajo ya estaba importado. Se conserva tu revisión.');location.hash=`revision/${data.id}`;return;}
       await put('reviews',data);await refresh();location.hash=`revision/${data.id}`;notify('Trabajo importado. Puedes descargar los adjuntos y guardar tu revisión aquí.');
     });
-  }
-});
-app.addEventListener('input',event=>{
-  if(event.target.id==='student-note') {
-    const {task:id}=event.target.dataset, note=event.target.value;
-    document.querySelector('#save-status').textContent='Guardando…';
-    enqueue(()=>saveDraft(id,{note}));
   }
 });
 app.addEventListener('submit',event=>{
