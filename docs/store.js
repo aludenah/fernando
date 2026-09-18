@@ -41,5 +41,30 @@ export function createStudentStore(studentId='fernando',factory=globalThis.index
     });
   }
   const put = (store, value) => write([{store, value}]);
-  return {openDatabase,all,write,put};
+  // Read and change progress in one transaction, including across browser tabs.
+  // The callback is synchronous; network requests must happen outside it.
+  async function update(names, change) {
+    const db=await openDatabase();
+    return new Promise((resolve,reject)=>{
+      const tx=db.transaction(names,'readwrite'),snapshot={};
+      let remaining=names.length,result,failure;
+      for(const name of names){
+        const request=tx.objectStore(name).getAll();
+        request.onsuccess=()=>{
+          snapshot[name]=request.result;
+          if(--remaining)return;
+          try{
+            const changed=change(snapshot);result=changed.result;
+            for(const operation of changed.operations){
+              const target=tx.objectStore(operation.store);
+              operation.remove?target.delete(operation.id):target.put(operation.value);
+            }
+          }catch(error){failure=error;tx.abort();}
+        };
+      }
+      tx.oncomplete=()=>resolve(result);
+      tx.onabort=()=>reject(failure||tx.error||new Error('No se pudo guardar el avance.'));
+    });
+  }
+  return {openDatabase,all,write,put,update};
 }

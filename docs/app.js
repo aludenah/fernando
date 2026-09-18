@@ -1,17 +1,21 @@
 import {math as m} from './math.js';
-import {createStudentStore} from './store.js?v=students-1';
+import {createStudentStore} from './store.js?v=sync-1';
+import {createProgressSync,appsScriptTransport} from './sync.js';
 import {students,studentProfile} from './students.js';
 import {competitionHome,preparationOutline} from './competition-views.js';
 import {hasAnswer, questionSequence, canOpenQuestion} from './sequence.js';
 import {html as h, normalizeTask, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js?v=students-1';
 import {courseCatalog, courseOutline} from './course-views.js?v=latex-1';
-import {accessView,parentsView,studentReportPanel} from './family-views.js?v=students-1';
+import {accessView,parentsView,studentReportPanel} from './family-views.js?v=sync-1';
 import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from './progress.js?v=students-1';
 
 const selectedStudent=new URLSearchParams(location.search).get('alumno');
 const explicitStudent=Object.hasOwn(students,selectedStudent);
 const student=studentProfile(explicitStudent?selectedStudent:'fernando');
-const {all,put,write,openDatabase}=createStudentStore(student.id);
+const studentStore=createStudentStore(student.id);
+const {all,put,write,openDatabase}=studentStore;
+let sharedProgress;
+let sharedStatus={enabled:false,phase:'loading',pending:0,lastSyncedAt:null};
 const app = document.querySelector('#app');
 const message = document.querySelector('#message');
 const letters = ['A', 'B', 'C', 'D', 'E'];
@@ -46,7 +50,17 @@ function notify(text, error = false) {
   message.textContent = text;
 }
 function storageNote() {
-  return `<div class="local-note">${icon('file',18)}<p>Marca tus respuestas aquí. Para entregar el desarrollo, pulsa <strong>Subir al Drive</strong> en cada problema y añade el archivo a su carpeta. Las respuestas se conservan en este dispositivo.</p></div>`;
+  return `<div class="local-note">${icon('file',18)}<p>Marca tus respuestas aquí. Para entregar el desarrollo, pulsa <strong>Subir al Drive</strong> en cada problema y añade el archivo a su carpeta. ${sharedStatus.enabled?'Las respuestas pendientes se envían al recuperar la conexión.':'El guardado entre dispositivos está pendiente de activación.'}</p></div>`;
+}
+function updateSyncStatus() {
+  const target=document.querySelector('#sync-status');
+  if(!target)return;
+  target.hidden=!state.role||!state.storage;
+  const labels={loading:'Preparando el guardado…',unconfigured:'Guardado en este dispositivo. La sincronización entre dispositivos aún no está activada.',pending:'Guardado en este dispositivo · Pendiente de sincronizar.',syncing:'Sincronizando el avance…',synced:'Avance sincronizado. Puedes continuar desde otro dispositivo.',offline:sharedStatus.pending?'Guardado en este dispositivo. Hay cambios pendientes de sincronizar.':'No se pudo consultar el avance compartido. Se muestra la última copia disponible.'};
+  target.dataset.phase=sharedStatus.phase;
+  target.querySelector('span').textContent=labels[sharedStatus.phase]||labels.loading;
+  target.querySelector('button').hidden=!sharedStatus.enabled;
+  document.querySelector('#storage-footer').textContent=sharedStatus.enabled?'Avance compartido · Solucionarios en Drive.':'Guardado entre dispositivos pendiente de activación · Solucionarios en Drive.';
 }
 function nav(tab) {
   return `<nav class="tabs" aria-label="Secciones del aula">${[['cursos',student.id==='josue'?'Mi preparación':'Mis cursos'],[`temario/${student.courseId}`,student.id==='josue'?'Plan':'Temario'],['curso',`${student.unit} 1`],['tareas','Práctica']].map(([id,label]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
@@ -148,7 +162,7 @@ function currentProgress() {
 }
 function renderParents() {
   const source=state.parentSource==='report'&&state.parentReport?'report':'local';
-  return parentsView(source==='report'?state.parentReport:currentProgress(),{source,hasReport:Boolean(state.parentReport),drive:state.drive,storage:state.storage,search:location.search});
+  return parentsView(source==='report'?state.parentReport:currentProgress(),{source,hasReport:Boolean(state.parentReport),drive:state.drive,storage:state.storage,search:location.search,sync:sharedStatus});
 }
 function audienceBar() {
   return `<div class="audience-bar"><span class="audience-badge">${state.role==='parent'?'ACCESO A PADRES':`ACCESO DE ${h(student.name.toUpperCase())}`}</span><a href="#inicio">Cambiar de acceso</a></div>`;
@@ -182,6 +196,7 @@ function route(focus = false) {
     else content=nav('cursos')+(student.id==='josue'?competitionHome({...state.course,tasks:state.tasks},state.drafts,state.learned):courseCatalog(state.course.courses))+studentReportPanel(state.storage);
     app.innerHTML=audienceBar()+content;
   }
+  updateSyncStatus();
   if (focus) {document.querySelector('#main').focus({preventScroll:true}); window.scrollTo({top:0});}
 }
 async function refresh() {
@@ -204,14 +219,15 @@ function enqueue(action) {
   queue = queue.then(action).catch(error=>notify(storageError(error),true)).finally(()=>{state.pending--;});
   return queue;
 }
-async function saveDraft(taskId, changes) {
-  const draft = {...draftFor(taskId),...changes,preparedAt:null,updatedAt:new Date().toISOString()};
-  await put('drafts',draft);
-  state.drafts = [...state.drafts.filter(d=>d.id!==taskId),draft];
+async function saveAnswer(taskId, questionId, value) {
+  if(!isLocal(taskId))await sharedProgress.saveAnswer(taskId,questionId,value);
+  else await put('drafts',{...draftFor(taskId),answers:{...draftFor(taskId).answers,[questionId]:value},preparedAt:null,updatedAt:new Date().toISOString()});
+  await refresh();
   if(message.classList.contains('error'))notify('');
   updateProgress(taskId);
   if(location.hash===`#tarea/${taskId}`)updateProblemControls(taskId);
   signalProgress();
+  if(!isLocal(taskId))void sharedProgress.sync();
 }
 function updateProgress(id) {
   if(location.hash!==`#tarea/${id}`)return;
@@ -261,7 +277,7 @@ async function action(name,id) {
     downloadJSON(report,`${student.id}-avance-${report.generatedAt.slice(0,10)}.json`);
     notify('Informe descargado. En otro dispositivo, entra a Padres y selecciona «Abrir informe del estudiante».');return;
   }
-  if(name==='refresh-parents'){await refresh();route();notify(state.parentSource==='report'?'Se muestra la copia recibida. Abre un informe nuevo para consultar cambios posteriores.':'Avance actualizado desde este navegador.');return;}
+  if(name==='refresh-parents'){await refresh();route();if(state.parentSource==='report')notify('Se muestra la copia recibida. Abre un informe nuevo para consultar cambios posteriores.');else if(sharedProgress?.enabled)void sharedProgress.sync();else notify('La sincronización entre dispositivos está pendiente de activación.');return;}
   if(name==='parent-local'){state.parentSource='local';await refresh();route();return;}
   if(name==='parent-report'&&state.parentReport){state.parentSource='report';route();return;}
 
@@ -303,14 +319,13 @@ app.addEventListener('change',event=>{
     enqueue(async()=>{try{
       const task=taskFor(id),index=task?.questions.findIndex(q=>q.id===questionId),question=task?.questions[index];
       if(!question||!canOpenQuestion(task,draftFor(id).answers,index)||!Number.isInteger(selected)||selected<0||selected>=question.options.length)throw new Error('Responde las preguntas en orden.');
-      await saveDraft(id,{answers:{...draftFor(id).answers,[questionId]:selected}});
+      await saveAnswer(id,questionId,selected);
     }catch(error){if(location.hash===`#tarea/${id}`)route();throw error;}});
   }
   if(target.matches('[data-topic]')) {
     const id=target.dataset.topic,checked=target.checked;
     enqueue(async()=>{
-      const learned=checked?[...new Set([...state.learned,id])]:state.learned.filter(t=>t!==id);
-      try{const updatedAt=new Date().toISOString();await put('settings',{id:'learned',topics:learned,updatedAt});state.learned=learned;state.theoryUpdatedAt=updatedAt;signalProgress();const counter=document.querySelector('.chapter-guide .section-heading span');if(counter)counter.textContent=`${learned.length} / ${state.course.lesson.topics.length} repasados`;}catch(error){target.checked=!checked;throw error;}
+      try{await sharedProgress.saveTopic(id,checked);await refresh();signalProgress();const counter=document.querySelector('.chapter-guide .section-heading span');if(counter)counter.textContent=`${state.learned.length} / ${state.course.lesson.topics.length} repasados`;void sharedProgress.sync();}catch(error){target.checked=!checked;throw error;}
     });
   }
   if(target.id==='import-progress') {
@@ -367,8 +382,11 @@ function refreshParentsFromStorage(){
   });
 }
 progressChannel?.addEventListener('message',event=>{if(event.data?.type==='progress-updated')refreshParentsFromStorage();});
-window.addEventListener('focus',refreshParentsFromStorage);
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshParentsFromStorage();});
+function syncVisibleProgress(){if(document.visibilityState==='visible'){refreshParentsFromStorage();void sharedProgress?.sync();}}
+window.addEventListener('focus',syncVisibleProgress);
+window.addEventListener('online',syncVisibleProgress);
+document.addEventListener('visibilitychange',syncVisibleProgress);
+document.querySelector('#sync-status button').addEventListener('click',()=>{void sharedProgress?.sync();});
 window.addEventListener('hashchange',()=>enqueue(async()=>{if(location.hash==='#padres'&&state.storage)await refresh();route(true);}));
 window.addEventListener('beforeunload',event=>{if(state.editor||state.pending){event.preventDefault();event.returnValue='';}});
 async function init() {
@@ -380,8 +398,31 @@ async function init() {
     if(!driveResponse.ok)throw new Error('No se pudo cargar la configuración de Drive.');
     state.drive=await driveResponse.json();
     state.course=publicCourse(content,content.tasks);state.tasks=state.course.tasks;
-    try{await openDatabase();await refresh();}catch(error){state.storage=false;notify(`Puedes leer el curso, pero no guardar respuestas o archivos. ${storageError(error)}`,true);}
+    let transport=null;
+    try{
+      const syncResponse=await fetch(new URL('./data/sync.json',import.meta.url),{cache:'no-store'});
+      if(!syncResponse.ok)throw new Error('No se pudo consultar la configuración del avance.');
+      const config=await syncResponse.json();
+      if(config.endpoint)transport=appsScriptTransport(config.endpoint);
+    }catch{notify('No se pudo conectar el guardado compartido. Tus respuestas se conservarán en este dispositivo.',true);}
+    try{
+      await openDatabase();await refresh();
+      sharedProgress=createProgressSync({studentId:student.id,course:state.course,store:studentStore,transport,
+        onStatus:status=>{sharedStatus=status;updateSyncStatus();},
+        onChange:({conflicts,firstSync})=>enqueue(async()=>{
+          await refresh();
+          const opened=[...app.querySelectorAll('details[open]')].map(element=>element.dataset.parentTask||element.querySelector('summary')?.textContent);
+          if(!state.editor&&!state.review){
+            if(firstSync)state.activeTask=null;
+            route();for(const element of app.querySelectorAll('details'))element.open=opened.includes(element.dataset.parentTask||element.querySelector('summary')?.textContent);
+          }
+          if(conflicts)notify('Otra sesión ya había cambiado una de estas respuestas. Se conservó la versión compartida; revisa la pregunta antes de volver a cambiarla.',true);
+          signalProgress();
+        })});
+      await sharedProgress.initialize();
+    }catch(error){state.storage=false;notify(`Puedes leer el curso, pero no guardar respuestas o archivos. ${storageError(error)}`,true);}
     route();
+    if(state.storage){void sharedProgress.sync();setInterval(()=>{if(document.visibilityState==='visible'&&state.role)void sharedProgress.sync();},30000);}
   }catch(error){app.innerHTML='<section class="panel"><h1>No pudimos abrir el aula.</h1><p>Comprueba tu conexión y vuelve a cargar esta página.</p></section>';notify(storageError(error),true);}
 }
 init();

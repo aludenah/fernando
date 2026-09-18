@@ -10,12 +10,12 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_PE">
   <meta property="og:url" content="https://aludenah.github.io/fernando/">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'none'">
   <title>Profesor Alex Ludeña · Clases de Matemáticas y Física</title>
   <link rel="icon" href="./favicon.svg?v=alex-1" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css?v=0.18.7">
-  <link rel="stylesheet" href="./styles.css?v=students-1">
-  <script type="module" src="./app.js?v=students-1"></script>
+  <link rel="stylesheet" href="./styles.css?v=sync-1">
+  <script type="module" src="./app.js?v=sync-1"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Ir al contenido</a>
@@ -29,9 +29,10 @@
   </header>
   <main id="main" class="workspace" tabindex="-1">
     <div id="message" role="status" aria-live="polite"></div>
+    <div id="sync-status" class="sync-status" hidden><span role="status" aria-live="polite"></span><button class="text-button" type="button" hidden>Sincronizar ahora</button></div>
     <div id="app"><p class="loading">Preparando tu aula…</p></div>
     <noscript><p>Activa JavaScript para abrir las tareas y guardar tus respuestas.</p></noscript>
   </main>
-  <footer class="footer"><span>Profesor Alex Ludeña · Clases particulares de matemáticas y física.</span><span>Respuestas en este dispositivo · Solucionarios en Drive.</span></footer>
+  <footer class="footer"><span>Profesor Alex Ludeña · Clases particulares de matemáticas y física.</span><span id="storage-footer">Respuestas en este dispositivo · Solucionarios en Drive.</span></footer>
 </body>
 </html>

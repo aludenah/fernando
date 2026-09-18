@@ -8,9 +8,10 @@ La portada permite elegir **Padres**, **Fernando** o **Josué**, sin correo ni c
 
 - Fernando conserva la teoría, los 30 problemas, el guardado de respuestas y los botones **Subir al Drive**.
 - Padres permite elegir al alumno y muestra su avance real: respuestas marcadas y pendientes, tareas respondidas, temas repasados, última actividad, comentarios y detalle de cada pregunta. Marcar una alternativa no significa que sea correcta ni que el solucionario esté entregado.
-- En el mismo navegador, el alumno y sus padres consultan los mismos datos de ese perfil. El panel recibe cambios entre pestañas y vuelve a consultar el avance al recuperar el foco o pulsar **Actualizar vista**.
-- Desde otro dispositivo se utiliza **Informe para mis padres**, disponible en el inicio de cada alumno y en su lista de tareas, incluso con tareas incompletas. El padre importa ese JSON con **Abrir informe del estudiante**. El informe indica su fecha y no se actualiza automáticamente; no sustituye las respuestas locales del alumno.
-- La sincronización automática entre dispositivos requiere un servicio de almacenamiento compartido que esta versión estática no tiene. No se publican respuestas ni informes personales en GitHub.
+- El guardado compartido está implementado con Google Apps Script y requiere activar la implementación y añadir su URL en `docs/data/sync.json`. **Mientras `endpoint` esté vacío, el avance continúa siendo local** y la web indica que la sincronización está pendiente. [Activación del servicio](integrations/progress/README.md).
+- Una vez activado, respuestas y teoría se sincronizan por alumno al entrar, al recuperar la conexión, al volver a la pestaña y cada 30 segundos mientras el aula está visible. El panel de Padres consulta esos mismos datos. La web solo indica «Avance sincronizado» cuando recibe y guarda una confirmación válida del servidor.
+- Las respuestas anteriores se conservan y se envían al abrir el dispositivo donde estaban guardadas. Una copia antigua solo completa campos ausentes en el servidor; no sustituye el avance compartido. Los cambios sin conexión quedan pendientes en IndexedDB hasta que se confirme su envío.
+- **Informe para mis padres** sigue disponible como copia de respaldo. Los informes importados indican su fecha, no se actualizan automáticamente y no sustituyen respuestas. No se publican respuestas ni informes personales en GitHub.
 
 Las instrucciones y los enunciados son autónomos: no remiten al libro ni al PDF para resolver los problemas.
 
@@ -52,11 +53,11 @@ El material del profesor está separado de las entregas, en la carpeta privada *
 - Al volver a una tarea o recargar la web, se abre la primera pregunta pendiente. Si todas están respondidas, se abre la última para revisarlas.
 - Cada alternativa se guarda automáticamente en IndexedDB. Las tarjetas y el detalle muestran cuántas preguntas están respondidas y su porcentaje; el panel de Padres utiliza esos mismos datos.
 - Una pregunta solo desbloquea la siguiente cuando el guardado termina correctamente. Si falla, se conserva el estado anterior y se muestra el error.
-- Se conservan las respuestas y comentarios previos. El avance corresponde a este navegador; para otros equipos se mantiene el informe descargable.
+- Se conservan las respuestas y comentarios previos. Las respuestas y los temas repasados se comparten cuando se activa el servicio; los comentarios antiguos, archivos locales y revisiones del profesor permanecen en el navegador.
 
 ## Respuestas y revisión
 
-- Las alternativas y comentarios se guardan en el navegador de Fernando.
+- Las alternativas se guardan primero en el navegador junto con su envío pendiente. El servicio compartido, cuando está activado, las confirma sin exigir correo ni contraseña. Los comentarios antiguos permanecen locales.
 - La vista de cada tarea muestra las preguntas, el avance y los accesos a Drive. No incluye botones para descargar respuestas ni informes.
 - Las copias JSON versión 3 descargadas anteriormente siguen siendo compatibles y pueden incluir archivos locales conservados de versiones anteriores. El profesor puede importarlas desde **Preparar clase** para revisar las respuestas, puntuar sobre 20 y descargar sus comentarios.
 - Las copias de trabajo de las versiones 1 y 2 siguen siendo compatibles.
@@ -68,6 +69,7 @@ El material del profesor está separado de las entregas, en la carpeta privada *
 1. En **Preparar clase**, crea o edita una tarea y guárdala en el dispositivo.
 2. Descarga `course.json` y reemplaza `docs/data/course.json` en GitHub, confirmando el cambio.
 3. Para habilitar envíos en preguntas nuevas o modificadas, crea sus carpetas y añade los enlaces correspondientes a `drive.json`.
+4. Ejecuta `node scripts/build-progress-service.mjs`, actualiza `Core.gs` en Apps Script y publica una nueva versión de la implementación existente para sincronizar las preguntas nuevas.
 
 Los borradores también forman parte del archivo público. No incluyas datos privados ni claves de respuestas. Los cursos y capítulos tienen identificadores propios, para ampliar la colección sin mezclar entregas. Las preguntas modificadas deben recibir un identificador nuevo si cambia su significado o sus alternativas.
 
@@ -103,5 +105,8 @@ Abre `http://localhost:4173`. La aplicación estática no necesita compilación.
 | `docs/family-views.js`, `docs/progress.js` | Entradas, panel de padres e informes de avance |
 | `docs/drive.js` | Utilidades de la integración anterior, sin uso en la web |
 | `docs/model.js`, `docs/store.js` | Validaciones y almacenamiento local |
+| `docs/sync.js`, `docs/sync-protocol.js` | Cola persistente y conciliación del avance compartido |
+| `docs/data/sync.json` | URL de la implementación, vacía hasta activarla |
+| `integrations/progress/` | Servicio, catálogo generado y pasos de activación |
 | `integrations/google-drive/` | Guía de permisos y receptor anterior conservado |
 | `tests/` | Pruebas automáticas |
