@@ -8,6 +8,18 @@ El código está preparado, pero **no está activo mientras `docs/data/sync.json
 
 ## Activar una vez, como propietario
 
+### Instalación sencilla desde el navegador habitual
+
+1. Abre Google Apps Script con tu cuenta y selecciona **Nuevo proyecto**. Ponle el nombre **Aula Alex Ludeña — Avance**.
+2. Abre [Instalar.gs](Instalar.gs) en GitHub y usa **Copy raw file** (icono de copiar junto a Raw) para copiar todo el contenido.
+3. En Apps Script, reemplaza el contenido inicial de **Code.gs** por el código copiado y guarda. Este archivo único ya contiene el catálogo y el servicio completos.
+4. Pulsa **Implementar → Nueva implementación**. En el engranaje, elige **Aplicación web**. Selecciona **Ejecutar como: Yo** y **Quién tiene acceso: Cualquier persona**. Implementa.
+5. Copia la **URL de la aplicación web**, que termina en `/exec`. Esa dirección es la que se debe configurar en `docs/data/sync.json`. La sincronización no queda activa con solo guardar el código.
+
+Esta instalación utiliza únicamente el archivo `Instalar.gs` pegado en `Code.gs`. La ruta de desarrollo que sigue utiliza los dos archivos por separado; elige una sola de las dos rutas en cada proyecto.
+
+### Instalación para desarrollo (archivos separados)
+
 1. En Google Apps Script, crea un proyecto llamado **Aula Alex Ludeña — Avance**.
 2. Pega `Code.gs` y añade un archivo `Core.gs` con el contenido de esta carpeta. En Configuración activa la visualización del manifiesto y reemplaza `appsscript.json` por el incluido. No añadas permisos de Drive ni correo.
 3. Implementar → Nueva implementación → Aplicación web. Ejecutar como **Yo**; acceso **Cualquier persona**, incluso sin iniciar sesión. Publica y copia la URL que termina en `/exec`.
