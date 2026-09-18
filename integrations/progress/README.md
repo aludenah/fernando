@@ -4,7 +4,11 @@ La web permanece en GitHub Pages. Este proyecto de Google Apps Script guarda sol
 
 ## Estado de activación
 
-El código está preparado, pero **no está activo mientras `docs/data/sync.json` tenga `endpoint` vacío**. La web lo indica como guardado únicamente en el dispositivo. No inventes una URL ni marques el servicio como sincronizado antes de desplegarlo y probarlo.
+La implementación del propietario ya está configurada en `docs/data/sync.json`. Se verificaron el estado del servicio y consultas POST sin cambios para Fernando y Josué: las tres devolvieron JSON correcto, acceso anónimo y cabecera CORS. Las comprobaciones no añadieron respuestas de prueba a los alumnos.
+
+Para incorporar respuestas de antes de la activación, abre una vez el aula en el navegador y dispositivo donde se guardaron. Espera a ver **Avance sincronizado** antes de continuar desde otro equipo. Los pendientes se conservan localmente cuando no hay conexión.
+
+Si `endpoint` se deja vacío, la web vuelve a indicar que el avance solo está guardado en el dispositivo. Las siguientes instrucciones sirven para mantener la implementación o instalar una copia independiente.
 
 ## Activar una vez, como propietario
 
