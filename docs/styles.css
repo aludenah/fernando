@@ -72,8 +72,8 @@
 .example-heading {align-items:flex-start;gap:8px}
 .example-heading h4 {font-size:1rem;line-height:1.5;margin:0;flex:1;min-width:160px}
 .worked-example>p {margin-top:16px}
-.answer-option.correct-option {border:2px solid #28784d;background:#edf8f0}
-.answer-option.incorrect-option {border:2px solid #b74939;background:#fff1ed}
+.answer-option.correct-option,.answer-option.correct-option.selected {border:2px solid #28784d;background:#edf8f0}
+.answer-option.incorrect-option,.answer-option.incorrect-option.selected {border:2px solid #b74939;background:#fff1ed}
 .answer-option:has(input:disabled) {cursor:default}
 .answer-option.correct-option .option-letter {background:#247548;color:#fff}
 .answer-option.incorrect-option .option-letter {background:#a93527;color:#fff}
