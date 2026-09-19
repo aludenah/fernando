@@ -101,7 +101,7 @@ export function publicCourse(course, tasks) {
   if (!Array.isArray(tasks) || tasks.length > 100) throw new Error('El curso admite hasta 100 tareas.');
   const normalized = tasks.map(normalizeTask);
   if (new Set(normalized.map(t => t.id)).size !== normalized.length) throw new Error('Hay tareas repetidas.');
-  return {schemaVersion: 2, courses: Array.isArray(course.courses)?course.courses:[], lesson: course.lesson, tasks: normalized,...(object(course.preparation)?{preparation:course.preparation}:{})};
+  return {schemaVersion: 2, courses: Array.isArray(course.courses)?course.courses:[], lesson: course.lesson, ...(Array.isArray(course.additionalLessons)?{additionalLessons:course.additionalLessons}:{}), tasks: normalized,...(object(course.preparation)?{preparation:course.preparation}:{})};
 }
 export function html(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));

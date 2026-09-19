@@ -1,6 +1,6 @@
 # Avance compartido de Fernando y Josué
 
-La web permanece en GitHub Pages. Este proyecto de Google Apps Script guarda solamente las alternativas y los temas repasados en propiedades del propio proyecto. No necesita leer Drive, Gmail ni otros archivos de la cuenta. Los solucionarios siguen usando las carpetas existentes de Drive.
+La web permanece en GitHub Pages. Este proyecto de Google Apps Script guarda solamente las alternativas y los temas repasados en propiedades del propio proyecto. No necesita leer Drive, Gmail ni otros archivos de la cuenta. Fernando consulta los solucionarios en la web; Josué conserva sus carpetas de Drive.
 
 ## Estado de activación
 
@@ -9,6 +9,20 @@ La implementación del propietario ya está configurada en `docs/data/sync.json`
 Para incorporar respuestas de antes de la activación, abre una vez el aula en el navegador y dispositivo donde se guardaron. Espera a ver **Avance sincronizado** antes de continuar desde otro equipo. Los pendientes se conservan localmente cuando no hay conexión.
 
 Si `endpoint` se deja vacío, la web vuelve a indicar que el avance solo está guardado en el dispositivo. Las siguientes instrucciones sirven para mantener la implementación o instalar una copia independiente.
+
+## Actualizar el capítulo 2 sin perder el avance
+
+El código de esta carpeta admite los capítulos 1 y 2 de Fernando y la unidad actual de Josué. La implementación existente debe publicar esta nueva versión para aceptar las preguntas añadidas. Guardar el código en el editor no actualiza por sí solo la aplicación web.
+
+1. Abre **Aula Alex Ludeña — Avance**, el proyecto que ya usas en Google Apps Script.
+2. Copia todo [Instalar.gs](Instalar.gs) con **Copy raw file** y reemplaza el contenido de **Code.gs** (o **Código.gs**) del mismo proyecto. Guarda. Si tu instalación usa archivos separados, actualiza **Core.gs y Code.gs** en vez de pegar el instalador único.
+3. Pulsa **Implementar → Administrar implementaciones**. Elige la aplicación web actual y pulsa el lápiz para editarla.
+4. En **Versión**, selecciona **Nueva versión** y pulsa **Implementar**. Conserva «Ejecutar como: Yo», «Cualquier persona» y la misma URL terminada en `/exec`.
+5. Vuelve al aula, abre el capítulo 2 y pulsa **Sincronizar ahora**. El aviso de actualización pendiente debe desaparecer. Si ya hay respuestas locales, abre también el dispositivo donde se marcaron para enviarlas.
+
+Usa el mismo proyecto: sus propiedades contienen las respuestas anteriores. No borres propiedades ni crees una implementación independiente para esta actualización. No se requieren permisos nuevos de Drive o correo.
+
+La respuesta del servicio actualizado anuncia `supportedFields`; para Fernando contiene 80 campos (60 respuestas y 20 temas). Las consultas de páginas antiguas reciben solo los campos del capítulo 1, aunque el servicio conserve ambos capítulos. Una consulta GET con `studentId=fernando` permite comprobar el catálogo y el avance sin escribir datos.
 
 ## Activar una vez, como propietario
 
@@ -45,7 +59,7 @@ No solicita correo ni contraseña al alumno. En esta modalidad abierta, quien pu
 
 ## Mantener el servicio
 
-Al publicar preguntas nuevas, ejecuta `node scripts/build-progress-service.mjs`, actualiza `Core.gs` en el mismo proyecto y edita la implementación existente para usar la nueva versión. Conserva la misma URL y las propiedades del proyecto. No crees otro proyecto para cada actualización, porque perderías el acceso al estado anterior.
+Al publicar preguntas nuevas, ejecuta `node scripts/build-progress-service.mjs`, actualiza `Instalar.gs` en el mismo proyecto (o los dos archivos `Core.gs` y `Code.gs` en una instalación separada) y edita la implementación existente para usar la nueva versión. Conserva la misma URL y las propiedades del proyecto. No crees otro proyecto para cada actualización, porque perderías el acceso al estado anterior.
 
 Las propiedades de Apps Script tienen límites de almacenamiento y peticiones. Esta implementación está acotada a los campos publicados de dos alumnos y usa un registro pequeño por campo. Al ampliar a muchas aulas, debe migrarse a una base de datos con autenticación y copias de seguridad.
 

@@ -6,12 +6,12 @@ Web de clases particulares publicada en **[GitHub Pages](https://aludenah.github
 
 La portada permite elegir **Padres**, **Fernando** o **Josué**, sin correo ni contraseña. Los perfiles separan los datos de trabajo; no son autenticación ni impiden que alguien abra el otro acceso.
 
-- Fernando tiene 30 problemas autocorregibles y 30 ejemplos resueltos en la teoría. Al completar las diez preguntas de cada nivel, ve su nota sobre 20, las preguntas incorrectas y sus soluciones paso a paso. Ya no necesita entregar archivos en Drive.
+- Fernando tiene dos capítulos de Álgebra, con 60 problemas autocorregibles y 60 ejemplos resueltos en total. Al completar las diez preguntas de cada nivel, ve su nota sobre 20, las preguntas incorrectas y sus soluciones paso a paso. Ya no necesita entregar archivos en Drive.
 - Padres permite elegir al alumno y muestra su avance real: respuestas marcadas y pendientes, tareas respondidas, temas repasados, última actividad, comentarios y detalle de cada pregunta. Para Fernando, cada tarea terminada muestra también su nota, sus aciertos y las soluciones. El porcentaje de avance cuenta respuestas, mientras que el porcentaje de aciertos mide la calificación.
 - El guardado compartido está conectado a la implementación de Google Apps Script configurada en `docs/data/sync.json`. Se comprobó que la implementación responde a las consultas de ambos alumnos sin iniciar sesión. [Configuración y mantenimiento del servicio](integrations/progress/README.md).
 - Respuestas y teoría se sincronizan por alumno al entrar, al recuperar la conexión, al volver a la pestaña y cada 30 segundos mientras el aula está visible. El panel de Padres consulta esos mismos datos. La web solo indica «Avance sincronizado» cuando recibe y guarda una confirmación válida del servidor.
 - Las respuestas anteriores se conservan y se envían al abrir el dispositivo donde estaban guardadas. Una copia antigua solo completa campos ausentes en el servidor; no sustituye el avance compartido. Los cambios sin conexión quedan pendientes en IndexedDB hasta que se confirme su envío.
-- **Informe para mis padres** sigue disponible como copia de respaldo. Los informes importados indican su fecha, no se actualizan automáticamente y no sustituyen respuestas. No se publican respuestas ni informes personales en GitHub.
+- Las copias de informes descargadas anteriormente siguen siendo compatibles. Los informes importados indican su fecha, no se actualizan automáticamente y no sustituyen respuestas. No se publican respuestas ni informes personales en GitHub.
 
 Las instrucciones y los enunciados son autónomos: no remiten al libro ni al PDF para resolver los problemas.
 
@@ -27,10 +27,12 @@ Su espacio contiene una ruta de nueve unidades para preparar concursos, empezand
 
 ## Curso y contenido
 
-La referencia actual es **ALGEBRA.pdf · Colección Compendios Académicos UNI · Lumbreras Editores**. El temario conserva sus **28 capítulos**. Las referencias bibliográficas se conservan en los datos del curso y no se muestran en la web. Solo está desarrollado el capítulo 1, **Introducción al álgebra**: libro pp. 9–18, PDF pp. 4–13.
+La referencia actual es **ALGEBRA.pdf · Colección Compendios Académicos UNI · Lumbreras Editores**. El temario conserva sus **28 capítulos**. Las referencias bibliográficas se conservan en los datos del curso y no se muestran en la web. Están desarrollados el capítulo 1, **Introducción al álgebra** (páginas impresas 9–18; PDF 4–13), y el capítulo 2, **Exponentes y radicales** (páginas impresas 19–29; PDF 14–24).
 
 - Diez apartados teóricos con explicaciones, fórmulas, **30 ejemplos resueltos similares a la tarea con datos diferentes** y recomendaciones: conjuntos numéricos, inversos, decimales, números complejos, operaciones, sumas telescópicas y despejes.
-- **30 problemas originales adaptados al contenido**: 10 básicos, 10 intermedios y 10 avanzados, con cinco alternativas por pregunta.
+- **Por capítulo: 30 problemas originales** — 10 básicos, 10 intermedios y 10 avanzados, con cinco alternativas por pregunta.
+- El capítulo 2 desarrolla potencias y signos, exponentes cero y negativos, leyes de exponentes, torres, raíces reales, radicales semejantes y anidados, exponentes racionales y ecuaciones exponenciales. Los ejemplos cubren factorización, sustitución y radicales infinitos bajo la condición explícita de convergencia. Se precisan los dominios y no se reproducen las generalizaciones incorrectas del material de referencia.
+- La selección de capítulos separa las tareas, los temas repasados y las notas tanto para Fernando como para Padres. Los enlaces antiguos al capítulo 1 siguen funcionando.
 - Fernando marca sus respuestas en la página. Tras la décima respuesta de cada nivel recibe la nota; puede navegar por todas las preguntas y abrir sus soluciones sin adjuntar archivos.
 - Aritmética, Geometría y Trigonometría tienen espacios preparados para incorporar sus cursos más adelante.
 
@@ -40,8 +42,8 @@ Los naturales empiezan en 1, según la convención del libro; ℕ₀ incluye el 
 
 - `autoGrade: true` activa la calificación de una tarea. Cada pregunta incluye `grading.correctIndex` (índice desde cero), `steps`, `hint` y un `topicId` opcional para volver al ejemplo teórico.
 - Una tarea incompleta no muestra nota, aciertos ni soluciones. Al guardar la última alternativa, la interfaz enfoca el resultado y cierra las respuestas. Durante la tarea se pueden revisar y corregir las anteriores.
-- Todas las alternativas tienen el mismo peso: nota = 20 × aciertos / número de preguntas, sin descuento por errores. Las tres tareas actuales tienen 10 preguntas, por lo que cada acierto vale 2 puntos.
-- La nota se calcula a partir de las respuestas ya guardadas, también las anteriores a esta actualización. No se modifican identificadores, alternativas, bases de datos ni el protocolo de sincronización; no hace falta volver a implementar Apps Script.
+- Todas las alternativas tienen el mismo peso: nota = 20 × aciertos / número de preguntas, sin descuento por errores. Las seis tareas actuales tienen 10 preguntas, por lo que cada acierto vale 2 puntos.
+- La nota se calcula a partir de las respuestas ya guardadas, también las anteriores a esta actualización. Se mantienen los identificadores, alternativas y bases de datos del capítulo 1. Para guardar las nuevas preguntas del capítulo 2 entre dispositivos, hay que actualizar el catálogo de la implementación existente de Apps Script; la calificación se calcula en la web sin cambiar ese servicio.
 - Los botones de revisión indican correcta/incorrecta con texto y símbolos, además de color. Cada error muestra la respuesta marcada, la correcta y una orientación de repaso; todos los problemas tienen solución detallada en LaTeX.
 - Padres ve la misma nota al recibir las respuestas sincronizadas. Una copia histórica importada conserva su contenido original.
 - Fernando ya no carga la configuración ni ve enlaces de entrega a Drive. Las carpetas y archivos anteriores se conservan; no se eliminó contenido en la cuenta del profesor. Josué mantiene sus carpetas actuales, con la [guía de permisos](integrations/google-drive/README.md).
@@ -69,7 +71,9 @@ Los naturales empiezan en 1, según la convención del libro; ℕ₀ incluye el 
 1. En **Preparar clase**, crea o edita una tarea y guárdala en el dispositivo.
 2. Descarga `course.json` y reemplaza `docs/data/course.json` en GitHub, confirmando el cambio.
 3. En Fernando, completa la clave y el solucionario de cada pregunta. Las carpetas de entrega solo son necesarias para las tareas de Josué.
-4. Ejecuta `node scripts/build-progress-service.mjs`, actualiza `Core.gs` en Apps Script y publica una nueva versión de la implementación existente para sincronizar las preguntas nuevas.
+4. Ejecuta `node scripts/build-progress-service.mjs`, actualiza el mismo proyecto de Apps Script con `Instalar.gs` (o ambos archivos `Core.gs` y `Code.gs` si usas la instalación separada) y publica una nueva versión de la implementación existente. [Pasos para actualizar sin perder el avance](integrations/progress/README.md#actualizar-el-capítulo-2-sin-perder-el-avance).
+
+`lesson` conserva el primer capítulo para compatibilidad; `additionalLessons` contiene los siguientes. Cada tarea usa su `chapterId`; no reutilices identificadores de preguntas o temas. La web consulta los campos admitidos por el servicio antes de enviar contenido nuevo. Si el servicio sigue en la versión anterior, el capítulo 1 continúa sincronizándose y el capítulo 2 conserva sus respuestas pendientes en el dispositivo, con un aviso visible. Al actualizar la misma implementación, esos pendientes se enviarán sin tener que responder de nuevo.
 
 Los borradores también forman parte del archivo público. No incluyas datos privados. Las claves de autocorrección serán públicas dentro de los datos del curso. Los cursos y capítulos tienen identificadores propios, para ampliar la colección sin mezclar entregas. Las preguntas modificadas deben recibir un identificador nuevo si cambia su significado o sus alternativas.
 
@@ -98,11 +102,11 @@ Abre `http://localhost:4173`. La aplicación estática no necesita compilación.
 
 | Ruta | Contenido |
 | --- | --- |
-| `docs/data/course.json` | Catálogo, 28 capítulos, teoría y 30 problemas |
+| `docs/data/course.json` | Catálogo de 28 capítulos; capítulos 1 y 2 con teoría, 60 ejemplos y 60 problemas |
 | `docs/data/drive.json` | Enlaces históricos de Fernando, sin carga en su aula actual |
 | `docs/app.js` | Respuestas, editor y navegación |
 | `docs/grading.js`, `docs/grading-views.js` | Calificación, revisión de errores, soluciones y ejemplos |
-| `docs/course-views.js` | Catálogo de cursos y temario |
+| `docs/course-views.js`, `docs/lessons.js` | Catálogo, temario y selección de capítulos |
 | `docs/family-views.js`, `docs/progress.js` | Entradas, panel de padres e informes de avance |
 | `docs/drive.js` | Utilidades de la integración anterior, sin uso en la web |
 | `docs/model.js`, `docs/store.js` | Validaciones y almacenamiento local |

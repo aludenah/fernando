@@ -1,12 +1,18 @@
-import {emptyProgress,progressCatalog,validateRemote,validValue} from './sync-protocol.js';
+import {emptyProgress,progressCatalog,validateRemote,validValue} from './sync-protocol.js?v=chapters-2';
 
 const RECORD='cloud-sync-v1';
 const stamp=()=>new Date().toISOString();
 export function createProgressSync({studentId,course,store,transport=null,onStatus=()=>{},onChange=()=>{},uuid=()=>crypto.randomUUID()}) {
   const catalog=progressCatalog(course);
+  const knownFields=Object.keys(catalog);
+  // The original deployment only knows the first lesson. Never send new fields
+  // until the service advertises them; otherwise it rejects the whole batch.
+  const legacy=progressCatalog({...course,additionalLessons:[],tasks:course.tasks.filter(task=>task.chapterId===course.lesson.id)});
+  let supported=new Set(Object.keys(legacy));
+  let catalogChecked=false;
   let flight=null;
   const enabled=Boolean(transport);
-  const status=(phase,record,extra={})=>onStatus({enabled,phase,pending:Object.keys(record?.outbox||{}).length,lastSyncedAt:record?.lastSyncedAt||null,...extra});
+  const status=(phase,record,extra={})=>onStatus({enabled,phase,pending:Object.keys(record?.outbox||{}).length,lastSyncedAt:record?.lastSyncedAt||null,catalogChecked,unsupportedFields:knownFields.filter(field=>!supported.has(field)),...extra});
   const getRecord=snapshot=>snapshot.settings.find(item=>item.id===RECORD);
   const operation=(field,value,record,seed=false)=>({id:uuid(),field,value,baseRevision:record.remote.fields[field]?.revision||0,seed,queuedAt:stamp(),supersedes:record.outbox[field]?[record.outbox[field].id,...(record.outbox[field].supersedes||[])].slice(0,20):[]});
   async function initialize(){
@@ -62,12 +68,16 @@ export function createProgressSync({studentId,course,store,transport=null,onStat
   async function accept(response,sent){
     if(response?.ok!==true)throw new Error(response?.error||'No se pudo confirmar el guardado compartido.');
     const remote=validateRemote(response.state,studentId,catalog);
+    const advertised=response.supportedFields;
+    if(advertised!==undefined&&(!Array.isArray(advertised)||advertised.length>5000||advertised.some(field=>typeof field!=='string'||field.length>250)||new Set(advertised).size!==advertised.length))throw new Error('El catálogo del servicio no es válido.');
     const replies=[...(response.accepted||[]),...(response.conflicts||[]).map(item=>item.id)];
     if(!Array.isArray(response.accepted)||!Array.isArray(response.conflicts)||replies.length!==sent.length||new Set(replies).size!==sent.length||sent.some(op=>!replies.includes(op.id))||response.conflicts.some(item=>!sent.some(op=>op.id===item.id&&op.field===item.field)))throw new Error('Falta la confirmación de algunos cambios.');
+    supported=new Set((advertised||Object.keys(legacy)).filter(field=>Object.hasOwn(catalog,field)));
+    catalogChecked=true;
     return store.update(['settings','drafts','tasks'],snapshot=>{
       const record=getRecord(snapshot),conflictIds=new Set(response.conflicts.map(item=>item.id));
       // A slower request from another tab must never roll back a newer snapshot.
-      if(remote.revision>=record.remote.revision)record.remote=remote;
+      if(remote.revision>=record.remote.revision)record.remote={...remote,fields:{...record.remote.fields,...remote.fields}};
       const lost=[];
       for(const op of sent){
         const pending=record.outbox[op.field];if(!pending)continue;
@@ -96,13 +106,15 @@ export function createProgressSync({studentId,course,store,transport=null,onStat
       for(let round=0;round<5;round++){
         record=(await store.all('settings')).find(item=>item.id===RECORD);
         status('syncing',record);
-        const sent=Object.values(record.outbox).slice(0,100);
-        const response=await transport({version:1,studentId,operations:sent.map(({queuedAt,...op})=>op)});
+        const sent=Object.values(record.outbox).filter(op=>supported.has(op.field)).slice(0,100);
+        const response=await transport({version:1,studentId,knownFields,operations:sent.map(({queuedAt,...op})=>op)});
         const firstSync=!record.lastSyncedAt;
         const result=await accept(response,sent);record=result.record;
-        status(Object.keys(record.outbox).length?'pending':'synced',record);
+        const pending=Object.values(record.outbox),ready=pending.some(op=>supported.has(op.field));
+        status(pending.length?(ready?'pending':'activation-required'):'synced',record);
         await onChange({conflicts:result.conflicts,firstSync});
-        if(!Object.keys(record.outbox).length)return true;
+        if(!pending.length)return true;
+        if(!ready)return false;
       }
       status('pending',record);return false;
     }catch(error){status('offline',record,{error:error.message});return false;}

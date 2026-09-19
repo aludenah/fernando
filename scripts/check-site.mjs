@@ -2,6 +2,7 @@ import {readFile,readdir,access} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
+import {allLessons,lessonFor} from '../docs/lessons.js';
 import {publicCourse} from '../docs/model.js';
 import {math,mathExpressions} from '../docs/math.js';
 
@@ -20,17 +21,18 @@ for(const filename of await readdir(root)) {
 assert.match(html,/<html lang="es">/);
 assert.doesNotMatch(JSON.stringify(content),/@gmail\.com|appgprj_/);
 assert.ok(content.tasks.every(task=>task.autoGrade));
-assert.equal(content.lesson.topics.reduce((n,topic)=>n+topic.examples.length,0),30);
+for(const lesson of allLessons(content))assert.equal(lesson.topics.reduce((n,topic)=>n+topic.examples.length,0),30);
 for(const task of content.tasks){
  assert.doesNotMatch(task.instructions,/Drive/);
- for(const q of task.questions)assert.ok(content.lesson.topics.some(topic=>topic.id===q.grading.topicId));
+ for(const q of task.questions)assert.ok(lessonFor(content,task.chapterId).topics.some(topic=>topic.id===q.grading.topicId));
 }
 const drive=JSON.parse(await readFile(resolve(root,'data/drive.json'),'utf8'));
 const questions=content.tasks.flatMap(t=>t.questions);
-assert.equal(questions.length,30);
+assert.equal(questions.length,60);
 assert.equal(content.courses[0].chapters.length,28);
-assert.equal(new Set(questions.map(q=>drive.problems[q.id].folderId)).size,30);
-for(const q of questions)assert.equal(drive.problems[q.id].folderUrl,'https://drive.google.com/drive/folders/'+drive.problems[q.id].folderId);
+const legacyQuestions=content.tasks.filter(t=>t.chapterId===content.lesson.id).flatMap(t=>t.questions);
+assert.equal(new Set(legacyQuestions.map(q=>drive.problems[q.id].folderId)).size,30);
+for(const q of legacyQuestions)assert.equal(drive.problems[q.id].folderUrl,'https://drive.google.com/drive/folders/'+drive.problems[q.id].folderId);
 let expressions=0;
 function validateMath(value) {
   if(typeof value==='string') {
@@ -64,4 +66,4 @@ assert.doesNotMatch(JSON.stringify(josue),/"correct"|"solution"|@gmail\.com|appg
 
 const css=await readFile(resolve(root,'vendor/katex/katex.min.css'),'utf8');
 for(const [,font] of css.matchAll(/url\(([^)]+)\)/g))await access(resolve(root,'vendor/katex',font));
-console.log(`Sitio comprobado: 2 alumnos, 60 problemas, 30 solucionarios de Fernando, 30 ejemplos resueltos, ${expressions} expresiones LaTeX válidas y sus fuentes locales.`);
+console.log(`Sitio comprobado: 2 alumnos, 90 problemas, 60 solucionarios de Fernando, 60 ejemplos resueltos, ${expressions} expresiones LaTeX válidas y sus fuentes locales.`);

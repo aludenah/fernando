@@ -204,3 +204,66 @@ test('unconfigured service is honest and keeps local editing; parent loading nev
   const parent=parentsView(report,{sync:{enabled:true,phase:'syncing',lastSyncedAt:null}});
   assert.match(parent,/consultando su avance/);assert.doesNotMatch(parent,/parent-answered/);
 });
+
+test('chapter 2 answers and theory synchronize across devices without mixing chapter 1 reports',async()=>{
+  const service=server(),a=await device(service),b=await device(service);
+  const chapter=courses.fernando.additionalLessons[0],task=courses.fernando.tasks.find(task=>task.chapterId===chapter.id);
+  await a.sync.saveAnswer(fTask.id,fQuestions[0].id,3);
+  for(const q of task.questions)await a.sync.saveAnswer(task.id,q.id,q.grading.correctIndex);
+  await a.sync.saveTopic(chapter.topics[0].id,true);
+  assert.equal(await a.sync.sync(),true);assert.equal(await b.sync.sync(),true);
+  assert.deepEqual(await answers(b,task.id),Object.fromEntries(task.questions.map(q=>[q.id,q.grading.correctIndex])));
+  assert.deepEqual(await answers(b),{[fQuestions[0].id]:3});
+  const learned=(await b.store.all('settings')).find(item=>item.id==='learned'),drafts=await b.store.all('drafts');
+  const first=createProgressReport(courses.fernando,courses.fernando.tasks,drafts,learned.topics);
+  const second=createProgressReport({...courses.fernando,lesson:chapter},courses.fernando.tasks,drafts,learned.topics);
+  assert.deepEqual([summarizeProgress(first).answered,summarizeProgress(first).learned],[1,0]);
+  assert.deepEqual([summarizeProgress(second).answered,summarizeProgress(second).learned],[10,1]);
+  assert.equal(summarizeProgress(second).tasks[0].grade.score,20);
+  assert.equal(summarizeProgress(second).total,30);
+});
+
+test('an old deployment keeps chapter 1 working, preserves chapter 2 locally, and drains it after upgrade',async()=>{
+  const service=server(),chapter=courses.fernando.additionalLessons[0],task=courses.fernando.tasks.find(task=>task.chapterId===chapter.id);
+  const legacyKeys=new Set(Object.keys(vm.runInContext('SYNC_CATALOGS.fernando',service.context)).filter(key=>!key.includes('c2')));
+  let upgraded=false;
+  const transport=async payload=>{
+    if(upgraded)return service.send(payload);
+    // Emulate the original strict deployment: it rejects a batch with any new key.
+    assert.ok(payload.operations.every(op=>legacyKeys.has(op.field)),'new fields must never be sent to the old service');
+    const response=service.send({...payload,knownFields:[...legacyKeys]});delete response.supportedFields;return response;
+  };
+  const a=await device(service,'fernando',{transport});
+  await a.sync.saveAnswer(fTask.id,fQuestions[0].id,2);
+  await a.sync.saveAnswer(task.id,task.questions[0].id,1);
+  await a.sync.saveTopic(chapter.topics[0].id,true);
+  assert.equal(await a.sync.sync(),false);
+  assert.equal(a.statuses.at(-1).phase,'activation-required');
+  assert.equal(a.statuses.at(-1).pending,2);
+  assert.equal(service.read('fernando').fields[answerField()].value,2);
+  assert.equal(Object.keys(service.read('fernando').fields).length,1);
+  const reopened=await device(service,'fernando',{store:a.store,transport});
+  await reopened.sync.sync();
+  assert.equal((await answers(reopened,task.id))[task.questions[0].id],1);
+  assert.ok((await reopened.store.all('settings')).find(item=>item.id==='learned').topics.includes(chapter.topics[0].id));
+  upgraded=true;
+  assert.equal(await reopened.sync.sync(),true);
+  assert.equal(reopened.statuses.at(-1).pending,0);
+  assert.equal(Object.keys(service.read('fernando').fields).length,3);
+  const other=await device(service);await other.sync.sync();
+  assert.equal((await answers(other,task.id))[task.questions[0].id],1);
+});
+
+test('updated service remains readable by older pages and never removes other chapters when they write',()=>{
+  const service=server(),task=courses.fernando.tasks[3],field=`answer:${task.id}:${task.questions[0].id}`;
+  const catalog=vm.runInContext('SYNC_CATALOGS.fernando',service.context);
+  assert.equal(service.send({version:1,studentId:'fernando',knownFields:Object.keys(catalog),operations:[{id:'chapter-two-op',field,value:1,baseRevision:0,seed:false}]}).ok,true);
+  const before=service.read('fernando').fields[field];
+  const response=service.send({version:1,studentId:'fernando',operations:[{id:'chapter-one-op',field:answerField(),value:2,baseRevision:0,seed:false}]});
+  assert.equal(response.ok,true);
+  assert.ok(!Object.hasOwn(response.state.fields,field));
+  assert.equal(response.state.fields[answerField()].value,2);
+  assert.deepEqual(service.read('fernando').fields[field],before);
+  const knownResponse=service.send({version:1,studentId:'fernando',knownFields:Object.keys(catalog),operations:[]});
+  assert.equal(Object.keys(knownResponse.state.fields).length,2);
+});

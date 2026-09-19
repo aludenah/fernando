@@ -211,6 +211,216 @@ const SYNC_CATALOGS={
       "choices": 5,
       "previous": "answer:algebra-uni-c1-avanzado:alg-uni-c1-a09"
     },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b01": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b01",
+      "choices": 5,
+      "previous": null
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b02": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b02",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b01"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b03": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b03",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b02"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b04": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b04",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b03"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b05": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b05",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b04"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b06": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b06",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b05"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b07": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b07",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b06"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b08": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b08",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b07"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b09": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b09",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b08"
+    },
+    "answer:algebra-uni-c2-basico:alg-uni-c2-b10": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-basico",
+      "questionId": "alg-uni-c2-b10",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-basico:alg-uni-c2-b09"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i01": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i01",
+      "choices": 5,
+      "previous": null
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i02": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i02",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i01"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i03": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i03",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i02"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i04": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i04",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i03"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i05": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i05",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i04"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i06": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i06",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i05"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i07": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i07",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i06"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i08": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i08",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i07"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i09": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i09",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i08"
+    },
+    "answer:algebra-uni-c2-intermedio:alg-uni-c2-i10": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-intermedio",
+      "questionId": "alg-uni-c2-i10",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-intermedio:alg-uni-c2-i09"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a01": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a01",
+      "choices": 5,
+      "previous": null
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a02": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a02",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a01"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a03": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a03",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a02"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a04": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a04",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a03"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a05": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a05",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a04"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a06": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a06",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a05"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a07": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a07",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a06"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a08": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a08",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a07"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a09": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a09",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a08"
+    },
+    "answer:algebra-uni-c2-avanzado:alg-uni-c2-a10": {
+      "kind": "answer",
+      "taskId": "algebra-uni-c2-avanzado",
+      "questionId": "alg-uni-c2-a10",
+      "choices": 5,
+      "previous": "answer:algebra-uni-c2-avanzado:alg-uni-c2-a09"
+    },
     "topic:uni-c1-mapa": {
       "kind": "topic",
       "topicId": "uni-c1-mapa"
@@ -250,6 +460,46 @@ const SYNC_CATALOGS={
     "topic:uni-c1-despeje": {
       "kind": "topic",
       "topicId": "uni-c1-despeje"
+    },
+    "topic:uni-c2-potencias": {
+      "kind": "topic",
+      "topicId": "uni-c2-potencias"
+    },
+    "topic:uni-c2-negativos": {
+      "kind": "topic",
+      "topicId": "uni-c2-negativos"
+    },
+    "topic:uni-c2-leyes": {
+      "kind": "topic",
+      "topicId": "uni-c2-leyes"
+    },
+    "topic:uni-c2-torres": {
+      "kind": "topic",
+      "topicId": "uni-c2-torres"
+    },
+    "topic:uni-c2-raices": {
+      "kind": "topic",
+      "topicId": "uni-c2-raices"
+    },
+    "topic:uni-c2-radicales": {
+      "kind": "topic",
+      "topicId": "uni-c2-radicales"
+    },
+    "topic:uni-c2-fraccionarios": {
+      "kind": "topic",
+      "topicId": "uni-c2-fraccionarios"
+    },
+    "topic:uni-c2-anidados": {
+      "kind": "topic",
+      "topicId": "uni-c2-anidados"
+    },
+    "topic:uni-c2-ecuaciones": {
+      "kind": "topic",
+      "topicId": "uni-c2-ecuaciones"
+    },
+    "topic:uni-c2-estrategias": {
+      "kind": "topic",
+      "topicId": "uni-c2-estrategias"
     }
   },
   "josue": {
@@ -506,6 +756,93 @@ const SYNC_CATALOGS={
   }
 };
 
+const SYNC_LEGACY_FIELDS={
+  "fernando": [
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b01",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b02",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b03",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b04",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b05",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b06",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b07",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b08",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b09",
+    "answer:algebra-uni-c1-basico:alg-uni-c1-b10",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i01",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i02",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i03",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i04",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i05",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i06",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i07",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i08",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i09",
+    "answer:algebra-uni-c1-intermedio:alg-uni-c1-i10",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a01",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a02",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a03",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a04",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a05",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a06",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a07",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a08",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a09",
+    "answer:algebra-uni-c1-avanzado:alg-uni-c1-a10",
+    "topic:uni-c1-mapa",
+    "topic:uni-c1-naturales",
+    "topic:uni-c1-enteros",
+    "topic:uni-c1-racionales",
+    "topic:uni-c1-decimales",
+    "topic:uni-c1-reales",
+    "topic:uni-c1-complejos",
+    "topic:uni-c1-operaciones",
+    "topic:uni-c1-sumas",
+    "topic:uni-c1-despeje"
+  ],
+  "josue": [
+    "answer:josue-p4-u1-basico:josue-p4-u1-b01",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b02",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b03",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b04",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b05",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b06",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b07",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b08",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b09",
+    "answer:josue-p4-u1-basico:josue-p4-u1-b10",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i01",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i02",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i03",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i04",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i05",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i06",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i07",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i08",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i09",
+    "answer:josue-p4-u1-intermedio:josue-p4-u1-i10",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a01",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a02",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a03",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a04",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a05",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a06",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a07",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a08",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a09",
+    "answer:josue-p4-u1-avanzado:josue-p4-u1-a10",
+    "topic:josue-p4-u1-t01",
+    "topic:josue-p4-u1-t02",
+    "topic:josue-p4-u1-t03",
+    "topic:josue-p4-u1-t04",
+    "topic:josue-p4-u1-t05",
+    "topic:josue-p4-u1-t06",
+    "topic:josue-p4-u1-t07",
+    "topic:josue-p4-u1-t08",
+    "topic:josue-p4-u1-t09",
+    "topic:josue-p4-u1-t10"
+  ]
+};
+
 // Shared, bounded data protocol. Also bundled for Google Apps Script.
 const SYNC_VERSION=1;
 const owns=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
@@ -517,7 +854,7 @@ function progressCatalog(course) {
         previous:index?`answer:${task.id}:${task.questions[index-1].id}`:null};
     });
   }
-  for(const topic of course.lesson.topics)catalog[`topic:${topic.id}`]={kind:'topic',topicId:topic.id};
+  for(const lesson of [course.lesson,...(course.additionalLessons||[])])for(const topic of lesson.topics)catalog[`topic:${topic.id}`]={kind:'topic',topicId:topic.id};
   return catalog;
 }
 function emptyProgress(studentId) {

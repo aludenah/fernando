@@ -1,5 +1,5 @@
 import {gradeTask} from './grading.js';
-import {normalizeTask, normalizeAnswers, answerCount} from './model.js?v=grading-1';
+import {normalizeTask, normalizeAnswers, answerCount} from './model.js?v=chapters-2';
 import {studentProfile} from './students.js';
 
 export const MAX_PROGRESS_FILE_SIZE = 2 * 1024 * 1024;
@@ -50,7 +50,7 @@ export function createProgressReport(course,tasks,drafts,learned,theoryUpdatedAt
   return validateProgressReport({format:'aula-avance',version:2,studentId,generatedAt:now,
     lesson:{id:course.lesson.id,title:course.lesson.title,topics:course.lesson.topics.map(({id,title})=>({id,title}))},
     learned:learned.filter(id=>course.lesson.topics.some(t=>t.id===id)),theoryUpdatedAt,
-    tasks:tasks.filter(t=>t.published).map(task=>{const draft=draftMap.get(task.id);return {task,answers:draft?.answers||{},note:draft?.note||'',updatedAt:draft?.updatedAt||null};})
+    tasks:tasks.filter(t=>t.published&&t.chapterId===course.lesson.id).map(task=>{const draft=draftMap.get(task.id);return {task,answers:draft?.answers||{},note:draft?.note||'',updatedAt:draft?.updatedAt||null};})
   });
 }
 

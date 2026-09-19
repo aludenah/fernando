@@ -26,7 +26,7 @@ async function classroom({factory=new IDBFactory(),remote=emptyProgress('fernand
       const payload=JSON.parse(options.body);
       const result=mergeProgress(remote,payload.operations,catalog,new Date().toISOString());
       remote=result.state;
-      return new Response(JSON.stringify(result));
+      return new Response(JSON.stringify({...result,supportedFields:Object.keys(catalog)}));
     }
     if(path.includes('/data/'))return new Response(await readFile(new URL(path)));
     throw new Error('Unexpected external request: '+path);
@@ -97,4 +97,41 @@ test('completed legacy work is graded immediately, and a fresh parent device get
     assert.doesNotMatch(document.body.textContent,/Drive/);
     assert.equal(parent.requests.filter(r=>r.path.startsWith('https://script.google.com/')).flatMap(r=>JSON.parse(r.options.body).operations).length,0);
   }finally{parent.close();(await store.openDatabase()).close();}
+});
+
+test('chapter 2 task, theory links, chapter picker and parent grades stay in the chosen chapter',async()=>{
+  const chapter=course.additionalLessons[0],secondTask=course.tasks.find(t=>t.chapterId===chapter.id);
+  const seeded=mergeProgress(emptyProgress('fernando'),task.questions.map(q=>({id:crypto.randomUUID(),field:`answer:${task.id}:${q.id}`,value:q.grading.correctIndex,baseRevision:0,seed:true})),catalog,new Date().toISOString()).state;
+  const ui=await classroom({remote:seeded,route:`tarea/${secondTask.id}`});
+  try{
+    assert.match(document.querySelector('.page-heading').textContent,/Capítulo 2/);
+    assert.equal(document.querySelectorAll('.question-step:disabled').length,9);
+    for(let index=0;index<10;index++){
+      await mark(index===0?0:secondTask.questions[index].grading.correctIndex);
+      if(index<9){
+        assert.equal(document.querySelectorAll('.grade-summary,.solution').length,0);
+        await click(`.question-navigation [data-action="question-go"][data-id="${index+1}"]`);
+      }
+    }
+    assert.equal(document.querySelector('.grade-score strong').textContent,'18');
+    await click('.review-question-link[data-id="0"]');
+    assert.equal(document.querySelector('.answer-review').dataset.result,'incorrect');
+    await click('.solution-theory');
+    assert.equal(document.querySelector('[data-topic-section="uni-c2-potencias"]').open,true);
+    assert.equal(document.querySelectorAll('.worked-example').length,30);
+    assert.equal(document.querySelectorAll('.chapter-task').length,3);
+    assert.match(document.querySelector('.chapter-heading').textContent,/Exponentes y radicales/);
+    assert.equal(document.querySelectorAll('.math-fallback').length,0);
+    assert.doesNotMatch(document.body.textContent,/Libro:|PDF:|Subir al Drive/);
+    const checkbox=document.querySelector('[data-topic="uni-c2-potencias"]');checkbox.click();
+    await until(()=>ui.server().fields['topic:uni-c2-potencias']?.value===true);
+    assert.match(document.querySelector('.chapter-guide .section-heading').textContent,/1 \/ 10 repasados/);
+    location.hash=`padres/${chapter.id}`;await until(()=>document.querySelector('.family-stats'));
+    assert.match(document.body.textContent,/Nota: 18\/20/);
+    assert.equal(document.querySelector('#parent-answered').textContent.trim(),'10 / 30');
+    await click('.chapter-picker a[href="#padres/algebra-uni-c1"]');
+    assert.match(document.body.textContent,/Nota: 20\/20/);
+    assert.doesNotMatch(document.body.textContent,/Nota: 18\/20/);
+    assert.equal(document.querySelector('#parent-answered').textContent.trim(),'10 / 30');
+  }finally{ui.close();}
 });

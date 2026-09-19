@@ -1,5 +1,5 @@
 export const students = Object.freeze({
-  fernando: Object.freeze({id:'fernando',name:'Fernando',courseFile:'course.json',driveFile:'drive.json',courseId:'algebra',unit:'Capítulo',subject:'Álgebra · Capítulo 1',description:'Comprende los números y opera con seguridad, paso a paso.'}),
+  fernando: Object.freeze({id:'fernando',name:'Fernando',courseFile:'course.json',driveFile:'drive.json',courseId:'algebra',unit:'Capítulo',subject:'Álgebra',description:'Comprende los números y opera con seguridad, paso a paso.'}),
   josue: Object.freeze({id:'josue',name:'Josué',courseFile:'josue-course.json',driveFile:'josue-drive.json',courseId:'concursos',unit:'Unidad',subject:'Concursos · 4.º de primaria',description:'Aprende a organizar datos, descubrir patrones y explicar cómo resolviste cada reto.'}),
 });
 export function studentProfile(id='fernando') {

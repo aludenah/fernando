@@ -10,16 +10,19 @@ const file={name:'solucionario.pdf',type:'application/pdf',size:pdf.length,data:
 const answers=Object.fromEntries(task.questions.map(q=>[q.id,0]));
 const submission=()=>({format:'fernando-entrega',version:1,id:'test-submission',createdAt:'2026-09-16T00:00:00Z',task,answers,note:'Necesito revisar los signos.',files:[file]});
 
-test('course preserves the chapter, 28 chapters, ten theory sections and thirty levelled questions',()=>{
+test('course preserves chapter 1 and develops chapter 2 with ten topics and thirty questions each',()=>{
   assert.equal(course.lesson.title,'Introducción al álgebra');
   assert.equal(course.courses[0].chapters.length,28);
-  assert.equal(course.courses[0].chapters.filter(c=>c.status==='active').length,1);
+  assert.equal(course.courses[0].chapters.filter(c=>c.status==='active').length,2);
   assert.equal(course.courses.length,4);
   assert.equal(course.lesson.topics.length,10);
   assert.match(course.lesson.convention,/empieza en 1/);
-  assert.equal(course.tasks.length,3);
-  assert.equal(course.tasks.flatMap(t=>t.questions).length,30);
-  assert.deepEqual(course.lesson.taskIds,course.tasks.map(t=>t.id));
+  assert.equal(course.tasks.length,6);
+  assert.equal(course.tasks.flatMap(t=>t.questions).length,60);
+  for(const lesson of [course.lesson,...course.additionalLessons]){
+    assert.equal(lesson.topics.length,10);
+    assert.deepEqual(lesson.taskIds,course.tasks.filter(t=>t.chapterId===lesson.id).map(t=>t.id));
+  }
   for(const task of course.tasks) assert.equal(normalizeTask(task).questions.length,10);
 });
 test('public content keeps the grading schema while omitting arbitrary private input fields',()=>{

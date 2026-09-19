@@ -42,10 +42,10 @@ test('Apps Script rejects missing authorization, unknown problems and invalid an
   for(const patch of [{code:'wrong-code-12345'},{question:'unknown'},{answer:''},{answer:'5'},{answer:'1.5'},{nonce:'short'}])assert.throws(()=>r.ctx.uploadSolution({...form(),...patch}));
   assert.equal(r.created.length,0);
 });
-test('server problem mapping matches all thirty public questions and their real folders',()=>{
+test('legacy upload mapping retains the original thirty questions and folders',()=>{
   const r=receiver(),mapping=runInContext('PROBLEMS',r.ctx);
   assert.equal(Object.keys(mapping).length,30);
-  for(const question of course.tasks.flatMap(t=>t.questions)){
+  for(const question of course.tasks.filter(t=>t.chapterId===course.lesson.id).flatMap(t=>t.questions)){
     assert.equal(mapping[question.id].folderId,drive.problems[question.id].folderId);
     assert.equal(mapping[question.id].text,question.text);
     assert.deepEqual(Array.from(mapping[question.id].options),question.options);

@@ -12,14 +12,16 @@
           "title": "Introducción al álgebra",
           "bookPage": 9,
           "pdfPage": 4,
-          "status": "active"
+          "status": "active",
+          "lessonId": "algebra-uni-c1"
         },
         {
           "number": 2,
           "title": "Exponentes y radicales",
           "bookPage": 19,
           "pdfPage": 14,
-          "status": "planned"
+          "status": "active",
+          "lessonId": "algebra-uni-c2"
         },
         {
           "number": 3,
@@ -1390,6 +1392,1159 @@
         }
       ],
       "autoGrade": true
+    },
+    {
+      "id": "algebra-uni-c2-basico",
+      "title": "Nivel básico · 10 problemas",
+      "courseId": "algebra",
+      "chapterId": "algebra-uni-c2",
+      "level": "basico",
+      "subject": "Álgebra · Capítulo 2",
+      "instructions": "Marca una alternativa por pregunta y avanza en orden. Puedes cambiar tus respuestas antes de terminar. Al marcar las 10, la tarea se calificará automáticamente y las respuestas quedarán cerradas. Verás tu nota sobre 20, qué preguntas debes repasar y el solucionario de cada problema. No necesitas subir archivos. Revisa los ejemplos de la teoría y las condiciones de cada enunciado.",
+      "due": "",
+      "published": true,
+      "autoGrade": true,
+      "questions": [
+        {
+          "id": "alg-uni-c2-b01",
+          "number": 1,
+          "topic": "Potencias, signos y paréntesis",
+          "text": "Calcula \\((-3)^2-3^2\\).",
+          "options": [
+            "\\(-18\\)",
+            "\\(0\\)",
+            "\\(18\\)",
+            "\\(-9\\)",
+            "\\(9\\)"
+          ],
+          "grading": {
+            "correctIndex": 1,
+            "steps": [
+              "\\((-3)^2=9\\) y \\(3^2=9\\).",
+              "Resta los resultados: \\(9-9=\\boxed0\\)."
+            ],
+            "hint": "Distingue la base negativa entre paréntesis del signo que queda fuera de una potencia.",
+            "topicId": "uni-c2-potencias"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b02",
+          "number": 2,
+          "topic": "Exponentes cero y negativos",
+          "text": "Calcula \\(8^0+2^{-3}\\).",
+          "options": [
+            "\\(\\frac18\\)",
+            "\\(\\frac78\\)",
+            "\\(9\\)",
+            "\\(\\frac98\\)",
+            "\\(-7\\)"
+          ],
+          "grading": {
+            "correctIndex": 3,
+            "steps": [
+              "\\(8^0=1\\) y \\(2^{-3}=1/2^3=1/8\\).",
+              "\\[1+\\frac18=\\boxed{\\frac98}\\]"
+            ],
+            "hint": "El exponente cero da 1 para una base no nula; el negativo indica el inverso.",
+            "topicId": "uni-c2-negativos"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b03",
+          "number": 3,
+          "topic": "Exponentes cero y negativos",
+          "text": "Calcula \\(\\left(\\frac25\\right)^{-2}\\).",
+          "options": [
+            "\\(\\frac{25}4\\)",
+            "\\(\\frac4{25}\\)",
+            "\\(-\\frac4{25}\\)",
+            "\\(\\frac52\\)",
+            "\\(-\\frac{25}4\\)"
+          ],
+          "grading": {
+            "correctIndex": 0,
+            "steps": [
+              "\\((2/5)^{-2}=(5/2)^2\\).",
+              "\\[(5/2)^2=\\boxed{\\frac{25}4}\\]"
+            ],
+            "hint": "Invierte la fracción completa antes de elevarla al cuadrado.",
+            "topicId": "uni-c2-negativos"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b04",
+          "number": 4,
+          "topic": "Leyes de los exponentes",
+          "text": "Calcula \\(\\frac{2^3\\cdot2^5}{2^6}\\).",
+          "options": [
+            "\\(2\\)",
+            "\\(8\\)",
+            "\\(16\\)",
+            "\\(1\\)",
+            "\\(4\\)"
+          ],
+          "grading": {
+            "correctIndex": 4,
+            "steps": [
+              "\\[\\frac{2^3\\cdot2^5}{2^6}=2^{3+5-6}=2^2\\]",
+              "Por tanto, el resultado es \\(\\boxed4\\)."
+            ],
+            "hint": "Suma los exponentes del numerador y resta el del denominador.",
+            "topicId": "uni-c2-leyes"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b05",
+          "number": 5,
+          "topic": "Leyes de los exponentes",
+          "text": "Calcula \\((3^2)^3\\).",
+          "options": [
+            "\\(243\\)",
+            "\\(81\\)",
+            "\\(729\\)",
+            "\\(27\\)",
+            "\\(2187\\)"
+          ],
+          "grading": {
+            "correctIndex": 2,
+            "steps": [
+              "\\((3^2)^3=3^{2\\cdot3}=3^6\\).",
+              "\\(3^6=\\boxed{729}\\)."
+            ],
+            "hint": "En una potencia de potencia se multiplican los exponentes.",
+            "topicId": "uni-c2-leyes"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b06",
+          "number": 6,
+          "topic": "Potencias superpuestas",
+          "text": "Calcula \\(2^{3^2}\\).",
+          "options": [
+            "\\(512\\)",
+            "\\(64\\)",
+            "\\(256\\)",
+            "\\(32\\)",
+            "\\(16\\)"
+          ],
+          "grading": {
+            "correctIndex": 0,
+            "steps": [
+              "Primero calcula \\(3^2=9\\).",
+              "Luego, \\(2^9=\\boxed{512}\\). No es \\((2^3)^2\\)."
+            ],
+            "hint": "En una torre, resuelve primero el exponente superior.",
+            "topicId": "uni-c2-torres"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b07",
+          "number": 7,
+          "topic": "Raíces reales y valor absoluto",
+          "text": "Calcula \\(\\sqrt{144}+\\sqrt[3]{-27}\\).",
+          "options": [
+            "\\(15\\)",
+            "\\(-15\\)",
+            "\\(9\\)",
+            "\\(-9\\)",
+            "\\(12\\)"
+          ],
+          "grading": {
+            "correctIndex": 2,
+            "steps": [
+              "\\(\\sqrt{144}=12\\) y \\(\\sqrt[3]{-27}=-3\\).",
+              "\\[12+(-3)=\\boxed9\\]"
+            ],
+            "hint": "La raíz cuadrada principal es no negativa; la raíz cúbica conserva el signo.",
+            "topicId": "uni-c2-raices"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b08",
+          "number": 8,
+          "topic": "Operaciones con radicales",
+          "text": "Calcula \\(\\sqrt{12}\\cdot\\sqrt{27}\\).",
+          "options": [
+            "\\(39\\)",
+            "\\(18\\)",
+            "\\(9\\)",
+            "\\(6\\)",
+            "\\(324\\)"
+          ],
+          "grading": {
+            "correctIndex": 1,
+            "steps": [
+              "\\[\\sqrt{12}\\sqrt{27}=\\sqrt{12\\cdot27}=\\sqrt{324}\\]",
+              "Como \\(18^2=324\\), el resultado es \\(\\boxed{18}\\)."
+            ],
+            "hint": "Las raíces del mismo índice pueden multiplicarse reuniendo sus radicandos positivos.",
+            "topicId": "uni-c2-radicales"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b09",
+          "number": 9,
+          "topic": "Exponentes fraccionarios y decimales",
+          "text": "Calcula \\(27^{2/3}\\).",
+          "options": [
+            "\\(3\\)",
+            "\\(6\\)",
+            "\\(18\\)",
+            "\\(81\\)",
+            "\\(9\\)"
+          ],
+          "grading": {
+            "correctIndex": 4,
+            "steps": [
+              "\\(27^{2/3}=(\\sqrt[3]{27})^2=3^2\\).",
+              "El resultado es \\(\\boxed9\\)."
+            ],
+            "hint": "El denominador indica la raíz; el numerador indica la potencia.",
+            "topicId": "uni-c2-fraccionarios"
+          }
+        },
+        {
+          "id": "alg-uni-c2-b10",
+          "number": 10,
+          "topic": "Ecuaciones exponenciales",
+          "text": "Resuelve \\(3^{x+1}=81\\).",
+          "options": [
+            "\\(4\\)",
+            "\\(2\\)",
+            "\\(5\\)",
+            "\\(3\\)",
+            "\\(1\\)"
+          ],
+          "grading": {
+            "correctIndex": 3,
+            "steps": [
+              "\\(81=3^4\\), por lo que \\(x+1=4\\).",
+              "\\(\\boxed{x=3}\\). Comprobación: \\(3^{3+1}=81\\)."
+            ],
+            "hint": "Expresa 81 como una potencia de 3 antes de igualar exponentes.",
+            "topicId": "uni-c2-ecuaciones"
+          }
+        }
+      ]
+    },
+    {
+      "id": "algebra-uni-c2-intermedio",
+      "title": "Nivel intermedio · 10 problemas",
+      "courseId": "algebra",
+      "chapterId": "algebra-uni-c2",
+      "level": "intermedio",
+      "subject": "Álgebra · Capítulo 2",
+      "instructions": "Marca una alternativa por pregunta y avanza en orden. Puedes cambiar tus respuestas antes de terminar. Al marcar las 10, la tarea se calificará automáticamente y las respuestas quedarán cerradas. Verás tu nota sobre 20, qué preguntas debes repasar y el solucionario de cada problema. No necesitas subir archivos. Revisa los ejemplos de la teoría y las condiciones de cada enunciado.",
+      "due": "",
+      "published": true,
+      "autoGrade": true,
+      "questions": [
+        {
+          "id": "alg-uni-c2-i01",
+          "number": 1,
+          "topic": "Exponentes cero y negativos",
+          "text": "Calcula \\((-2)^{-2}+\\left(\\frac32\\right)^{-1}\\).",
+          "options": [
+            "\\(\\frac5{12}\\)",
+            "\\(\\frac74\\)",
+            "\\(\\frac23\\)",
+            "\\(-\\frac{11}{12}\\)",
+            "\\(\\frac{11}{12}\\)"
+          ],
+          "grading": {
+            "correctIndex": 4,
+            "steps": [
+              "\\((-2)^{-2}=1/(-2)^2=1/4\\) y \\((3/2)^{-1}=2/3\\).",
+              "\\[\\frac14+\\frac23=\\frac3{12}+\\frac8{12}=\\boxed{\\frac{11}{12}}\\]"
+            ],
+            "hint": "Calcula cada inverso por separado y luego usa un denominador común.",
+            "topicId": "uni-c2-negativos"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i02",
+          "number": 2,
+          "topic": "Leyes de los exponentes",
+          "text": "Para \\(x\\ne0\\) e \\(y\\ne0\\), simplifica \\(\\frac{(2x^2y^{-1})^3}{4x^3y^{-4}}\\).",
+          "options": [
+            "\\(2x^3/y\\)",
+            "\\(2x^3y\\)",
+            "\\(2x^9y\\)",
+            "\\(4x^3y\\)",
+            "\\(2y/x^3\\)"
+          ],
+          "grading": {
+            "correctIndex": 1,
+            "steps": [
+              "El numerador es \\(8x^6y^{-3}\\).",
+              "\\[\\frac{8x^6y^{-3}}{4x^3y^{-4}}=2x^{6-3}y^{-3-(-4)}\\]",
+              "El resultado es \\(\\boxed{2x^3y}\\)."
+            ],
+            "hint": "Primero eleva todos los factores del numerador; después resta exponentes en cada base.",
+            "topicId": "uni-c2-leyes"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i03",
+          "number": 3,
+          "topic": "Raíces reales y valor absoluto",
+          "text": "Si \\(a<5\\), simplifica \\(\\sqrt{(a-5)^2}\\).",
+          "options": [
+            "\\(a-5\\)",
+            "\\(a+5\\)",
+            "\\(-a-5\\)",
+            "\\(5-a\\)",
+            "\\(25-a^2\\)"
+          ],
+          "grading": {
+            "correctIndex": 3,
+            "steps": [
+              "\\(\\sqrt{(a-5)^2}=|a-5|\\).",
+              "Como \\(a<5\\), se cumple \\(a-5<0\\). Por eso \\(|a-5|=-(a-5)=\\boxed{5-a}\\)."
+            ],
+            "hint": "La raíz cuadrada de un cuadrado es el valor absoluto. Usa la condición sobre a.",
+            "topicId": "uni-c2-raices"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i04",
+          "number": 4,
+          "topic": "Operaciones con radicales",
+          "text": "Simplifica \\(\\sqrt{75}-2\\sqrt{12}+\\sqrt{27}\\).",
+          "options": [
+            "\\(4\\sqrt3\\)",
+            "\\(6\\sqrt3\\)",
+            "\\(10\\sqrt3\\)",
+            "\\(2\\sqrt3\\)",
+            "\\(\\sqrt{78}\\)"
+          ],
+          "grading": {
+            "correctIndex": 0,
+            "steps": [
+              "\\(\\sqrt{75}=5\\sqrt3\\), \\(\\sqrt{12}=2\\sqrt3\\) y \\(\\sqrt{27}=3\\sqrt3\\).",
+              "\\[5\\sqrt3-2(2\\sqrt3)+3\\sqrt3=(5-4+3)\\sqrt3=\\boxed{4\\sqrt3}\\]"
+            ],
+            "hint": "Extrae cuadrados perfectos antes de reunir los coeficientes; el 2 también multiplica al radical simplificado.",
+            "topicId": "uni-c2-radicales"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i05",
+          "number": 5,
+          "topic": "Exponentes fraccionarios y decimales",
+          "text": "Calcula \\(\\left(\\frac{81}{16}\\right)^{-3/4}\\).",
+          "options": [
+            "\\(\\frac{27}8\\)",
+            "\\(\\frac23\\)",
+            "\\(\\frac8{27}\\)",
+            "\\(\\frac49\\)",
+            "\\(\\frac{16}{81}\\)"
+          ],
+          "grading": {
+            "correctIndex": 2,
+            "steps": [
+              "\\[(81/16)^{-3/4}=(16/81)^{3/4}\\]",
+              "La raíz cuarta de \\(16/81\\) es \\(2/3\\).",
+              "\\[(2/3)^3=\\boxed{\\frac8{27}}\\]"
+            ],
+            "hint": "Invierte la base por el signo negativo y después calcula raíz cuarta y cubo.",
+            "topicId": "uni-c2-fraccionarios"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i06",
+          "number": 6,
+          "topic": "Radicales anidados",
+          "text": "Calcula \\(\\sqrt{\\sqrt[3]{64}}\\).",
+          "options": [
+            "\\(4\\)",
+            "\\(8\\)",
+            "\\(16\\)",
+            "\\(1\\)",
+            "\\(2\\)"
+          ],
+          "grading": {
+            "correctIndex": 4,
+            "steps": [
+              "\\(\\sqrt[3]{64}=4\\).",
+              "Luego, \\(\\sqrt4=\\boxed2\\). Equivale a \\(\\sqrt[6]{64}\\)."
+            ],
+            "hint": "Puedes resolver las raíces desde adentro o multiplicar los índices.",
+            "topicId": "uni-c2-anidados"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i07",
+          "number": 7,
+          "topic": "Radicales anidados",
+          "text": "Calcula \\(\\sqrt{12+\\sqrt{7+\\sqrt{81}}}\\).",
+          "options": [
+            "\\(4\\)",
+            "\\(5\\)",
+            "\\(6\\)",
+            "\\(3\\)",
+            "\\(16\\)"
+          ],
+          "grading": {
+            "correctIndex": 0,
+            "steps": [
+              "\\(\\sqrt{81}=9\\), así que la raíz intermedia es \\(\\sqrt{7+9}=4\\).",
+              "La raíz exterior queda \\(\\sqrt{12+4}=\\sqrt{16}=\\boxed4\\)."
+            ],
+            "hint": "Resuelve la raíz más interior y suma antes de pasar a la siguiente.",
+            "topicId": "uni-c2-anidados"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i08",
+          "number": 8,
+          "topic": "Radicales anidados",
+          "text": "Para \\(x>0\\), simplifica \\(\\sqrt{x^3\\sqrt{x^2}}\\).",
+          "options": [
+            "\\(x\\)",
+            "\\(x^3\\)",
+            "\\(x^{3/2}\\)",
+            "\\(x^2\\)",
+            "\\(x^4\\)"
+          ],
+          "grading": {
+            "correctIndex": 3,
+            "steps": [
+              "Como \\(x>0\\), se cumple \\(\\sqrt{x^2}=x\\).",
+              "\\[\\sqrt{x^3\\sqrt{x^2}}=\\sqrt{x^3\\cdot x}=\\sqrt{x^4}=\\boxed{x^2}\\]"
+            ],
+            "hint": "Usa primero el signo de x para simplificar la raíz interior.",
+            "topicId": "uni-c2-anidados"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i09",
+          "number": 9,
+          "topic": "Ecuaciones exponenciales",
+          "text": "Resuelve \\(4^{x+1}=8^{x-1}\\).",
+          "options": [
+            "\\(3\\)",
+            "\\(5\\)",
+            "\\(-5\\)",
+            "\\(1\\)",
+            "\\(2\\)"
+          ],
+          "grading": {
+            "correctIndex": 1,
+            "steps": [
+              "\\[2^{2x+2}=2^{3x-3}\\]",
+              "Igualando exponentes: \\(2x+2=3x-3\\), de donde \\(\\boxed{x=5}\\).",
+              "Comprobación: \\(4^6=2^{12}\\) y \\(8^4=2^{12}\\)."
+            ],
+            "hint": "Escribe 4 y 8 como potencias de 2 y distribuye bien los exponentes.",
+            "topicId": "uni-c2-ecuaciones"
+          }
+        },
+        {
+          "id": "alg-uni-c2-i10",
+          "number": 10,
+          "topic": "Estrategias para problemas combinados",
+          "text": "Para \\(n\\in\\mathbb N\\), simplifica \\(\\frac{5^{n+2}-5^{n+1}}{5^{n+1}-5^n}\\).",
+          "options": [
+            "\\(25\\)",
+            "\\(4\\)",
+            "\\(5\\)",
+            "\\(1\\)",
+            "\\(\\frac15\\)"
+          ],
+          "grading": {
+            "correctIndex": 2,
+            "steps": [
+              "El numerador es \\(5^n(25-5)=20\\cdot5^n\\).",
+              "El denominador es \\(5^n(5-1)=4\\cdot5^n\\ne0\\).",
+              "\\[\\frac{20\\cdot5^n}{4\\cdot5^n}=\\boxed5\\]"
+            ],
+            "hint": "Las leyes de exponentes no se aplican directamente a una resta. Extrae una potencia común.",
+            "topicId": "uni-c2-estrategias"
+          }
+        }
+      ]
+    },
+    {
+      "id": "algebra-uni-c2-avanzado",
+      "title": "Nivel avanzado · 10 problemas",
+      "courseId": "algebra",
+      "chapterId": "algebra-uni-c2",
+      "level": "avanzado",
+      "subject": "Álgebra · Capítulo 2",
+      "instructions": "Marca una alternativa por pregunta y avanza en orden. Puedes cambiar tus respuestas antes de terminar. Al marcar las 10, la tarea se calificará automáticamente y las respuestas quedarán cerradas. Verás tu nota sobre 20, qué preguntas debes repasar y el solucionario de cada problema. No necesitas subir archivos. Revisa los ejemplos de la teoría y las condiciones de cada enunciado.",
+      "due": "",
+      "published": true,
+      "autoGrade": true,
+      "questions": [
+        {
+          "id": "alg-uni-c2-a01",
+          "number": 1,
+          "topic": "Leyes de los exponentes",
+          "text": "Calcula \\(\\frac{12^3\\cdot18^2}{8^2\\cdot27\\cdot9}\\).",
+          "options": [
+            "\\(12\\)",
+            "\\(18\\)",
+            "\\(36\\)",
+            "\\(72\\)",
+            "\\(108\\)"
+          ],
+          "grading": {
+            "correctIndex": 2,
+            "steps": [
+              "\\(12^3=2^6\\cdot3^3\\) y \\(18^2=2^2\\cdot3^4\\).",
+              "El denominador es \\(2^6\\cdot3^3\\cdot3^2=2^6\\cdot3^5\\).",
+              "\\[2^{8-6}3^{7-5}=2^2\\cdot3^2=\\boxed{36}\\]"
+            ],
+            "hint": "Descompón todas las bases en factores primos y reúne las potencias de 2 y de 3.",
+            "topicId": "uni-c2-leyes"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a02",
+          "number": 2,
+          "topic": "Leyes de los exponentes",
+          "text": "Con \\(a\\ne0\\) y \\(b\\ne0\\), simplifica \\(\\frac{(a^{-2}b^3)^{-2}(a^3b^{-1})^2}{a^2b^{-3}}\\).",
+          "options": [
+            "\\(\\frac{a^8}{b^5}\\)",
+            "\\(\\frac{a^4}{b^5}\\)",
+            "\\(a^8b\\)",
+            "\\(\\frac{a^8}{b^{11}}\\)",
+            "\\(\\frac{b^5}{a^8}\\)"
+          ],
+          "grading": {
+            "correctIndex": 0,
+            "steps": [
+              "\\((a^{-2}b^3)^{-2}=a^4b^{-6}\\) y \\((a^3b^{-1})^2=a^6b^{-2}\\).",
+              "El numerador es \\(a^{10}b^{-8}\\).",
+              "\\[a^{10-2}b^{-8-(-3)}=a^8b^{-5}=\\boxed{\\frac{a^8}{b^5}}\\]"
+            ],
+            "hint": "Multiplica exponentes dentro de cada potencia y recuerda que restar un exponente negativo equivale a sumar.",
+            "topicId": "uni-c2-leyes"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a03",
+          "number": 3,
+          "topic": "Estrategias para problemas combinados",
+          "text": "Para \\(n\\in\\mathbb N\\), simplifica \\(\\frac{3^{2n+2}-3^{2n}}{(3^{n+1}+3^n)^2}\\).",
+          "options": [
+            "\\(\\frac23\\)",
+            "\\(2\\)",
+            "\\(\\frac18\\)",
+            "\\(\\frac14\\)",
+            "\\(\\frac12\\)"
+          ],
+          "grading": {
+            "correctIndex": 4,
+            "steps": [
+              "El numerador es \\(3^{2n}(9-1)=8\\cdot3^{2n}\\).",
+              "\\(3^{n+1}+3^n=4\\cdot3^n\\); su cuadrado es \\(16\\cdot3^{2n}\\).",
+              "\\[\\frac{8\\cdot3^{2n}}{16\\cdot3^{2n}}=\\boxed{\\frac12}\\]"
+            ],
+            "hint": "Factoriza el numerador y el interior del paréntesis. El cuadrado también afecta al coeficiente del denominador.",
+            "topicId": "uni-c2-estrategias"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a04",
+          "number": 4,
+          "topic": "Radicales anidados",
+          "text": "Para \\(x>0\\), simplifica \\(\\frac{\\sqrt[3]{x^2\\sqrt{x^5}}}{\\sqrt[6]{x^3}}\\).",
+          "options": [
+            "\\(x^{1/2}\\)",
+            "\\(x\\)",
+            "\\(x^{3/2}\\)",
+            "\\(x^2\\)",
+            "\\(\\frac1x\\)"
+          ],
+          "grading": {
+            "correctIndex": 1,
+            "steps": [
+              "La raíz interior es \\(\\sqrt{x^5}=x^{5/2}\\).",
+              "El numerador es \\((x^{2+5/2})^{1/3}=x^{3/2}\\); el denominador es \\(x^{3/6}=x^{1/2}\\).",
+              "\\[x^{3/2-1/2}=\\boxed x\\]"
+            ],
+            "hint": "Convierte cada raíz en un exponente fraccionario y aplica la raíz exterior a todo el producto.",
+            "topicId": "uni-c2-anidados"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a05",
+          "number": 5,
+          "topic": "Radicales anidados",
+          "text": "Calcula \\(\\frac{\\sqrt{\\sqrt[3]{2^{18}}}}{\\sqrt[3]{\\sqrt{2^{12}}}}\\).",
+          "options": [
+            "\\(1\\)",
+            "\\(4\\)",
+            "\\(8\\)",
+            "\\(2\\)",
+            "\\(\\frac12\\)"
+          ],
+          "grading": {
+            "correctIndex": 3,
+            "steps": [
+              "El numerador es \\(2^{18/(3\\cdot2)}=2^3=8\\).",
+              "El denominador es \\(2^{12/(2\\cdot3)}=2^2=4\\).",
+              "\\[8/4=\\boxed2\\]"
+            ],
+            "hint": "En cada raíz anidada, divide el exponente por el producto de los índices.",
+            "topicId": "uni-c2-anidados"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a06",
+          "number": 6,
+          "topic": "Estrategias para problemas combinados",
+          "text": "Simplifica \\(\\sqrt{20-8\\sqrt6}\\).",
+          "options": [
+            "\\(2\\sqrt3+2\\sqrt2\\)",
+            "\\(2\\sqrt3-2\\sqrt2\\)",
+            "\\(2\\sqrt2-2\\sqrt3\\)",
+            "\\(4\\sqrt3-2\\sqrt2\\)",
+            "\\(2\\sqrt6\\)"
+          ],
+          "grading": {
+            "correctIndex": 1,
+            "steps": [
+              "Como \\(12+8=20\\) y \\(2\\sqrt{12}\\sqrt8=8\\sqrt6\\), el radicando es \\((\\sqrt{12}-\\sqrt8)^2\\).",
+              "\\(\\sqrt{12}=2\\sqrt3\\) y \\(\\sqrt8=2\\sqrt2\\). La diferencia es positiva.",
+              "\\[\\sqrt{(2\\sqrt3-2\\sqrt2)^2}=\\boxed{2\\sqrt3-2\\sqrt2}\\]"
+            ],
+            "hint": "Busca un cuadrado de la forma \\((u-v)^2\\) y elige su raíz principal no negativa.",
+            "topicId": "uni-c2-estrategias"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a07",
+          "number": 7,
+          "topic": "Operaciones con radicales",
+          "text": "Calcula \\(\\frac{\\sqrt{50}+\\sqrt8}{\\sqrt{18}-\\sqrt2}\\).",
+          "options": [
+            "\\(7\\)",
+            "\\(\\frac52\\)",
+            "\\(\\frac72\\sqrt2\\)",
+            "\\(\\frac27\\)",
+            "\\(\\frac72\\)"
+          ],
+          "grading": {
+            "correctIndex": 4,
+            "steps": [
+              "El numerador es \\(5\\sqrt2+2\\sqrt2=7\\sqrt2\\).",
+              "El denominador es \\(3\\sqrt2-\\sqrt2=2\\sqrt2\\ne0\\).",
+              "\\[\\frac{7\\sqrt2}{2\\sqrt2}=\\boxed{\\frac72}\\]"
+            ],
+            "hint": "Simplifica los cuatro radicales antes de dividir y comprueba que el denominador no sea cero.",
+            "topicId": "uni-c2-radicales"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a08",
+          "number": 8,
+          "topic": "Ecuaciones exponenciales",
+          "text": "Resuelve \\(9^{x-1}=\\left(\\frac1{27}\\right)^{2x-3}\\).",
+          "options": [
+            "\\(\\frac78\\)",
+            "\\(-\\frac{11}8\\)",
+            "\\(\\frac{11}8\\)",
+            "\\(\\frac54\\)",
+            "\\(\\frac{11}4\\)"
+          ],
+          "grading": {
+            "correctIndex": 2,
+            "steps": [
+              "\\[3^{2x-2}=3^{-3(2x-3)}=3^{-6x+9}\\]",
+              "Iguala exponentes: \\(2x-2=-6x+9\\), entonces \\(8x=11\\).",
+              "\\(\\boxed{x=11/8}\\). Ambos exponentes se convierten en \\(3/4\\)."
+            ],
+            "hint": "La base 1/27 es 3 elevado a −3. Distribuye ese signo negativo sobre todo el exponente.",
+            "topicId": "uni-c2-ecuaciones"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a09",
+          "number": 9,
+          "topic": "Estrategias para problemas combinados",
+          "text": "¿Cuál es el conjunto de soluciones reales de \\(4^x-5\\cdot2^x+4=0\\)?",
+          "options": [
+            "\\(\\{1;\\,4\\}\\)",
+            "\\(\\{0;\\,1\\}\\)",
+            "\\(\\{2;\\,4\\}\\)",
+            "\\(\\{0;\\,2\\}\\)",
+            "\\(\\{-2;\\,0\\}\\)"
+          ],
+          "grading": {
+            "correctIndex": 3,
+            "steps": [
+              "Sea \\(t=2^x>0\\). La ecuación queda \\(t^2-5t+4=0\\).",
+              "\\((t-1)(t-4)=0\\), por lo que \\(t=1\\) o \\(t=4\\).",
+              "\\(2^x=1\\Rightarrow x=0\\) y \\(2^x=4\\Rightarrow x=2\\).",
+              "Ambos valores verifican la ecuación original: \\(1-5+4=0\\) y \\(16-20+4=0\\). La respuesta es \\(\\boxed{\\{0;\\,2\\}}\\)."
+            ],
+            "hint": "Sustituye \\(2^x\\) por una variable positiva. Al final vuelve a la incógnita x.",
+            "topicId": "uni-c2-estrategias"
+          }
+        },
+        {
+          "id": "alg-uni-c2-a10",
+          "number": 10,
+          "topic": "Estrategias para problemas combinados",
+          "text": "Si el radical infinito \\(R=\\sqrt{12+\\sqrt{12+\\sqrt{12+\\cdots}}}\\) converge, ¿cuál es su límite?",
+          "options": [
+            "\\(4\\)",
+            "\\(3\\)",
+            "\\(-3\\)",
+            "\\(6\\)",
+            "\\(12\\)"
+          ],
+          "grading": {
+            "correctIndex": 0,
+            "steps": [
+              "El límite satisface \\(R=\\sqrt{12+R}\\), con \\(R\\ge0\\).",
+              "\\(R^2-R-12=0\\), que se factoriza como \\((R-4)(R+3)=0\\).",
+              "Los candidatos son 4 y −3. La raíz principal descarta −3.",
+              "Comprobación: \\(\\sqrt{12+4}=4\\). El límite es \\(\\boxed4\\)."
+            ],
+            "hint": "Usa la repetición del radical para formar una ecuación y conserva solo el valor no negativo.",
+            "topicId": "uni-c2-estrategias"
+          }
+        }
+      ]
+    }
+  ],
+  "additionalLessons": [
+    {
+      "id": "algebra-uni-c2",
+      "chapter": 2,
+      "subject": "Álgebra",
+      "title": "Exponentes y radicales",
+      "source": "Álgebra · Colección Compendios Académicos UNI, Lumbreras Editores. ALGEBRA.pdf. Capítulo II: páginas impresas 19–29; páginas 14–24 del PDF. Teoría y ejercicios propios adaptados al temario; se corrigen las condiciones de dominio y las afirmaciones generales que no son válidas.",
+      "convention": "Trabajamos en los números reales. En cada problema se indican las restricciones necesarias; ningún denominador puede ser cero. Una raíz de índice par es la raíz principal no negativa.",
+      "objectives": [
+        "Interpretar potencias y distinguir signos, bases y exponentes.",
+        "Aplicar las leyes de exponentes enteros y fraccionarios.",
+        "Calcular raíces reales y simplificar radicales, incluidos los anidados.",
+        "Resolver ecuaciones exponenciales mediante bases comunes, factorización y sustitución.",
+        "Comprobar el dominio y explicar cada paso de una solución."
+      ],
+      "topics": [
+        {
+          "id": "uni-c2-potencias",
+          "title": "1. Potencias, signos y paréntesis",
+          "concept": "Una potencia de exponente natural expresa una multiplicación de factores iguales. La base es el número que se repite; el exponente indica cuántas veces. Los paréntesis determinan si un signo o un coeficiente pertenece a la base.",
+          "formulas": [
+            "\\[a^n=\\underbrace{a\\cdot a\\cdots a}_{n\\text{ factores}},\\qquad n\\in\\mathbb{N}\\]",
+            "\\[(-a)^{2k}=a^{2k},\\qquad (-a)^{2k+1}=-a^{2k+1}\\]",
+            "\\[-a^2=-(a^2),\\qquad ca^n=c\\cdot(a^n)\\]"
+          ],
+          "tip": "Antes de calcular, identifica toda la base. En \\(-a^2\\), el signo menos queda fuera de la potencia.",
+          "examples": [
+            {
+              "title": "El signo forma parte de la base",
+              "level": "Básico",
+              "statement": "Compara \\((-4)^2\\) y \\(-4^2\\).",
+              "steps": [
+                "Con paréntesis: \\((-4)^2=(-4)(-4)=16\\).",
+                "Sin paréntesis: \\(-4^2=-(4\\cdot4)=-16\\). Los resultados son distintos."
+              ]
+            },
+            {
+              "title": "Exponente impar",
+              "level": "Básico",
+              "statement": "Calcula \\((-2)^5\\).",
+              "steps": [
+                "La base negativa aparece cinco veces. Un número impar de signos negativos produce un signo negativo.",
+                "\\[(-2)^5=-(2^5)=\\boxed{-32}\\]"
+              ]
+            },
+            {
+              "title": "Coeficiente y base",
+              "level": "Intermedio",
+              "statement": "Calcula \\(3\\cdot2^3\\) y \\((3\\cdot2)^3\\).",
+              "steps": [
+                "En la primera expresión, solo el 2 está elevado al cubo: \\(3\\cdot8=24\\).",
+                "En la segunda, la base completa es 6: \\(6^3=216\\).",
+                "Por tanto, \\(3\\cdot2^3\\ne(3\\cdot2)^3\\)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-negativos",
+          "title": "2. Exponentes cero y negativos",
+          "concept": "Para una base no nula, el exponente cero da 1. Un exponente negativo indica el inverso de la potencia positiva; no convierte automáticamente el resultado en un número negativo.",
+          "formulas": [
+            "\\[a^0=1\\quad(a\\ne0),\\qquad a^{-n}=\\frac{1}{a^n}\\]",
+            "\\[\\left(\\frac ab\\right)^{-n}=\\left(\\frac ba\\right)^n\\quad(a\\ne0,\\ b\\ne0)\\]",
+            "\\(0^{-n}\\) no está definido. En este curso, \\(0^0\\) tampoco se define."
+          ],
+          "tip": "Invierte la base completa y conserva sus paréntesis. Después aplica el exponente positivo.",
+          "examples": [
+            {
+              "title": "Una suma con exponente cero",
+              "level": "Básico",
+              "statement": "Calcula \\(5^0+2^{-2}\\).",
+              "steps": [
+                "Como \\(5\\ne0\\), tenemos \\(5^0=1\\); además, \\(2^{-2}=1/4\\).",
+                "\\[1+\\frac14=\\boxed{\\frac54}\\]"
+              ]
+            },
+            {
+              "title": "Invertir una fracción",
+              "level": "Básico",
+              "statement": "Calcula \\(\\left(\\frac32\\right)^{-2}\\).",
+              "steps": [
+                "El exponente negativo invierte la fracción: \\((3/2)^{-2}=(2/3)^2\\).",
+                "Eleva numerador y denominador: \\(\\boxed{4/9}\\)."
+              ]
+            },
+            {
+              "title": "Cuidar un doble signo",
+              "level": "Intermedio",
+              "statement": "Calcula \\(\\left(\\frac25\\right)^{-2}-(-2)^{-3}\\).",
+              "steps": [
+                "\\((2/5)^{-2}=25/4\\) y \\((-2)^{-3}=1/(-8)=-1/8\\).",
+                "Restar un número negativo equivale a sumar: \\(25/4+1/8=50/8+1/8\\).",
+                "El resultado es \\(\\boxed{51/8}\\)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-leyes",
+          "title": "3. Leyes de los exponentes",
+          "concept": "Con la misma base, un producto suma exponentes y un cociente los resta. En una potencia de potencia, los exponentes se multiplican. Una potencia de producto o cociente afecta a cada factor.",
+          "formulas": [
+            "\\[a^m a^n=a^{m+n},\\qquad \\frac{a^m}{a^n}=a^{m-n}\\]",
+            "\\[(a^m)^n=a^{mn},\\qquad(ab)^n=a^n b^n,\\qquad\\left(\\frac ab\\right)^n=\\frac{a^n}{b^n}\\]",
+            "En estas identidades con exponentes enteros, toma las bases no nulas. Ningún denominador puede ser cero."
+          ],
+          "tip": "Estas reglas no convierten una suma en una potencia: por ejemplo, \\(2^2+2^3=12\\), mientras que \\(2^{2+3}=32\\).",
+          "examples": [
+            {
+              "title": "Sumar y restar exponentes",
+              "level": "Básico",
+              "statement": "Simplifica \\(\\frac{x^6x^{-2}}x\\), con \\(x\\ne0\\).",
+              "steps": [
+                "El denominador es \\(x^1\\). Todos los factores tienen la misma base.",
+                "\\[\\frac{x^6x^{-2}}{x^1}=x^{6-2-1}=\\boxed{x^3}\\]"
+              ]
+            },
+            {
+              "title": "Potencia de un monomio",
+              "level": "Intermedio",
+              "statement": "Desarrolla \\((2a^2b^{-1})^3\\), con \\(b\\ne0\\).",
+              "steps": [
+                "Eleva cada factor: \\(2^3(a^2)^3(b^{-1})^3\\).",
+                "Multiplica exponentes: \\(8a^6b^{-3}=\\boxed{\\frac{8a^6}{b^3}}\\)."
+              ]
+            },
+            {
+              "title": "Bases distintas con factores comunes",
+              "level": "Avanzado",
+              "statement": "Calcula \\(\\frac{18^2\\cdot8}{12^2}\\).",
+              "steps": [
+                "Descompón las bases: \\(18=2\\cdot3^2\\), \\(8=2^3\\) y \\(12=2^2\\cdot3\\).",
+                "\\[\\frac{2^2\\cdot3^4\\cdot2^3}{2^4\\cdot3^2}=2^{2+3-4}3^{4-2}\\]",
+                "El resultado es \\(2\\cdot9=\\boxed{18}\\)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-torres",
+          "title": "4. Potencias superpuestas",
+          "concept": "Una torre de potencias se calcula desde el exponente situado más arriba. Si hay paréntesis, se respeta primero lo que encierran. Una torre y una potencia de potencia son operaciones diferentes.",
+          "formulas": [
+            "\\[a^{b^c}=a^{(b^c)},\\qquad(a^b)^c=a^{bc}\\]",
+            "\\[2^{3^2}=2^9,\\qquad(2^3)^2=2^6\\]"
+          ],
+          "tip": "No multipliques los exponentes de una torre sin paréntesis. Primero resuelve el exponente superior.",
+          "examples": [
+            {
+              "title": "Dos escrituras, dos resultados",
+              "level": "Básico",
+              "statement": "Compara \\(3^{2^3}\\) y \\((3^2)^3\\).",
+              "steps": [
+                "En la torre: \\(2^3=8\\), así que \\(3^{2^3}=3^8=6561\\).",
+                "En la potencia de potencia: \\((3^2)^3=3^{2\\cdot3}=3^6=729\\). Los paréntesis cambian el orden de las operaciones."
+              ]
+            },
+            {
+              "title": "Un signo en el exponente",
+              "level": "Intermedio",
+              "statement": "Calcula \\(2^{-2^2}\\).",
+              "steps": [
+                "El exponente es \\(-(2^2)=-4\\), porque el signo menos no está entre paréntesis.",
+                "\\[2^{-2^2}=2^{-4}=\\boxed{\\frac1{16}}\\]"
+              ]
+            },
+            {
+              "title": "Torres con cero y uno",
+              "level": "Intermedio",
+              "statement": "Calcula \\(4^{2^0}+3^{1^5}\\).",
+              "steps": [
+                "Primero, \\(2^0=1\\) y \\(1^5=1\\).",
+                "La expresión queda \\(4^1+3^1=\\boxed7\\)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-raices",
+          "title": "5. Raíces reales y valor absoluto",
+          "concept": "La raíz de índice n busca un número cuya potencia n sea el radicando. La raíz de índice par representa la raíz principal no negativa; un radicando negativo no tiene raíz real de índice par. Una raíz de índice impar conserva el signo del radicando.",
+          "formulas": [
+            "\\[\\sqrt[n]{a}=b\\ \\Longrightarrow\\ b^n=a\\]",
+            "\\[\\sqrt{x^2}=|x|,\\qquad\\sqrt[3]{x^3}=x\\]",
+            "Para índice par: \\(a\\ge0\\) y \\(b\\ge0\\). Para índice impar: \\(a\\in\\mathbb R\\)."
+          ],
+          "tip": "La expresión \\(\\sqrt9\\) vale 3. La ecuación \\(x^2=9\\) sí tiene dos soluciones: 3 y −3.",
+          "examples": [
+            {
+              "title": "La raíz principal",
+              "level": "Básico",
+              "statement": "Calcula \\(\\sqrt{169}\\).",
+              "steps": [
+                "Buscamos un número no negativo cuyo cuadrado sea 169.",
+                "Como \\(13^2=169\\), se cumple \\(\\sqrt{169}=\\boxed{13}\\)."
+              ]
+            },
+            {
+              "title": "Una raíz de un negativo",
+              "level": "Básico",
+              "statement": "Calcula \\(\\sqrt[3]{-64}\\).",
+              "steps": [
+                "El índice 3 es impar, así que existe una raíz real negativa.",
+                "Como \\((-4)^3=-64\\), la raíz es \\(\\boxed{-4}\\)."
+              ]
+            },
+            {
+              "title": "El valor absoluto depende del signo",
+              "level": "Intermedio",
+              "statement": "Simplifica \\(\\sqrt{(x-2)^2}\\), si \\(x<2\\).",
+              "steps": [
+                "\\(\\sqrt{(x-2)^2}=|x-2|\\). Como \\(x<2\\), se cumple \\(x-2<0\\).",
+                "El valor absoluto cambia el signo: \\(|x-2|=-(x-2)=\\boxed{2-x}\\)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-radicales",
+          "title": "6. Operaciones con radicales",
+          "concept": "Puedes multiplicar y dividir raíces del mismo índice cuando las expresiones están definidas. Para sumar o restar, extrae las potencias perfectas y reúne únicamente radicales semejantes: mismo índice y mismo radicando.",
+          "formulas": [
+            "\\[\\sqrt[n]{a}\\sqrt[n]{b}=\\sqrt[n]{ab},\\qquad\\frac{\\sqrt[n]{a}}{\\sqrt[n]{b}}=\\sqrt[n]{\\frac ab}\\]",
+            "Para índice par se requiere \\(a,b\\ge0\\); en el cociente, además \\(b>0\\). Para índice impar, el cociente requiere \\(b\\ne0\\).",
+            "\\[\\sqrt{k^2a}=|k|\\sqrt a\\ (a\\ge0),\\qquad p\\sqrt a+q\\sqrt a=(p+q)\\sqrt a\\]"
+          ],
+          "tip": "En general, \\(\\sqrt{a+b}\\ne\\sqrt a+\\sqrt b\\). Solo se suman los coeficientes cuando los radicales son semejantes.",
+          "examples": [
+            {
+              "title": "Multiplicar raíces",
+              "level": "Básico",
+              "statement": "Calcula \\(\\sqrt8\\cdot\\sqrt{18}\\).",
+              "steps": [
+                "Los dos radicandos son positivos y los índices coinciden.",
+                "\\[\\sqrt8\\sqrt{18}=\\sqrt{144}=\\boxed{12}\\]"
+              ]
+            },
+            {
+              "title": "Reunir radicales semejantes",
+              "level": "Intermedio",
+              "statement": "Simplifica \\(\\sqrt{50}+\\sqrt8-\\sqrt{18}\\).",
+              "steps": [
+                "Extrae cuadrados perfectos: \\(\\sqrt{50}=5\\sqrt2\\), \\(\\sqrt8=2\\sqrt2\\) y \\(\\sqrt{18}=3\\sqrt2\\).",
+                "\\[(5+2-3)\\sqrt2=\\boxed{4\\sqrt2}\\]"
+              ]
+            },
+            {
+              "title": "Un cociente de radicales",
+              "level": "Avanzado",
+              "statement": "Calcula \\(\\frac{\\sqrt{48}+\\sqrt{12}}{\\sqrt{75}-\\sqrt{27}}\\).",
+              "steps": [
+                "El numerador es \\(4\\sqrt3+2\\sqrt3=6\\sqrt3\\).",
+                "El denominador es \\(5\\sqrt3-3\\sqrt3=2\\sqrt3\\ne0\\).",
+                "\\[\\frac{6\\sqrt3}{2\\sqrt3}=\\boxed3\\]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-fraccionarios",
+          "title": "7. Exponentes fraccionarios y decimales",
+          "concept": "Un exponente racional conecta potencias y raíces. El denominador indica el índice de la raíz y el numerador, la potencia. Convierte un decimal exacto o periódico en fracción antes de operar.",
+          "formulas": [
+            "\\[a^{m/n}=(\\sqrt[n]{a})^m,\\qquad a^{-m/n}=\\frac1{a^{m/n}}\\quad(a>0)\\]",
+            "Para \\(a<0\\), reduce \\(m/n\\) a una fracción irreducible: solo se admite una raíz real si su denominador es impar. Las leyes generales se aplicarán aquí con base positiva.",
+            "\\[0{,}5=\\frac12,\\qquad0{,}75=\\frac34,\\qquad0{,}\\overline3=\\frac13\\]"
+          ],
+          "tip": "Un exponente negativo exige una base no nula. El decimal periódico \\(0{,}\\overline3\\) es exactamente \\(1/3\\); un decimal truncado no lo es.",
+          "examples": [
+            {
+              "title": "Primero la raíz, después la potencia",
+              "level": "Básico",
+              "statement": "Calcula \\(32^{2/5}\\).",
+              "steps": [
+                "El denominador 5 indica raíz quinta: \\(\\sqrt[5]{32}=2\\).",
+                "Ahora eleva al cuadrado: \\(2^2=\\boxed4\\)."
+              ]
+            },
+            {
+              "title": "Exponente racional negativo",
+              "level": "Intermedio",
+              "statement": "Calcula \\(27^{-2/3}\\).",
+              "steps": [
+                "\\(27^{2/3}=(\\sqrt[3]{27})^2=3^2=9\\).",
+                "El signo negativo del exponente pide invertir: \\(\\boxed{1/9}\\)."
+              ]
+            },
+            {
+              "title": "Decimales que representan fracciones",
+              "level": "Intermedio",
+              "statement": "Calcula \\(16^{0{,}75}+8^{0{,}\\overline3}\\).",
+              "steps": [
+                "Escribe los exponentes como fracciones: \\(16^{3/4}+8^{1/3}\\).",
+                "\\(\\sqrt[4]{16}=2\\) y \\(\\sqrt[3]8=2\\).",
+                "La suma es \\(2^3+2=\\boxed{10}\\)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-anidados",
+          "title": "8. Radicales anidados",
+          "concept": "En raíces dentro de otras raíces, trabaja de adentro hacia afuera. Si solo se anidan raíces de una base positiva, sus índices se multiplican. Si aparecen productos o cocientes, traduce las raíces a exponentes fraccionarios y opera con cuidado.",
+          "formulas": [
+            "\\[\\sqrt[m]{\\sqrt[n]{a}}=a^{1/(mn)}=\\sqrt[mn]{a}\\quad(a>0)\\]",
+            "\\[\\sqrt{a\\sqrt b}=a^{1/2}b^{1/4}\\quad(a,b>0)\\]",
+            "\\[\\sqrt{\\frac a{\\sqrt b}}=a^{1/2}b^{-1/4}\\quad(a,b>0)\\]"
+          ],
+          "tip": "La regla de multiplicar índices solo se aplica directamente cuando una raíz contiene únicamente otra raíz, sin sumas ni factores adicionales.",
+          "examples": [
+            {
+              "title": "Multiplicar los índices",
+              "level": "Básico",
+              "statement": "Calcula \\(\\sqrt{\\sqrt[3]{729}}\\).",
+              "steps": [
+                "La raíz cúbica de 729 es 9.",
+                "La raíz cuadrada de 9 es 3. También: \\(\\sqrt[6]{729}=\\boxed3\\)."
+              ]
+            },
+            {
+              "title": "Resolver primero la raíz interior",
+              "level": "Intermedio",
+              "statement": "Calcula \\(\\sqrt{3+\\sqrt[3]{216}}\\).",
+              "steps": [
+                "Primero, \\(\\sqrt[3]{216}=6\\).",
+                "Después, \\(\\sqrt{3+6}=\\sqrt9=\\boxed3\\)."
+              ]
+            },
+            {
+              "title": "Sumar exponentes antes de extraer la raíz",
+              "level": "Avanzado",
+              "statement": "Simplifica \\(\\sqrt[3]{x\\sqrt{x^4}}\\), con \\(x>0\\).",
+              "steps": [
+                "Como \\(x>0\\), la raíz interior es \\(\\sqrt{x^4}=x^2\\).",
+                "El producto interior es \\(x\\cdot x^2=x^3\\).",
+                "\\[\\sqrt[3]{x^3}=\\boxed x\\]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-ecuaciones",
+          "title": "9. Ecuaciones exponenciales",
+          "concept": "En una ecuación exponencial, la incógnita aparece en el exponente. Busca una base común positiva y distinta de 1. Con esa misma base, dos potencias son iguales exactamente cuando sus exponentes lo son.",
+          "formulas": [
+            "\\[b^u=b^v\\iff u=v\\quad(b>0,\\ b\\ne1)\\]",
+            "\\[4=2^2,\\quad8=2^3,\\quad9=3^2,\\quad27=3^3\\]",
+            "\\[\\left(\\frac1b\\right)^u=b^{-u}\\quad(b>0)\\]"
+          ],
+          "tip": "No iguales exponentes de bases diferentes. Por ejemplo, \\(2^3=8^1\\), aunque \\(3\\ne1\\). Comprueba siempre la solución en la ecuación original.",
+          "examples": [
+            {
+              "title": "Una potencia conocida",
+              "level": "Básico",
+              "statement": "Resuelve \\(2^{x+2}=32\\).",
+              "steps": [
+                "Escribe \\(32=2^5\\), de modo que \\(2^{x+2}=2^5\\).",
+                "Iguala exponentes: \\(x+2=5\\), así que \\(\\boxed{x=3}\\).",
+                "Comprobación: \\(2^{3+2}=32\\)."
+              ]
+            },
+            {
+              "title": "Unificar las bases",
+              "level": "Intermedio",
+              "statement": "Resuelve \\(4^{x-1}=8\\).",
+              "steps": [
+                "\\((2^2)^{x-1}=2^3\\), por lo que \\(2(x-1)=3\\).",
+                "\\(2x-2=3\\), y entonces \\(\\boxed{x=5/2}\\).",
+                "Comprobación: \\(4^{3/2}=(\\sqrt4)^3=8\\)."
+              ]
+            },
+            {
+              "title": "Una base fraccionaria",
+              "level": "Avanzado",
+              "statement": "Resuelve \\(8^{x-1}=(1/4)^{x+2}\\).",
+              "steps": [
+                "Escribe ambas bases con 2: \\(2^{3x-3}=2^{-2x-4}\\).",
+                "Iguala exponentes: \\(3x-3=-2x-4\\); de ahí \\(5x=-1\\).",
+                "La solución es \\(\\boxed{x=-1/5}\\). Ambos exponentes valen \\(-18/5\\)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uni-c2-estrategias",
+          "title": "10. Estrategias para problemas combinados",
+          "concept": "Cuando una suma impide aplicar directamente las leyes de potencias, busca un factor común o introduce una sustitución. En radicales, reconocer un cuadrado perfecto también ayuda. Para una expresión infinita, solo puedes usar su patrón si su límite existe.",
+          "formulas": [
+            "\\[a^{n+r}=a^n\\cdot a^r,\\qquad a^{2x}=(a^x)^2\\]",
+            "\\[(u-v)^2=u^2-2uv+v^2\\]",
+            "En un radical infinito convergente como \\(R=\\sqrt{c+\\sqrt{c+\\cdots}}\\), su límite no negativo satisface \\(R^2=c+R\\)."
+          ],
+          "tip": "Una sustitución puede imponer restricciones. Si \\(t=2^x\\), entonces \\(t>0\\). Descarta los candidatos que no respeten el dominio y comprueba los demás.",
+          "examples": [
+            {
+              "title": "Extraer una potencia común",
+              "level": "Intermedio",
+              "statement": "Simplifica \\(\\frac{2^{n+3}-2^n}{2^{n+1}+2^n}\\), con \\(n\\ge0\\).",
+              "steps": [
+                "El numerador es \\(2^n(8-1)=7\\cdot2^n\\).",
+                "El denominador es \\(2^n(2+1)=3\\cdot2^n\\ne0\\).",
+                "Cancela el factor común: \\(\\boxed{7/3}\\)."
+              ]
+            },
+            {
+              "title": "Sustituir una potencia repetida",
+              "level": "Avanzado",
+              "statement": "Resuelve \\(9^x-4\\cdot3^x+3=0\\).",
+              "steps": [
+                "Sea \\(t=3^x>0\\). Como \\(9^x=t^2\\), queda \\(t^2-4t+3=0\\).",
+                "Factoriza: \\((t-1)(t-3)=0\\), de modo que \\(t=1\\) o \\(t=3\\).",
+                "\\(3^x=1\\) da \\(x=0\\); \\(3^x=3\\) da \\(x=1\\). Ambos verifican la ecuación."
+              ]
+            },
+            {
+              "title": "Usar el patrón de un radical infinito",
+              "level": "Avanzado",
+              "statement": "Si el radical \\(R=\\sqrt{6+\\sqrt{6+\\cdots}}\\) converge, calcula su límite.",
+              "steps": [
+                "La parte que vuelve a repetirse tiene el mismo límite: \\(R=\\sqrt{6+R}\\), con \\(R\\ge0\\).",
+                "Eleva al cuadrado: \\(R^2-R-6=0\\); factoriza \\((R-3)(R+2)=0\\).",
+                "Solo \\(R=3\\) es no negativo. Comprueba: \\(\\sqrt{6+3}=3\\). El límite es \\(\\boxed3\\)."
+              ]
+            }
+          ]
+        }
+      ],
+      "taskIds": [
+        "algebra-uni-c2-basico",
+        "algebra-uni-c2-intermedio",
+        "algebra-uni-c2-avanzado"
+      ]
     }
   ]
 }

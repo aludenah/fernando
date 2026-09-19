@@ -9,7 +9,7 @@ export function progressCatalog(course) {
         previous:index?`answer:${task.id}:${task.questions[index-1].id}`:null};
     });
   }
-  for(const topic of course.lesson.topics)catalog[`topic:${topic.id}`]={kind:'topic',topicId:topic.id};
+  for(const lesson of [course.lesson,...(course.additionalLessons||[])])for(const topic of lesson.topics)catalog[`topic:${topic.id}`]={kind:'topic',topicId:topic.id};
   return catalog;
 }
 export function emptyProgress(studentId) {

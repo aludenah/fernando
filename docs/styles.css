@@ -94,3 +94,11 @@
   .grade-stats {gap:10px 16px;font-size:.9rem}
   .parent-task .parent-count {white-space:normal}
 }
+
+/* Chapter navigation works in both student and parent views. */
+.chapter-picker{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}
+.chapter-picker a{flex:1 1 280px;display:flex;flex-direction:column;gap:7px;padding:18px 20px;border:1px solid #d6def1;border-radius:14px;background:#fff;color:#304366;text-decoration:none}
+.chapter-picker a[aria-current="page"]{border:2px solid #3458d6;padding:17px 19px;background:#eef2ff;color:#173d9b}
+.chapter-picker span{font-weight:700}.chapter-picker small{color:#5e6c83}
+.chapter-picker a:focus-visible{outline:3px solid #809cff;outline-offset:3px}
+.chapter-sync-note{border:1px solid #ead8b1;background:#fff9ec;color:#75551f;padding:14px 18px;border-radius:12px;line-height:1.6}
