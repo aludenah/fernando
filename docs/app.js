@@ -64,7 +64,7 @@ function updateSyncStatus() {
   if(!target)return;
   target.hidden=!state.role||!state.storage;
   const labels={loading:'Preparando el guardado…',unconfigured:'Guardado en este dispositivo. La sincronización entre dispositivos aún no está activada.',pending:'Guardado en este dispositivo · Pendiente de sincronizar.','activation-required':'Hay respuestas guardadas en este dispositivo pendientes de activar su sincronización.',syncing:'Sincronizando el avance…',synced:'Avance sincronizado. Puedes continuar desde otro dispositivo.',offline:sharedStatus.pending?'Guardado en este dispositivo. Hay cambios pendientes de sincronizar.':'No se pudo consultar el avance compartido. Se muestra la última copia disponible.'};
-  target.dataset.phase=sharedStatus.phase;
+  target.dataset.phase=state.course&&lessonNeedsActivation()&&sharedStatus.phase==='synced'?'activation-required':sharedStatus.phase;
   target.querySelector('span').textContent=labels[sharedStatus.phase]||labels.loading;
   if(state.course&&lessonNeedsActivation()&&sharedStatus.phase==='synced')target.querySelector('span').textContent='Este capítulo aún guarda su avance solo en este dispositivo. Su sincronización está pendiente de activación.';
   target.querySelector('button').hidden=!sharedStatus.enabled;
@@ -112,7 +112,7 @@ function renderCourse() {
 }
 function renderTasks() {
   const tasks = currentTasks();
-  return `${heading()}${nav('tareas')}${chapterPicker('tareas')}${lessonSyncNote()}<div class="section-heading"><h2>Un paso más en cada tarea</h2><span>${tasks.length} tareas</span></div>${tasks.map((t,i)=>taskCard(t,i)).join('')}${studentReportPanel(state.storage)}${storageNote()}`;
+  return `${heading()}${nav('tareas')}${chapterPicker('tareas')}${lessonSyncNote()}<div class="section-heading"><h2>Un paso más en cada tarea</h2><span>${tasks.length} tareas</span></div>${tasks.map((t,i)=>taskCard(t,i)).join('')}${(usesDrive?studentReportPanel(state.storage):'')}${storageNote()}`;
 }
 function attachmentRows(files, review = false) {
   if (!files.length) return usesDrive?'<p class="muted">Esta copia contiene las respuestas. Revisa los solucionarios en las carpetas de Drive de cada problema.</p>':'<p class="muted">Esta copia no contiene archivos adjuntos. Las tareas actuales se califican en el aula.</p>';
@@ -228,7 +228,7 @@ function route(focus = false) {
     else if (tab === 'revision' && state.reviews.some(r=>r.id===id)) {state.review=state.reviews.find(r=>r.id===id);content=renderReview(state.review);}
     else if(tab==='curso'||tab==='capitulo')content=renderCourse();
     else if(tab==='temario')content=nav(`temario/${student.courseId}`)+(student.id==='josue'?preparationOutline(state.course):courseOutline(state.course.courses.find(c=>c.id===id)));
-    else content=nav('cursos')+(student.id==='josue'?competitionHome({...state.course,tasks:state.tasks},state.drafts,state.learned):courseCatalog(state.course.courses))+studentReportPanel(state.storage);
+    else content=nav('cursos')+(student.id==='josue'?competitionHome({...state.course,tasks:state.tasks},state.drafts,state.learned):courseCatalog(state.course.courses))+(usesDrive?studentReportPanel(state.storage):'');
     app.innerHTML=audienceBar()+content;
   }
   updateSyncStatus();

@@ -130,6 +130,7 @@ test('chapter 2 task, theory links, chapter picker and parent grades stay in the
     assert.match(document.body.textContent,/Nota: 18\/20/);
     assert.equal(document.querySelector('#parent-answered').textContent.trim(),'10 / 30');
     await click('.chapter-picker a[href="#padres/algebra-uni-c1"]');
+    await until(()=>document.querySelector('.chapter-picker a[href="#padres/algebra-uni-c1"][aria-current="page"]'));
     assert.match(document.body.textContent,/Nota: 20\/20/);
     assert.doesNotMatch(document.body.textContent,/Nota: 18\/20/);
     assert.equal(document.querySelector('#parent-answered').textContent.trim(),'10 / 30');
