@@ -254,9 +254,19 @@
           "\\[\\mathbb{R}=\\mathbb{Q}\\cup I\\qquad\\mathbb{Q}\\cap I=\\varnothing\\]",
           "\\(\\mathbb{N}\\): naturales; \\(\\mathbb{Z}\\): enteros; \\(\\mathbb{Q}\\): racionales; \\(I\\): irracionales; \\(\\mathbb{R}\\): reales; \\(\\mathbb{C}\\): complejos."
         ],
-        "example": "El número \\(-6\\) pertenece a \\(\\mathbb{Z}\\), \\(\\mathbb{Q}\\), \\(\\mathbb{R}\\) y \\(\\mathbb{C}\\).\nEntre esos conjuntos, el más pequeño es \\(\\mathbb{Z}\\).\n\\(\\sqrt{3}\\) pertenece a \\(I\\), \\(\\mathbb{R}\\) y \\(\\mathbb{C}\\), pero no a \\(\\mathbb{Q}\\).",
         "tip": "Pertenecer a un conjunto no impide pertenecer a otro más amplio.",
-        "pages": "Libro: pp. 9 y 13 · PDF: pp. 4 y 8"
+        "pages": "Libro: pp. 9 y 13 · PDF: pp. 4 y 8",
+        "examples": [
+          {
+            "title": "Elegir el conjunto más pequeño",
+            "level": "Básico",
+            "statement": "Entre \\(\\mathbb{N},\\mathbb{Z},\\mathbb{Q},\\mathbb{R},\\mathbb{C}\\), clasifica \\(-14\\) en el conjunto más pequeño.",
+            "steps": [
+              "Es negativo y no tiene parte fraccionaria, por lo que es entero.",
+              "No es natural. Aunque también es racional, real y complejo, elegimos \\(\\boxed{\\mathbb{Z}}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-naturales",
@@ -267,9 +277,19 @@
           "Pares naturales: \\(2n\\). Impares naturales: \\(2n-1\\), con \\(n\\in\\mathbb{N}\\).",
           "La suma y el producto de naturales son naturales. La resta y la división no siempre lo son."
         ],
-        "example": "El séptimo par natural es \\(2\\times7=14\\).\nEl séptimo impar natural es \\(2\\times7-1=13\\).\n\\(3-5=-2\\) no es natural; \\(3\\div2\\) tampoco.",
         "tip": "El cero es entero, racional, real y complejo; en esta convención no pertenece a \\(\\mathbb{N}\\).",
-        "pages": "Libro: p. 10 · PDF: p. 5"
+        "pages": "Libro: p. 10 · PDF: p. 5",
+        "examples": [
+          {
+            "title": "Comprobar pertenencias",
+            "level": "Básico",
+            "statement": "Decide si son verdaderas: \\(0\\in\\mathbb{N}\\), \\(0\\in\\mathbb{N}_0\\) y \\(-5\\in\\mathbb{Z}\\).",
+            "steps": [
+              "La primera es falsa: los naturales de este curso empiezan en 1.",
+              "La segunda es verdadera porque \\(\\mathbb{N}_0\\) incluye 0; la tercera también es verdadera porque los enteros incluyen negativos. Resultado: \\(\\boxed{\\mathrm{FVV}}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-enteros",
@@ -280,9 +300,29 @@
           "Opuesto de \\(a\\): \\(-a\\). Se cumple \\(a+(-a)=0\\).",
           "\\(a-b=a+(-b)\\). En un producto o cociente, signos iguales dan positivo y signos distintos dan negativo."
         ],
-        "example": "Calcula \\(5-2(3-7)\\).\n1. Agrupación: \\(3-7=-4\\).\n2. Producto: \\(2(-4)=-8\\).\n3. Resta: \\(5-(-8)=13\\).",
         "tip": "La regla de signos del producto no se aplica a una suma: \\((-4)+(-2)=-6\\).",
-        "pages": "Libro: p. 10 · PDF: p. 5"
+        "pages": "Libro: p. 10 · PDF: p. 5",
+        "examples": [
+          {
+            "title": "Opuesto de un entero negativo",
+            "level": "Básico",
+            "statement": "Halla el inverso aditivo de \\(-12\\).",
+            "steps": [
+              "Plantea \\(-12+x=0\\).",
+              "El número que cancela a \\(-12\\) en una suma es \\(\\boxed{12}\\), pues \\(-12+12=0\\)."
+            ]
+          },
+          {
+            "title": "Signos y jerarquía",
+            "level": "Básico",
+            "statement": "Calcula \\(8-4(1-3)\\).",
+            "steps": [
+              "Primero, \\(1-3=-2\\).",
+              "Después, \\(4(-2)=-8\\).",
+              "Finalmente, \\(8-(-8)=\\boxed{16}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-racionales",
@@ -293,9 +333,19 @@
           "El inverso multiplicativo de \\(a\\ne0\\) es \\(\\dfrac{1}{a}\\).",
           "\\[\\frac{a}{b}\\div\\frac{c}{d}=\\frac{a}{b}\\times\\frac{d}{c}\\]Con \\(b\\), \\(c\\) y \\(d\\) distintos de cero."
         ],
-        "example": "El recíproco de \\(-\\dfrac{3}{7}\\) es \\(-\\dfrac{7}{3}\\).\nComprueba: \\[\\left(-\\frac{3}{7}\\right)\\left(-\\frac{7}{3}\\right)=1\\]\\[\\frac{4}{5}\\div\\frac{2}{3}=\\frac{4}{5}\\cdot\\frac{3}{2}=\\frac{6}{5}\\]",
         "tip": "No confundas opuesto con recíproco. El cero tiene opuesto, pero no tiene inverso multiplicativo.",
-        "pages": "Libro: p. 11 · PDF: p. 6"
+        "pages": "Libro: p. 11 · PDF: p. 6",
+        "examples": [
+          {
+            "title": "Recíproco y comprobación",
+            "level": "Básico",
+            "statement": "Halla el inverso multiplicativo de \\(-\\frac47\\).",
+            "steps": [
+              "Intercambia numerador y denominador sin cambiar el signo: \\(-7/4\\).",
+              "Comprueba \\(\\left(-\\frac47\\right)\\left(-\\frac74\\right)=1\\). El recíproco es \\(\\boxed{-\\frac74}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-decimales",
@@ -306,9 +356,38 @@
           "Periódico puro: \\[0{,}\\overline{27}=\\frac{27}{99}=\\frac{3}{11}\\]",
           "Periódico mixto: \\[0{,}1\\overline{3}=\\frac{13-1}{90}=\\frac{2}{15}\\]"
         ],
-        "example": "Para \\(y=0{,}1\\overline{3}\\):\\[\\begin{aligned}10y&=1{,}\\overline{3}\\\\100y&=13{,}\\overline{3}\\end{aligned}\\]Al restar: \\(90y=12\\).\nPor tanto, \\[y=\\frac{12}{90}=\\frac{2}{15}\\]",
         "tip": "Aclara siempre qué dígitos se repiten. Un decimal infinito no es necesariamente irracional.",
-        "pages": "Libro: p. 11 · PDF: p. 6"
+        "pages": "Libro: p. 11 · PDF: p. 6",
+        "examples": [
+          {
+            "title": "Decimal exacto a fracción",
+            "level": "Básico",
+            "statement": "Escribe \\(0{,}625\\) como fracción irreductible.",
+            "steps": [
+              "Hay tres cifras decimales: \\(0{,}625=\\frac{625}{1000}\\).",
+              "Divide ambos términos entre 125: \\(\\boxed{\\frac58}\\)."
+            ]
+          },
+          {
+            "title": "Periódico mixto a fracción",
+            "level": "Intermedio",
+            "statement": "Convierte \\(0{,}4\\overline6\\) a fracción irreductible.",
+            "steps": [
+              "Sea \\(y=0{,}4\\overline6\\). Así \\(10y=4{,}\\overline6\\) y \\(100y=46{,}\\overline6\\).",
+              "Resta: \\(90y=42\\). Por tanto, \\(y=42/90=\\boxed{7/15}\\)."
+            ]
+          },
+          {
+            "title": "Combinar periódicos y exactos",
+            "level": "Avanzado",
+            "statement": "Calcula \\((0{,}5\\overline8-0{,}25)\\div(0{,}1\\overline6+0{,}5)\\).",
+            "steps": [
+              "\\(0{,}5\\overline8=(58-5)/90=53/90\\), \\(0{,}25=1/4\\), \\(0{,}1\\overline6=1/6\\) y \\(0{,}5=1/2\\).",
+              "Numerador: \\(53/90-1/4=106/180-45/180=61/180\\). Denominador: \\(1/6+1/2=2/3\\).",
+              "\\(\\frac{61}{180}\\div\\frac23=\\frac{61}{180}\\cdot\\frac32=\\boxed{\\frac{61}{120}}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-reales",
@@ -319,9 +398,29 @@
           "\\(\\sqrt{16}=4\\) es racional; el símbolo de raíz no garantiza irracionalidad.",
           "La suma o el producto de dos irracionales puede ser racional o irracional."
         ],
-        "example": "\\(\\sqrt{2}+(-\\sqrt{2})=0\\), que es racional.\n\\(\\sqrt{2}\\times\\sqrt{2}=2\\), que también es racional.\n\\(\\sqrt{2}\\times\\sqrt{3}=\\sqrt{6}\\), que es irracional.",
         "tip": "Un racional no nulo multiplicado por un irracional da un irracional. La condición «no nulo» es necesaria.",
-        "pages": "Libro: p. 12 · PDF: p. 7"
+        "pages": "Libro: p. 12 · PDF: p. 7",
+        "examples": [
+          {
+            "title": "Contar racionales",
+            "level": "Intermedio",
+            "statement": "¿Cuántos son racionales? \\[-5;\\quad0;\\quad\\frac25;\\quad\\sqrt{16};\\quad\\sqrt7;\\quad0{,}\\overline3\\]",
+            "steps": [
+              "\\(-5,0,2/5\\) son racionales. \\(\\sqrt{16}=4\\) también lo es.",
+              "\\(0{,}\\overline3=1/3\\) es racional y \\(\\sqrt7\\) es irracional. En total hay \\(\\boxed5\\)."
+            ]
+          },
+          {
+            "title": "Evaluar afirmaciones con contraejemplos",
+            "level": "Intermedio",
+            "statement": "Evalúa: I. La suma de dos irracionales siempre es irracional. II. Un racional no nulo por un irracional es irracional. III. Todo entero es racional.",
+            "steps": [
+              "I es falsa: \\(\\sqrt3+(-\\sqrt3)=0\\), que es racional.",
+              "II es verdadera: dividir un supuesto producto racional entre el factor racional no nulo produciría una contradicción.",
+              "III es verdadera porque \\(n=n/1\\). La secuencia es \\(\\boxed{\\mathrm{FVV}}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-complejos",
@@ -332,9 +431,38 @@
           "Si \\(b=0\\), \\(z\\) es real. Si \\(a=0\\) y \\(b\\ne0\\), es imaginario puro no nulo.",
           "Si \\(a=b=0\\), \\(z\\) es el complejo nulo."
         ],
-        "example": "\\(-5+0i=-5\\) es real.\n\\(0+8i\\) es imaginario puro.\n\\(4-2i\\) es complejo no real y no es imaginario puro.\n\\(0+0i\\) es cero; no es imaginario puro no nulo.",
         "tip": "Para clasificar un complejo con parámetros, comprueba las dos condiciones: parte real y parte imaginaria.",
-        "pages": "Libro: pp. 12–13 · PDF: pp. 7–8"
+        "pages": "Libro: pp. 12–13 · PDF: pp. 7–8",
+        "examples": [
+          {
+            "title": "Reconocer un imaginario puro",
+            "level": "Básico",
+            "statement": "Clasifica \\(-2+0i\\), \\(0+9i\\), \\(5-3i\\) y \\(0+0i\\).",
+            "steps": [
+              "\\(-2+0i\\) es real. \\(0+9i\\) tiene parte real cero y coeficiente imaginario 9: es imaginario puro no nulo.",
+              "\\(5-3i\\) no es real ni imaginario puro. \\(0+0i\\) es el complejo nulo. El imaginario puro no nulo es \\(\\boxed{9i}\\)."
+            ]
+          },
+          {
+            "title": "Elegir un parámetro para obtener un real",
+            "level": "Intermedio",
+            "statement": "¿Qué valor de \\(u\\) hace real a \\(z=(u-5)+(u+2)i\\)?",
+            "steps": [
+              "Anula el coeficiente imaginario: \\(u+2=0\\), de donde \\(u=-2\\).",
+              "Comprueba: \\(z=(-2-5)+0i=-7\\). Por tanto, \\(\\boxed{u=-2}\\)."
+            ]
+          },
+          {
+            "title": "Imaginario puro con dos condiciones",
+            "level": "Avanzado",
+            "statement": "¿Qué valor de \\(u\\) hace a \\(z=(u^2-16)+(u+4)i\\) imaginario puro no nulo?",
+            "steps": [
+              "Anula la parte real: \\(u^2-16=0\\), de donde \\(u=4\\) o \\(u=-4\\).",
+              "Con \\(u=4\\), \\(z=8i\\) es imaginario puro no nulo. Con \\(u=-4\\), \\(z=0\\), que no cumple.",
+              "La respuesta es \\(\\boxed{u=4}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-operaciones",
@@ -345,9 +473,75 @@
           "\\[\\frac{a}{b}\\cdot\\frac{c}{d}=\\frac{ac}{bd}\\]Simplifica factores comunes.",
           "En fracciones anidadas, evalúa cada denominador desde dentro hacia fuera y verifica que ninguno sea cero."
         ],
-        "example": "Calcula:\\[\\left(\\frac{5}{6}-\\frac{1}{4}\\right)\\div\\frac{7}{3}\\]Primero, resta las fracciones:\\[\\frac{5}{6}-\\frac{1}{4}=\\frac{10}{12}-\\frac{3}{12}=\\frac{7}{12}\\]Después, divide:\\[\\frac{7}{12}\\div\\frac{7}{3}=\\frac{7}{12}\\cdot\\frac{3}{7}=\\frac{1}{4}\\]",
         "tip": "Se cancelan factores, no términos separados por \\(+\\) o \\(-\\). Nunca dividas entre cero.",
-        "pages": "Libro: pp. 13–17 · PDF: pp. 8–12"
+        "pages": "Libro: pp. 13–17 · PDF: pp. 8–12",
+        "examples": [
+          {
+            "title": "Sumar con denominador común",
+            "level": "Básico",
+            "statement": "Calcula \\(\\frac34+\\frac16\\).",
+            "steps": [
+              "Usa denominador 12: \\(\\frac34=\\frac9{12}\\) y \\(\\frac16=\\frac2{12}\\).",
+              "Luego \\(\\frac9{12}+\\frac2{12}=\\boxed{\\frac{11}{12}}\\)."
+            ]
+          },
+          {
+            "title": "Restar fracciones",
+            "level": "Básico",
+            "statement": "Calcula \\(\\frac{11}{12}-\\frac13\\).",
+            "steps": [
+              "Escribe \\(\\frac13=\\frac4{12}\\).",
+              "Resta: \\(\\frac{11}{12}-\\frac4{12}=\\boxed{\\frac7{12}}\\)."
+            ]
+          },
+          {
+            "title": "Producto y simplificación",
+            "level": "Básico",
+            "statement": "Calcula \\(\\left(-\\frac47\\right)\\frac{14}{15}\\).",
+            "steps": [
+              "El resultado es negativo porque los signos son distintos.",
+              "Simplifica 14 con 7: \\(-\\frac{4\\cdot2}{15}=\\boxed{-\\frac8{15}}\\)."
+            ]
+          },
+          {
+            "title": "Operar antes de dividir",
+            "level": "Intermedio",
+            "statement": "Calcula \\(\\left(\\frac56-\\frac14\\right)\\div\\left(\\frac23+\\frac12\\right)\\).",
+            "steps": [
+              "Primera agrupación: \\(10/12-3/12=7/12\\). Segunda: \\(4/6+3/6=7/6\\).",
+              "\\(\\frac7{12}\\div\\frac76=\\frac7{12}\\cdot\\frac67=\\boxed{\\frac12}\\)."
+            ]
+          },
+          {
+            "title": "Resolver de dentro hacia fuera",
+            "level": "Intermedio",
+            "statement": "Calcula \\(3-\\dfrac1{1-\\dfrac1{3-\\frac12}}\\).",
+            "steps": [
+              "Denominador interior: \\(3-1/2=5/2\\).",
+              "Siguiente denominador: \\(1-1/(5/2)=1-2/5=3/5\\).",
+              "Finalmente: \\(3-1/(3/5)=3-5/3=\\boxed{4/3}\\)."
+            ]
+          },
+          {
+            "title": "Cociente de suma y diferencia",
+            "level": "Intermedio",
+            "statement": "Calcula \\(\\left(\\frac13+\\frac14\\right)\\div\\left(\\frac13-\\frac14\\right)\\).",
+            "steps": [
+              "La suma es \\(7/12\\) y la diferencia es \\(1/12\\).",
+              "\\(\\frac7{12}\\div\\frac1{12}=\\frac7{12}\\cdot12=\\boxed7\\)."
+            ]
+          },
+          {
+            "title": "Varias operaciones dentro de un denominador",
+            "level": "Avanzado",
+            "statement": "Calcula \\(E=4-\\dfrac1{2-[(\\frac23-\\frac16)\\div(\\frac34+\\frac14)]}\\).",
+            "steps": [
+              "En el corchete: \\(2/3-1/6=1/2\\) y \\(3/4+1/4=1\\). El cociente es \\(1/2\\).",
+              "El denominador exterior es \\(2-1/2=3/2\\).",
+              "\\(E=4-1/(3/2)=4-2/3=\\boxed{10/3}\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-sumas",
@@ -359,9 +553,46 @@
           "\\[S_n=1+2+\\cdots+n=\\frac{n(n+1)}{2}\\]",
           "\\[S_1+S_2+\\cdots+S_n=\\frac{n(n+1)(n+2)}{6}\\]También puedes sumar los valores \\(S_k\\) directamente."
         ],
-        "example": "\\[\\frac{1}{2\\times4}+\\frac{1}{4\\times6}+\\frac{1}{6\\times8}\\]Descompón cada término:\\[\\frac{1}{2}\\left[\\left(\\frac{1}{2}-\\frac{1}{4}\\right)+\\left(\\frac{1}{4}-\\frac{1}{6}\\right)+\\left(\\frac{1}{6}-\\frac{1}{8}\\right)\\right]\\]Cancela los términos intermedios:\\[\\frac{1}{2}\\left(\\frac{1}{2}-\\frac{1}{8}\\right)=\\frac{3}{16}\\]",
         "tip": "Antes de usar una fórmula, identifica la diferencia entre los factores y cuántos términos hay.",
-        "pages": "Apoyo a los problemas del libro: pp. 14, 16–17 · PDF: pp. 9, 11–12"
+        "pages": "Apoyo a los problemas del libro: pp. 14, 16–17 · PDF: pp. 9, 11–12",
+        "examples": [
+          {
+            "title": "Telescópica con factores consecutivos",
+            "level": "Intermedio",
+            "statement": "Calcula \\(\\frac1{1\\cdot2}+\\frac1{2\\cdot3}+\\frac1{3\\cdot4}+\\frac1{4\\cdot5}\\).",
+            "steps": [
+              "Escribe \\((1-1/2)+(1/2-1/3)+(1/3-1/4)+(1/4-1/5)\\).",
+              "Quedan los extremos: \\(1-1/5=\\boxed{4/5}\\)."
+            ]
+          },
+          {
+            "title": "Sumar sumas parciales",
+            "level": "Intermedio",
+            "statement": "Si \\(S_n=1+2+\\cdots+n\\), calcula \\(S_1+S_2+S_3+S_4\\).",
+            "steps": [
+              "Las sumas parciales son \\(1,3,6,10\\).",
+              "Súmalas: \\(1+3+6+10=\\boxed{20}\\)."
+            ]
+          },
+          {
+            "title": "Telescópica con diferencia dos",
+            "level": "Avanzado",
+            "statement": "Calcula \\(\\frac1{1\\cdot3}+\\frac1{3\\cdot5}+\\cdots+\\frac1{11\\cdot13}\\).",
+            "steps": [
+              "Descompón cada sumando como \\(\\frac12(1/u-1/(u+2))\\).",
+              "Solo quedan los extremos: \\(\\frac12(1-1/13)=\\frac12\\cdot\\frac{12}{13}=\\boxed{6/13}\\)."
+            ]
+          },
+          {
+            "title": "Sumas acumuladas de mayor tamaño",
+            "level": "Avanzado",
+            "statement": "Calcula \\(S_1+S_2+\\cdots+S_8\\), con \\(S_n=1+\\cdots+n\\).",
+            "steps": [
+              "Identifica \\(n=8\\) y usa \\(n(n+1)(n+2)/6\\).",
+              "\\(\\frac{8\\cdot9\\cdot10}6=\\boxed{120}\\). No lo confundas con \\(S_8=36\\)."
+            ]
+          }
+        ]
       },
       {
         "id": "uni-c1-despeje",
@@ -372,9 +603,68 @@
           "Si \\(px=q\\) y \\(p\\ne0\\), entonces \\(x=\\dfrac{q}{p}\\).",
           "En \\(\\dfrac{1}{t}=\\dfrac{1}{u}+\\dfrac{1}{v}\\) se obtiene \\[t=\\frac{uv}{u+v}\\]siempre que las expresiones originales estén definidas."
         ],
-        "example": "Resuelve:\\[\\begin{aligned}2(x-3)&=5x+3\\\\2x-6&=5x+3\\\\-9&=3x\\\\x&=-3\\end{aligned}\\]Comprueba: \\(2(-3-3)=-12\\) y \\(5(-3)+3=-12\\).",
         "tip": "Una simplificación no elimina las restricciones de la expresión original. Comprueba la solución en el enunciado.",
-        "pages": "Apoyo a los problemas del libro: pp. 17–18 · PDF: pp. 12–13"
+        "pages": "Apoyo a los problemas del libro: pp. 17–18 · PDF: pp. 12–13",
+        "examples": [
+          {
+            "title": "Distributiva y términos semejantes",
+            "level": "Intermedio",
+            "statement": "Simplifica \\(3(2x-4)-2(x-7)\\).",
+            "steps": [
+              "Distribuye: \\(6x-12-2x+14\\).",
+              "Agrupa los términos en \\(x\\) y las constantes: \\(\\boxed{4x+2}\\)."
+            ]
+          },
+          {
+            "title": "Simplificar sin perder restricciones",
+            "level": "Avanzado",
+            "statement": "Simplifica \\(\\left[2+\\frac1{x-3}\\right]\\div\\left[1-\\frac4{2x-1}\\right]\\), para \\(x\\ne3,1/2,5/2\\).",
+            "steps": [
+              "Los corchetes se convierten en \\((2x-5)/(x-3)\\) y \\((2x-5)/(2x-1)\\).",
+              "\\(\\frac{2x-5}{x-3}\\cdot\\frac{2x-1}{2x-5}=\\boxed{\\frac{2x-1}{x-3}}\\).",
+              "Conserva \\(x\\ne3,1/2,5/2\\): proceden de los denominadores y del divisor originales."
+            ]
+          },
+          {
+            "title": "Producto de expresiones racionales",
+            "level": "Avanzado",
+            "statement": "Si \\(P=5-2/x\\) y \\(Q=\\frac{2x}{5x-2}+\\frac{3x}{5x-2}\\), halla \\(PQ\\), con \\(x\\ne0,2/5\\).",
+            "steps": [
+              "\\(P=(5x-2)/x\\) y \\(Q=5x/(5x-2)\\).",
+              "Multiplica y cancela factores no nulos: \\(\\frac{5x-2}{x}\\cdot\\frac{5x}{5x-2}=\\boxed5\\)."
+            ]
+          },
+          {
+            "title": "Ecuación con corchetes y valor pedido",
+            "level": "Avanzado",
+            "statement": "Resuelve \\(2x-2[1-(4-x)]=3(x-1)+6\\) y calcula \\(4x+2\\).",
+            "steps": [
+              "El corchete es \\(1-4+x=x-3\\). El lado izquierdo queda \\(2x-2(x-3)=6\\).",
+              "El derecho es \\(3x+3\\). Entonces \\(6=3x+3\\), de donde \\(x=1\\).",
+              "El valor solicitado es \\(4(1)+2=\\boxed6\\)."
+            ]
+          },
+          {
+            "title": "Despejar con parámetros",
+            "level": "Avanzado",
+            "statement": "Despeja \\(x\\) en \\(\\frac{x-2a}{b}=\\frac{x+3b}{a}\\), con \\(a,b\\ne0\\) y \\(a\\ne b\\).",
+            "steps": [
+              "Multiplica por \\(ab\\): \\(a(x-2a)=b(x+3b)\\).",
+              "\\(ax-2a^2=bx+3b^2\\), de donde \\((a-b)x=2a^2+3b^2\\).",
+              "Divide entre \\(a-b\\ne0\\): \\(\\boxed{x=\\frac{2a^2+3b^2}{a-b}}\\)."
+            ]
+          },
+          {
+            "title": "Despejar una fórmula con recíprocos",
+            "level": "Avanzado",
+            "statement": "Si \\(1/R=1/R_1+1/R_2\\), calcula \\(R\\) cuando \\(R_1=6\\,\\Omega\\) y \\(R_2=3\\,\\Omega\\).",
+            "steps": [
+              "Suma: \\(1/R=(R_1+R_2)/(R_1R_2)\\).",
+              "Invierte: \\(R=R_1R_2/(R_1+R_2)\\).",
+              "\\(R=(6\\cdot3)/(6+3)=\\boxed{2\\,\\Omega}\\)."
+            ]
+          }
+        ]
       }
     ]
   },
@@ -386,7 +676,7 @@
       "chapterId": "algebra-uni-c1",
       "level": "basico",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Se usa \\(\\mathbb{N}=\\{1;\\,2;\\,3;\\,\\ldots\\}\\).",
+      "instructions": "Marca una alternativa por pregunta y avanza en orden. Puedes cambiar tus respuestas antes de terminar. Al marcar las 10, la tarea se calificará automáticamente y las respuestas quedarán cerradas. Verás tu nota sobre 20, qué preguntas debes repasar y el solucionario de cada problema. No necesitas subir archivos. Se usa \\(\\mathbb{N}=\\{1;\\,2;\\,3;\\,\\ldots\\}\\).",
       "due": "",
       "published": true,
       "questions": [
@@ -401,7 +691,16 @@
             "\\(\\mathbb{R}\\)",
             "\\(\\mathbb{C}\\)"
           ],
-          "topic": "Conjuntos numéricos"
+          "topic": "Conjuntos numéricos",
+          "grading": {
+            "correctIndex": 1,
+            "hint": "Busca el conjunto más pequeño. Un entero negativo es racional y real, pero esas categorías son más amplias.",
+            "steps": [
+              "\\(-11\\) es un número negativo sin parte fraccionaria; por eso pertenece a \\(\\mathbb{Z}\\).",
+              "No pertenece a \\(\\mathbb{N}\\), que aquí empieza en 1. Como \\(\\mathbb{Z}\\subset\\mathbb{Q}\\subset\\mathbb{R}\\subset\\mathbb{C}\\), el conjunto más pequeño de la lista es \\(\\boxed{\\mathbb{Z}}\\)."
+            ],
+            "topicId": "uni-c1-mapa"
+          }
         },
         {
           "id": "alg-uni-c1-b02",
@@ -414,7 +713,16 @@
             "\\(0\\in\\mathbb{N}_0\\)",
             "\\(\\dfrac{1}{2}\\in\\mathbb{Z}\\)"
           ],
-          "topic": "Naturales y cero"
+          "topic": "Naturales y cero",
+          "grading": {
+            "correctIndex": 3,
+            "hint": "Distingue \\(\\mathbb{N}\\) de \\(\\mathbb{N}_0\\): únicamente el segundo incluye al cero en nuestra convención.",
+            "steps": [
+              "Por definición, \\(\\mathbb{N}=\\{1,2,3,\\ldots\\}\\) y \\(\\mathbb{N}_0=\\{0,1,2,3,\\ldots\\}\\). Luego \\(0\\in\\mathbb{N}_0\\).",
+              "Las otras afirmaciones son falsas: \\(\\sqrt2\\) es irracional, \\(0\\) y \\(-3\\) no son naturales según esta convención, y \\(1/2\\) no es entero. La verdadera es \\(\\boxed{0\\in\\mathbb{N}_0}\\)."
+            ],
+            "topicId": "uni-c1-naturales"
+          }
         },
         {
           "id": "alg-uni-c1-b03",
@@ -427,7 +735,16 @@
             "\\(-9\\)",
             "\\(\\dfrac{1}{9}\\)"
           ],
-          "topic": "Inverso aditivo"
+          "topic": "Inverso aditivo",
+          "grading": {
+            "correctIndex": 0,
+            "hint": "El opuesto debe sumar cero con el número original. No es lo mismo que el recíproco, que debe dar producto 1.",
+            "steps": [
+              "Buscamos \\(x\\) tal que \\(-9+x=0\\).",
+              "Sumando 9 en ambos miembros: \\(x=9\\). Comprobación: \\(-9+9=0\\). El opuesto es \\(\\boxed{9}\\)."
+            ],
+            "topicId": "uni-c1-enteros"
+          }
         },
         {
           "id": "alg-uni-c1-b04",
@@ -440,7 +757,16 @@
             "\\(-\\dfrac{5}{8}\\)",
             "\\(-\\dfrac{8}{5}\\)"
           ],
-          "topic": "Recíproco"
+          "topic": "Recíproco",
+          "grading": {
+            "correctIndex": 4,
+            "hint": "Para hallar un recíproco intercambia numerador y denominador y conserva el signo. Verifica que el producto sea 1.",
+            "steps": [
+              "El inverso multiplicativo de \\(a\\ne0\\) es \\(1/a\\). Así, \\(1\\div(-5/8)=-8/5\\).",
+              "Comprobamos: \\(\\left(-\\frac58\\right)\\left(-\\frac85\\right)=1\\). Por tanto, es \\(\\boxed{-\\frac85}\\)."
+            ],
+            "topicId": "uni-c1-racionales"
+          }
         },
         {
           "id": "alg-uni-c1-b05",
@@ -453,7 +779,17 @@
             "\\(-16\\)",
             "\\(-2\\)"
           ],
-          "topic": "Operaciones con enteros"
+          "topic": "Operaciones con enteros",
+          "grading": {
+            "correctIndex": 2,
+            "hint": "Resuelve primero el paréntesis. Restar un producto negativo equivale a sumar su opuesto.",
+            "steps": [
+              "Paréntesis: \\(2-5=-3\\).",
+              "Producto: \\(3(-3)=-9\\).",
+              "Resta: \\(7-(-9)=7+9=\\boxed{16}\\)."
+            ],
+            "topicId": "uni-c1-enteros"
+          }
         },
         {
           "id": "alg-uni-c1-b06",
@@ -466,7 +802,16 @@
             "\\(\\dfrac{1}{3}\\)",
             "\\(\\dfrac{1}{2}\\)"
           ],
-          "topic": "Suma de fracciones"
+          "topic": "Suma de fracciones",
+          "grading": {
+            "correctIndex": 0,
+            "hint": "Para sumar fracciones necesitas denominadores iguales; no se suman los denominadores.",
+            "steps": [
+              "El mínimo común múltiplo de 3 y 6 es 6. Convertimos \\(\\frac23=\\frac46\\).",
+              "Sumamos: \\(\\frac46+\\frac16=\\boxed{\\frac56}\\), que ya es irreductible."
+            ],
+            "topicId": "uni-c1-operaciones"
+          }
         },
         {
           "id": "alg-uni-c1-b07",
@@ -479,7 +824,16 @@
             "\\(\\dfrac{3}{4}\\)",
             "\\(\\dfrac{1}{2}\\)"
           ],
-          "topic": "Resta de fracciones"
+          "topic": "Resta de fracciones",
+          "grading": {
+            "correctIndex": 2,
+            "hint": "Convierte ambas fracciones al mismo denominador antes de restar los numeradores.",
+            "steps": [
+              "\\(\\frac14=\\frac28\\).",
+              "Entonces \\(\\frac78-\\frac28=\\boxed{\\frac58}\\)."
+            ],
+            "topicId": "uni-c1-operaciones"
+          }
         },
         {
           "id": "alg-uni-c1-b08",
@@ -492,7 +846,16 @@
             "\\(-\\dfrac{3}{2}\\)",
             "\\(-\\dfrac{1}{3}\\)"
           ],
-          "topic": "Producto de fracciones"
+          "topic": "Producto de fracciones",
+          "grading": {
+            "correctIndex": 1,
+            "hint": "Un factor negativo y otro positivo dan un producto negativo. Simplifica factores comunes.",
+            "steps": [
+              "El signo del producto es negativo.",
+              "Multiplica y reduce: \\[\\left(-\\frac35\\right)\\frac{10}{9}=-\\frac{30}{45}=\\boxed{-\\frac23}.\\]"
+            ],
+            "topicId": "uni-c1-operaciones"
+          }
         },
         {
           "id": "alg-uni-c1-b09",
@@ -505,7 +868,16 @@
             "\\(\\dfrac{3}{4}\\)",
             "\\(\\dfrac{3}{8}\\)"
           ],
-          "topic": "Decimal exacto"
+          "topic": "Decimal exacto",
+          "grading": {
+            "correctIndex": 4,
+            "hint": "Tres cifras decimales requieren denominador 1000. Después reduce la fracción, sin redondear.",
+            "steps": [
+              "\\(0{,}375=\\frac{375}{1000}\\).",
+              "Divide numerador y denominador entre 125: \\(\\frac{375\\div125}{1000\\div125}=\\boxed{\\frac38}\\)."
+            ],
+            "topicId": "uni-c1-decimales"
+          }
         },
         {
           "id": "alg-uni-c1-b10",
@@ -518,9 +890,19 @@
             "\\(0-6i\\)",
             "\\(7+0i\\)"
           ],
-          "topic": "Introducción a los complejos"
+          "topic": "Introducción a los complejos",
+          "grading": {
+            "correctIndex": 3,
+            "hint": "Un imaginario puro no nulo tiene parte real cero y coeficiente imaginario distinto de cero. El número 0 no cumple ambas condiciones.",
+            "steps": [
+              "En \\(z=a+bi\\) deben cumplirse \\(a=0\\) y \\(b\\ne0\\).",
+              "\\(0-6i\\) tiene \\(a=0\\) y \\(b=-6\\ne0\\). Los otros números son reales, cero o tienen ambas partes no nulas. Elegimos \\(\\boxed{0-6i}\\)."
+            ],
+            "topicId": "uni-c1-complejos"
+          }
         }
-      ]
+      ],
+      "autoGrade": true
     },
     {
       "id": "algebra-uni-c1-intermedio",
@@ -529,7 +911,7 @@
       "chapterId": "algebra-uni-c1",
       "level": "intermedio",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Se usa \\(\\mathbb{N}=\\{1;\\,2;\\,3;\\,\\ldots\\}\\).",
+      "instructions": "Marca una alternativa por pregunta y avanza en orden. Puedes cambiar tus respuestas antes de terminar. Al marcar las 10, la tarea se calificará automáticamente y las respuestas quedarán cerradas. Verás tu nota sobre 20, qué preguntas debes repasar y el solucionario de cada problema. No necesitas subir archivos. Se usa \\(\\mathbb{N}=\\{1;\\,2;\\,3;\\,\\ldots\\}\\).",
       "due": "",
       "published": true,
       "questions": [
@@ -544,7 +926,17 @@
             "\\(5\\)",
             "\\(6\\)"
           ],
-          "topic": "Racionales e irracionales"
+          "topic": "Racionales e irracionales",
+          "grading": {
+            "correctIndex": 4,
+            "hint": "Simplifica las raíces antes de clasificar. Los enteros y los decimales periódicos también son racionales.",
+            "steps": [
+              "\\(-3,0,2\\) son enteros, por tanto racionales; \\(3/4\\) es una fracción de enteros.",
+              "\\(\\sqrt9=3\\) es racional. Además, \\(0{,}\\overline{12}=12/99=4/33\\) es racional.",
+              "Solo \\(\\sqrt5\\) es irracional. Hay \\(7-1=\\boxed6\\) racionales."
+            ],
+            "topicId": "uni-c1-reales"
+          }
         },
         {
           "id": "alg-uni-c1-i02",
@@ -557,7 +949,17 @@
             "\\(\\mathrm{FFV}\\)",
             "\\(\\mathrm{FFF}\\)"
           ],
-          "topic": "Propiedades de los conjuntos"
+          "topic": "Propiedades de los conjuntos",
+          "grading": {
+            "correctIndex": 1,
+            "hint": "Para negar una afirmación con «siempre», basta un contraejemplo. Recuerda que no todos los reales son racionales.",
+            "steps": [
+              "I es falsa: \\(\\sqrt2\\cdot\\sqrt2=2\\) es racional aunque ambos factores sean irracionales.",
+              "II es verdadera: si \\(r\\ne0\\) es racional y \\(r\\alpha\\) fuese racional, entonces \\(\\alpha=(r\\alpha)/r\\) sería racional, contradicción.",
+              "III es falsa: \\(\\sqrt2\\) es real e irracional. La secuencia es \\(\\boxed{\\mathrm{FVF}}\\)."
+            ],
+            "topicId": "uni-c1-reales"
+          }
         },
         {
           "id": "alg-uni-c1-i03",
@@ -570,7 +972,17 @@
             "\\(\\dfrac{4}{15}\\)",
             "\\(\\dfrac{13}{45}\\)"
           ],
-          "topic": "Decimal periódico mixto"
+          "topic": "Decimal periódico mixto",
+          "grading": {
+            "correctIndex": 3,
+            "hint": "Solo el 6 se repite. En un periódico mixto, resta la parte no periódica y usa un 9 por cifra periódica y un 0 por cifra no periódica.",
+            "steps": [
+              "Sea \\(x=0{,}2\\overline6\\). Entonces \\(10x=2{,}\\overline6\\) y \\(100x=26{,}\\overline6\\).",
+              "Restamos: \\(100x-10x=26-2\\), de donde \\(90x=24\\).",
+              "\\(x=24/90=\\boxed{4/15}\\)."
+            ],
+            "topicId": "uni-c1-decimales"
+          }
         },
         {
           "id": "alg-uni-c1-i04",
@@ -583,7 +995,17 @@
             "\\(\\dfrac{2}{3}\\)",
             "\\(\\dfrac{7}{27}\\)"
           ],
-          "topic": "Operaciones combinadas"
+          "topic": "Operaciones combinadas",
+          "grading": {
+            "correctIndex": 0,
+            "hint": "Resuelve ambas agrupaciones por separado y multiplica por el recíproco de la segunda fracción.",
+            "steps": [
+              "Primera agrupación: \\(\\frac34-\\frac16=\\frac9{12}-\\frac2{12}=\\frac7{12}\\).",
+              "Segunda agrupación: \\(\\frac78+\\frac14=\\frac78+\\frac28=\\frac98\\).",
+              "Divide: \\(\\frac7{12}\\div\\frac98=\\frac7{12}\\cdot\\frac89=\\frac{56}{108}=\\boxed{\\frac{14}{27}}\\)."
+            ],
+            "topicId": "uni-c1-operaciones"
+          }
         },
         {
           "id": "alg-uni-c1-i05",
@@ -596,7 +1018,17 @@
             "\\(1\\)",
             "\\(2\\)"
           ],
-          "topic": "Fracciones anidadas"
+          "topic": "Fracciones anidadas",
+          "grading": {
+            "correctIndex": 2,
+            "hint": "En una fracción anidada empieza por el denominador más interior. No alteres los signos de las restas.",
+            "steps": [
+              "Desde dentro: \\(2-\\frac12=\\frac32\\).",
+              "El siguiente denominador es \\(1-\\frac{1}{3/2}=1-\\frac23=\\frac13\\).",
+              "La expresión completa vale \\(2-\\frac{1}{1/3}=2-3=\\boxed{-1}\\). Ningún denominador usado es cero."
+            ],
+            "topicId": "uni-c1-operaciones"
+          }
         },
         {
           "id": "alg-uni-c1-i06",
@@ -609,7 +1041,16 @@
             "\\(3\\)",
             "\\(5\\)"
           ],
-          "topic": "División de fracciones"
+          "topic": "División de fracciones",
+          "grading": {
+            "correctIndex": 4,
+            "hint": "Dividir entre una fracción pequeña equivale a multiplicar por su recíproco; no inviertas el dividendo.",
+            "steps": [
+              "\\(\\frac12+\\frac13=\\frac56\\) y \\(\\frac12-\\frac13=\\frac16\\).",
+              "\\(\\frac56\\div\\frac16=\\frac56\\cdot6=\\boxed5\\)."
+            ],
+            "topicId": "uni-c1-operaciones"
+          }
         },
         {
           "id": "alg-uni-c1-i07",
@@ -622,7 +1063,17 @@
             "\\(\\dfrac{3}{4}\\)",
             "\\(\\dfrac{4}{5}\\)"
           ],
-          "topic": "Suma telescópica"
+          "topic": "Suma telescópica",
+          "grading": {
+            "correctIndex": 0,
+            "hint": "Descompón cada término en una diferencia. Al cancelar, conserva el primer término positivo y el último negativo.",
+            "steps": [
+              "Usa \\(\\frac1{k(k+1)}=\\frac1k-\\frac1{k+1}\\).",
+              "\\[S=(1-\\tfrac12)+(\\tfrac12-\\tfrac13)+(\\tfrac13-\\tfrac14)+(\\tfrac14-\\tfrac15)+(\\tfrac15-\\tfrac16).\\]",
+              "Los términos intermedios se anulan: \\(S=1-\\frac16=\\boxed{\\frac56}\\)."
+            ],
+            "topicId": "uni-c1-sumas"
+          }
         },
         {
           "id": "alg-uni-c1-i08",
@@ -635,7 +1086,16 @@
             "\\(35\\)",
             "\\(40\\)"
           ],
-          "topic": "Sumas sucesivas"
+          "topic": "Sumas sucesivas",
+          "grading": {
+            "correctIndex": 3,
+            "hint": "No se pide solo \\(S_5\\), sino sumar cinco sumas parciales diferentes.",
+            "steps": [
+              "\\(S_1=1,\\ S_2=3,\\ S_3=6,\\ S_4=10,\\ S_5=15\\).",
+              "Suma los resultados: \\(1+3+6+10+15=\\boxed{35}\\). También \\(5\\cdot6\\cdot7/6=35\\)."
+            ],
+            "topicId": "uni-c1-sumas"
+          }
         },
         {
           "id": "alg-uni-c1-i09",
@@ -648,7 +1108,16 @@
             "\\(11x+3\\)",
             "\\(5x-3\\)"
           ],
-          "topic": "Simplificación algebraica"
+          "topic": "Simplificación algebraica",
+          "grading": {
+            "correctIndex": 1,
+            "hint": "Distribuye también el signo negativo: \\(-3(x-5)=-3x+15\\). Después reúne términos semejantes.",
+            "steps": [
+              "Distribuimos: \\(4(2x-3)=8x-12\\) y \\(-3(x-5)=-3x+15\\).",
+              "Reunimos: \\(8x-12-3x+15=\\boxed{5x+3}\\)."
+            ],
+            "topicId": "uni-c1-despeje"
+          }
         },
         {
           "id": "alg-uni-c1-i10",
@@ -661,9 +1130,19 @@
             "\\(0\\)",
             "\\(1\\)"
           ],
-          "topic": "Complejos reales"
+          "topic": "Complejos reales",
+          "grading": {
+            "correctIndex": 2,
+            "hint": "Para que un complejo sea real debes anular el coeficiente de \\(i\\), no necesariamente su parte real.",
+            "steps": [
+              "La parte imaginaria es \\(t+1\\). Para que sea real: \\(t+1=0\\), luego \\(t=-1\\).",
+              "Sustituye: \\(z=(-1-2)+(-1+1)i=-3+0i=-3\\). Entonces \\(\\boxed{t=-1}\\)."
+            ],
+            "topicId": "uni-c1-complejos"
+          }
         }
-      ]
+      ],
+      "autoGrade": true
     },
     {
       "id": "algebra-uni-c1-avanzado",
@@ -672,7 +1151,7 @@
       "chapterId": "algebra-uni-c1",
       "level": "avanzado",
       "subject": "Álgebra · Capítulo 1",
-      "instructions": "Marca una alternativa en cada problema. Escribe el desarrollo en tu cuaderno y pulsa «Subir al Drive» para dejar el solucionario en la carpeta del problema correspondiente. Se usa \\(\\mathbb{N}=\\{1;\\,2;\\,3;\\,\\ldots\\}\\).",
+      "instructions": "Marca una alternativa por pregunta y avanza en orden. Puedes cambiar tus respuestas antes de terminar. Al marcar las 10, la tarea se calificará automáticamente y las respuestas quedarán cerradas. Verás tu nota sobre 20, qué preguntas debes repasar y el solucionario de cada problema. No necesitas subir archivos. Se usa \\(\\mathbb{N}=\\{1;\\,2;\\,3;\\,\\ldots\\}\\).",
       "due": "",
       "published": true,
       "questions": [
@@ -687,7 +1166,18 @@
             "\\(\\dfrac{51}{20}\\)",
             "\\(\\dfrac{20}{49}\\)"
           ],
-          "topic": "Operaciones anidadas"
+          "topic": "Operaciones anidadas",
+          "grading": {
+            "correctIndex": 2,
+            "hint": "Primero calcula el cociente entre corchetes; luego el denominador exterior, su recíproco y la resta final.",
+            "steps": [
+              "\\(\\frac12-\\frac13=\\frac16\\) y \\(\\frac34+\\frac16=\\frac{11}{12}\\).",
+              "El corchete es \\(\\frac16\\div\\frac{11}{12}=\\frac16\\cdot\\frac{12}{11}=\\frac2{11}\\).",
+              "El denominador exterior es \\(2-\\frac2{11}=\\frac{20}{11}\\). Su recíproco es \\(11/20\\).",
+              "\\(E=3-\\frac{11}{20}=\\frac{60-11}{20}=\\boxed{\\frac{49}{20}}\\)."
+            ],
+            "topicId": "uni-c1-operaciones"
+          }
         },
         {
           "id": "alg-uni-c1-a02",
@@ -700,7 +1190,18 @@
             "\\(\\dfrac{7}{10}\\)",
             "\\(\\dfrac{10}{17}\\)"
           ],
-          "topic": "Decimales y operaciones"
+          "topic": "Decimales y operaciones",
+          "grading": {
+            "correctIndex": 0,
+            "hint": "Convierte los periódicos a fracciones exactas antes de operar. Redondearlos puede cambiar el resultado.",
+            "steps": [
+              "\\(0{,}8\\overline3=(83-8)/90=5/6\\) y \\(0{,}1\\overline6=(16-1)/90=1/6\\).",
+              "Además, \\(0{,}125=1/8\\) y \\(0{,}25=1/4\\).",
+              "Primera agrupación: \\(5/6-1/8=20/24-3/24=17/24\\). Segunda: \\(1/6+1/4=5/12\\).",
+              "\\(\\frac{17}{24}\\div\\frac5{12}=\\frac{17}{24}\\cdot\\frac{12}5=\\boxed{\\frac{17}{10}}\\)."
+            ],
+            "topicId": "uni-c1-decimales"
+          }
         },
         {
           "id": "alg-uni-c1-a03",
@@ -713,7 +1214,17 @@
             "\\(\\dfrac{4}{17}\\)",
             "\\(\\dfrac{8}{17}\\)"
           ],
-          "topic": "Telescópica con diferencia 2"
+          "topic": "Telescópica con diferencia 2",
+          "grading": {
+            "correctIndex": 4,
+            "hint": "Los factores se diferencian en 2. La descomposición debe llevar el factor \\(1/2\\).",
+            "steps": [
+              "\\(\\frac1{u(u+2)}=\\frac12(\\frac1u-\\frac1{u+2})\\).",
+              "\\[S=\\frac12\\left[(1-\\tfrac13)+(\\tfrac13-\\tfrac15)+\\cdots+(\\tfrac1{15}-\\tfrac1{17})\\right].\\]",
+              "Cancela los términos intermedios: \\(S=\\frac12(1-\\frac1{17})=\\frac12\\cdot\\frac{16}{17}=\\boxed{\\frac8{17}}\\)."
+            ],
+            "topicId": "uni-c1-sumas"
+          }
         },
         {
           "id": "alg-uni-c1-a04",
@@ -726,7 +1237,16 @@
             "\\(78\\)",
             "\\(286\\)"
           ],
-          "topic": "Sumas acumuladas"
+          "topic": "Sumas acumuladas",
+          "grading": {
+            "correctIndex": 1,
+            "hint": "Se pide sumar \\(S_1\\) hasta \\(S_{12}\\), no calcular únicamente \\(S_{12}\\). Usa la fórmula de sumas acumuladas.",
+            "steps": [
+              "\\(S_1+\\cdots+S_n=\\frac{n(n+1)(n+2)}6\\).",
+              "Para \\(n=12\\): \\(\\frac{12\\cdot13\\cdot14}6=2\\cdot13\\cdot14=\\boxed{364}\\)."
+            ],
+            "topicId": "uni-c1-sumas"
+          }
         },
         {
           "id": "alg-uni-c1-a05",
@@ -739,7 +1259,18 @@
             "\\(\\dfrac{3x-1}{x-2}\\)",
             "\\(\\dfrac{x-2}{3x-1}\\)"
           ],
-          "topic": "Expresiones racionales y dominio"
+          "topic": "Expresiones racionales y dominio",
+          "grading": {
+            "correctIndex": 3,
+            "hint": "Forma una sola fracción en cada corchete. Solo puedes cancelar factores comunes, y las restricciones originales permanecen.",
+            "steps": [
+              "\\(3+\\frac1{x-2}=\\frac{3(x-2)+1}{x-2}=\\frac{3x-5}{x-2}\\).",
+              "\\(1-\\frac4{3x-1}=\\frac{3x-1-4}{3x-1}=\\frac{3x-5}{3x-1}\\).",
+              "Divide multiplicando por el recíproco: \\[E=\\frac{3x-5}{x-2}\\cdot\\frac{3x-1}{3x-5}=\\boxed{\\frac{3x-1}{x-2}}.\\]",
+              "Las restricciones siguen siendo \\(x\\ne2,\\ x\\ne1/3,\\ x\\ne5/3\\), aunque algún factor se haya cancelado."
+            ],
+            "topicId": "uni-c1-despeje"
+          }
         },
         {
           "id": "alg-uni-c1-a06",
@@ -752,7 +1283,17 @@
             "\\(4x-3\\)",
             "\\(1\\)"
           ],
-          "topic": "Producto y cancelación"
+          "topic": "Producto y cancelación",
+          "grading": {
+            "correctIndex": 1,
+            "hint": "Suma primero los numeradores de las fracciones con igual denominador y expresa \\(P\\) como una fracción.",
+            "steps": [
+              "\\(P=4-3/x=(4x-3)/x\\).",
+              "\\(Q=(x+2x+4x)/(4x-3)=7x/(4x-3)\\).",
+              "\\(PQ=\\frac{4x-3}{x}\\cdot\\frac{7x}{4x-3}=\\boxed7\\). Las cancelaciones son válidas porque \\(x\\ne0,3/4\\)."
+            ],
+            "topicId": "uni-c1-despeje"
+          }
         },
         {
           "id": "alg-uni-c1-a07",
@@ -765,7 +1306,18 @@
             "\\(3\\)",
             "\\(4\\)"
           ],
-          "topic": "Ecuación con agrupaciones"
+          "topic": "Ecuación con agrupaciones",
+          "grading": {
+            "correctIndex": 4,
+            "hint": "El signo delante del corchete afecta a todos sus términos. Después de hallar \\(x\\), aún debes calcular \\(6x+1\\).",
+            "steps": [
+              "Dentro del corchete: \\(1-(3-x)+x/2=1-3+x+x/2=-2+3x/2\\).",
+              "El lado izquierdo es \\(3x-2(-2+3x/2)=3x+4-3x=4\\).",
+              "El derecho es \\(2(x-1)+5=2x+3\\). Así \\(4=2x+3\\), luego \\(x=1/2\\).",
+              "Lo pedido es \\(6x+1=6(1/2)+1=\\boxed4\\)."
+            ],
+            "topicId": "uni-c1-despeje"
+          }
         },
         {
           "id": "alg-uni-c1-a08",
@@ -778,7 +1330,17 @@
             "\\(\\dfrac{a^2-b^2}{a-b}\\)",
             "\\(\\dfrac{a^2+b^2}{a+b}\\)"
           ],
-          "topic": "Despeje con parámetros"
+          "topic": "Despeje con parámetros",
+          "grading": {
+            "correctIndex": 2,
+            "hint": "Al multiplicar en cruz, distribuye correctamente. Al agrupar términos en \\(x\\), el coeficiente es \\(a-b\\).",
+            "steps": [
+              "Multiplica por \\(ab\\ne0\\): \\(a(x-a)=b(x+b)\\).",
+              "Distribuye: \\(ax-a^2=bx+b^2\\). Agrupa: \\((a-b)x=a^2+b^2\\).",
+              "Como \\(a-b\\ne0\\), \\(\\boxed{x=\\frac{a^2+b^2}{a-b}}\\)."
+            ],
+            "topicId": "uni-c1-despeje"
+          }
         },
         {
           "id": "alg-uni-c1-a09",
@@ -791,7 +1353,17 @@
             "\\(R=\\dfrac{R_1R_2}{R_1+R_2};\\quad R=3\\,\\Omega\\)",
             "\\(R=\\dfrac{R_1R_2}{R_2-R_1};\\quad R=6\\,\\Omega\\)"
           ],
-          "topic": "Despeje de una fórmula"
+          "topic": "Despeje de una fórmula",
+          "grading": {
+            "correctIndex": 3,
+            "hint": "Al sumar los recíprocos obtienes \\(1/R\\). Todavía debes invertir el resultado para hallar \\(R\\).",
+            "steps": [
+              "\\(\\frac1R=\\frac1{R_1}+\\frac1{R_2}=\\frac{R_1+R_2}{R_1R_2}\\).",
+              "Toma el recíproco: \\(R=\\frac{R_1R_2}{R_1+R_2}\\).",
+              "Sustituye: \\(R=\\frac{4\\cdot12}{4+12}=\\frac{48}{16}=\\boxed{3\\,\\Omega}\\). Es menor que ambas resistencias, como corresponde a esta asociación."
+            ],
+            "topicId": "uni-c1-despeje"
+          }
         },
         {
           "id": "alg-uni-c1-a10",
@@ -804,9 +1376,20 @@
             "\\(-3\\)",
             "\\(0\\)"
           ],
-          "topic": "Clasificación con condiciones"
+          "topic": "Clasificación con condiciones",
+          "grading": {
+            "correctIndex": 0,
+            "hint": "Además de anular la parte real, comprueba que la parte imaginaria no sea cero. Una de las raíces produce el complejo nulo.",
+            "steps": [
+              "Parte real nula: \\(m^2-9=0\\), así \\((m-3)(m+3)=0\\) y \\(m=3\\) o \\(m=-3\\).",
+              "Para \\(m=3\\), el coeficiente imaginario es \\(m+3=6\\ne0\\): \\(z=6i\\).",
+              "Para \\(m=-3\\), ambas partes son cero, por lo que queda excluido. El único valor válido es \\(\\boxed{m=3}\\)."
+            ],
+            "topicId": "uni-c1-complejos"
+          }
         }
-      ]
+      ],
+      "autoGrade": true
     }
   ]
 }

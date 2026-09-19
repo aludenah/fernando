@@ -1,4 +1,5 @@
-import {normalizeTask, normalizeAnswers, answerCount} from './model.js';
+import {gradeTask} from './grading.js';
+import {normalizeTask, normalizeAnswers, answerCount} from './model.js?v=grading-1';
 import {studentProfile} from './students.js';
 
 export const MAX_PROGRESS_FILE_SIZE = 2 * 1024 * 1024;
@@ -56,7 +57,8 @@ export function createProgressReport(course,tasks,drafts,learned,theoryUpdatedAt
 export function summarizeProgress(report) {
   const tasks=report.tasks.map(entry=>{
     const answered=answerCount(entry.task,entry.answers),total=entry.task.questions.length;
-    return {...entry,answered,total,percent:Math.round(answered/total*100),status:answered===total?'Respondida':answered?'En progreso':'Pendiente'};
+    const grade=gradeTask(entry.task,entry.answers);
+    return {...entry,answered,total,grade,percent:Math.round(answered/total*100),status:grade?'Calificada':answered===total?'Respondida':answered?'En progreso':'Pendiente'};
   });
   const total=tasks.reduce((sum,t)=>sum+t.total,0),answered=tasks.reduce((sum,t)=>sum+t.answered,0);
   const dates=[report.theoryUpdatedAt,...tasks.map(t=>t.updatedAt)].filter(Boolean).sort((a,b)=>Date.parse(b)-Date.parse(a));

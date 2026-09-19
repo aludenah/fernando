@@ -1,17 +1,20 @@
 import {math as m} from './math.js';
+import {gradeTask} from './grading.js';
+import {gradeSummary,answerReview,workedExamples,scoreText} from './grading-views.js';
 import {createStudentStore} from './store.js?v=sync-1';
 import {createProgressSync,appsScriptTransport} from './sync.js';
 import {students,studentProfile} from './students.js';
 import {competitionHome,preparationOutline} from './competition-views.js';
 import {hasAnswer, questionSequence, canOpenQuestion} from './sequence.js';
-import {html as h, normalizeTask, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js?v=students-1';
+import {html as h, normalizeTask, answerCount, validateSubmission, publicCourse, MAX_PACKAGE_SIZE} from './model.js?v=grading-1';
 import {courseCatalog, courseOutline} from './course-views.js?v=latex-1';
-import {accessView,parentsView,studentReportPanel} from './family-views.js?v=sync-1';
-import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from './progress.js?v=students-1';
+import {accessView,parentsView,studentReportPanel} from './family-views.js?v=grading-1';
+import {createProgressReport,validateProgressReport,MAX_PROGRESS_FILE_SIZE} from './progress.js?v=grading-1';
 
 const selectedStudent=new URLSearchParams(location.search).get('alumno');
 const explicitStudent=Object.hasOwn(students,selectedStudent);
 const student=studentProfile(explicitStudent?selectedStudent:'fernando');
+const usesDrive=student.id==='josue';
 const studentStore=createStudentStore(student.id);
 const {all,put,write,openDatabase}=studentStore;
 let sharedProgress;
@@ -41,6 +44,8 @@ const formatTime = date => new Date(date).toLocaleString('es-PE', {dateStyle:'me
 const taskName = task => task.title.replace(/^\d+ · /, '');
 const status = task => {
   const draft = draftFor(task.id);
+  const grade=gradeTask(task,draft.answers);
+  if(grade)return ['prepared', `Calificada · ${scoreText(grade.score)}/20`];
   if (answersReady(task,draft)) return ['prepared', 'Respondida'];
   return answerCount(task, draft.answers) || filesFor(task.id).length ? ['progress', 'En progreso'] : ['', 'Pendiente'];
 };
@@ -50,6 +55,7 @@ function notify(text, error = false) {
   message.textContent = text;
 }
 function storageNote() {
+  if(!usesDrive)return `<div class="local-note">${icon('check',18)}<p>Al completar las 10 respuestas de cada nivel, verás tu nota, las preguntas por repasar y sus soluciones paso a paso. Tus respuestas se guardan automáticamente.</p></div>`;
   return `<div class="local-note">${icon('file',18)}<p>Marca tus respuestas aquí. Para entregar el desarrollo, pulsa <strong>Subir al Drive</strong> en cada problema y añade el archivo a su carpeta. ${sharedStatus.enabled?'Las respuestas pendientes se envían al recuperar la conexión.':'El guardado entre dispositivos está pendiente de activación.'}</p></div>`;
 }
 function updateSyncStatus() {
@@ -60,7 +66,7 @@ function updateSyncStatus() {
   target.dataset.phase=sharedStatus.phase;
   target.querySelector('span').textContent=labels[sharedStatus.phase]||labels.loading;
   target.querySelector('button').hidden=!sharedStatus.enabled;
-  document.querySelector('#storage-footer').textContent=sharedStatus.enabled?'Avance compartido · Solucionarios en Drive.':'Guardado entre dispositivos pendiente de activación · Solucionarios en Drive.';
+  document.querySelector('#storage-footer').textContent=(sharedStatus.enabled?'Avance compartido':'Guardado en este dispositivo')+(usesDrive?' · Solucionarios en Drive.':' · Calificación y soluciones en el aula.');
 }
 function nav(tab) {
   return `<nav class="tabs" aria-label="Secciones del aula">${[['cursos',student.id==='josue'?'Mi preparación':'Mis cursos'],[`temario/${student.courseId}`,student.id==='josue'?'Plan':'Temario'],['curso',`${student.unit} 1`],['tareas','Práctica']].map(([id,label]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
@@ -73,7 +79,7 @@ function heading() {
 }
 function taskCard(task, index, teacher = false) {
   const [cls, label] = status(task), sequence = questionSequence(task,draftFor(task.id).answers);
-  return `<a class="task-card" href="#tarea/${h(task.id)}"><span class="task-index">${String(index + 1).padStart(2, '0')}</span><div class="task-content"><div class="task-tags"><span class="subject">${h(task.subject)}</span><span class="badge ${cls}">${h(label)}</span>${isLocal(task.id) ? '<span class="badge">Cambios locales</span>' : ''}${!task.published ? '<span class="badge">Borrador</span>':''}</div><h3>${h(task.title)}</h3><div class="task-meta"><span>${task.questions.length} preguntas</span><span>${h(formatDate(task.due))}</span>${teacher ? '<span>Ver y editar</span>' : ''}</div><div class="task-card-progress"><span>${sequence.answered} de ${sequence.total} respuestas · ${sequence.percent}%</span><span>${sequence.complete?'Revisar respuestas':`Continuar en la pregunta ${sequence.resumeAt+1}`}</span><progress max="${sequence.total}" value="${sequence.answered}" aria-label="Avance de ${h(task.title)}"></progress></div></div>${icon('arrow')}</a>`;
+  return `<a class="task-card" href="#tarea/${h(task.id)}"><span class="task-index">${String(index + 1).padStart(2, '0')}</span><div class="task-content"><div class="task-tags"><span class="subject">${h(task.subject)}</span><span class="badge ${cls}">${h(label)}</span>${isLocal(task.id) ? '<span class="badge">Cambios locales</span>' : ''}${!task.published ? '<span class="badge">Borrador</span>':''}</div><h3>${h(task.title)}</h3><div class="task-meta"><span>${task.questions.length} preguntas</span><span>${h(formatDate(task.due))}</span>${teacher ? '<span>Ver y editar</span>' : ''}</div><div class="task-card-progress"><span>${sequence.answered} de ${sequence.total} respuestas · ${sequence.percent}%</span><span>${sequence.complete?(task.autoGrade?'Ver nota y solucionarios':'Revisar respuestas'):`Continuar en la pregunta ${sequence.resumeAt+1}`}</span><progress max="${sequence.total}" value="${sequence.answered}" aria-label="Avance de ${h(task.title)}"></progress></div></div>${icon('arrow')}</a>`;
 }
 function renderCourse() {
   const lesson = state.course.lesson;
@@ -81,7 +87,7 @@ function renderCourse() {
   return `${heading()}${nav('curso')}
   <section class="chapter-heading"><div><p class="eyebrow">${student.id==='josue'?'TU PRIMERA UNIDAD':'TU PRIMER CAPÍTULO'}</p><h2>${h(lesson.title)}</h2><p>${h(student.description)}</p></div>${first ? `<a class="button" href="#tarea/${h(first.id)}">Empezar a practicar ${icon('arrow',18)}</a>`:''}</section>
   <div class="course-layout"><div><section class="panel course-objectives"><h2>Lo que aprenderemos</h2><ul>${lesson.objectives.map(o => `<li>${icon('check',18)}<span>${h(o)}</span></li>`).join('')}</ul><p class="course-convention">${m(lesson.convention)}</p></section>
-  <section class="panel chapter-guide"><div class="section-heading"><h2>Guía para la clase</h2><span>${state.learned.length} / ${lesson.topics.length} repasados</span></div>${lesson.topics.map((topic, i) => `<details class="topic" ${i === 0 ? 'open':''}><summary><span>${h(topic.title)}</span>${state.learned.includes(topic.id) ? `<span class="topic-check">${icon('check',17)}<span class="sr-only">Repasado</span></span>`:''}</summary><div class="topic-body"><p class="topic-concept">${m(topic.concept)}</p><ul class="formula-list">${topic.formulas.map(f=>`<li>${m(f)}</li>`).join('')}</ul><div class="worked-example"><strong>Veámoslo paso a paso</strong><p class="prewrap">${m(topic.example)}</p></div><p class="topic-tip"><strong>Recuerda:</strong> ${m(topic.tip)}</p><div class="topic-footer"><label class="learned"><input type="checkbox" data-topic="${h(topic.id)}" ${state.learned.includes(topic.id)?'checked':''} ${!state.storage?'disabled':''}>Tema repasado</label></div></div></details>`).join('')}</section></div>
+  <section class="panel chapter-guide"><div class="section-heading"><h2>Guía para la clase</h2><span>${state.learned.length} / ${lesson.topics.length} repasados</span></div>${lesson.topics.map((topic, i) => `<details class="topic" data-topic-section="${h(topic.id)}" ${i === 0 ? 'open':''}><summary><span>${h(topic.title)}</span>${state.learned.includes(topic.id) ? `<span class="topic-check">${icon('check',17)}<span class="sr-only">Repasado</span></span>`:''}</summary><div class="topic-body"><p class="topic-concept">${m(topic.concept)}</p><ul class="formula-list">${topic.formulas.map(f=>`<li>${m(f)}</li>`).join('')}</ul>${workedExamples(topic)}<p class="topic-tip"><strong>Recuerda:</strong> ${m(topic.tip)}</p><div class="topic-footer"><label class="learned"><input type="checkbox" data-topic="${h(topic.id)}" ${state.learned.includes(topic.id)?'checked':''} ${!state.storage?'disabled':''}>Tema repasado</label></div></div></details>`).join('')}</section></div>
   <aside class="course-sequence"><section class="panel"><p class="eyebrow">DEL CONCEPTO A LA PRÁCTICA</p><h2>Tareas ${student.id==='josue'?'de la unidad':'del capítulo'} 1</h2><p>Resuelve una tarea a la vez. Muestra cómo llegaste a cada respuesta.</p>${state.tasks.filter(t=>t.published).map((task,i)=>`<a class="chapter-task" href="#tarea/${h(task.id)}"><span class="chapter-step">${i+1}</span><span><strong>${h(taskName(task))}</strong><small>${task.questions.length} preguntas · ${h(status(task)[1])}</small></span>${icon('arrow',17)}</a>`).join('')}</section><div class="study-note"><span>UNA BUENA COSTUMBRE</span><h2>El desarrollo<br>también cuenta.</h2><p>Escribe cada paso, revisa los signos y comprueba tu resultado.</p><div class="math-mark" aria-hidden="true">${m(student.id==='josue'?String.raw`\(1+2+\cdots+10=55\)`:String.raw`\(\mathbb{N}\subset\mathbb{Z}\subset\mathbb{Q}\subset\mathbb{R}\subset\mathbb{C}\)`)}</div></div></aside></div>${storageNote()}`;
 }
 function renderTasks() {
@@ -89,35 +95,39 @@ function renderTasks() {
   return `${heading()}${nav('tareas')}<div class="section-heading"><h2>Un paso más en cada tarea</h2><span>${tasks.length} tareas</span></div>${tasks.map((t,i)=>taskCard(t,i)).join('')}${studentReportPanel(state.storage)}${storageNote()}`;
 }
 function attachmentRows(files, review = false) {
-  if (!files.length) return '<p class="muted">Esta copia contiene las respuestas. Revisa los solucionarios en las carpetas de Drive de cada problema.</p>';
+  if (!files.length) return usesDrive?'<p class="muted">Esta copia contiene las respuestas. Revisa los solucionarios en las carpetas de Drive de cada problema.</p>':'<p class="muted">Esta copia no contiene archivos adjuntos. Las tareas actuales se califican en el aula.</p>';
   return files.map((file, index)=>`<div class="file-row">${icon('file')}<span class="file-name"><strong>${h(file.name)}</strong><small>${review&&file.questionId?`Problema ${state.review?.task.questions.findIndex(q=>q.id===file.questionId)+1} · `:''}${(file.size/1024/1024).toFixed(2)} MB</small></span><button class="icon-button" data-action="${review?'review-file':'download-file'}" data-id="${review?index:h(file.id)}" aria-label="Descargar ${h(file.name)}">${icon('download',18)}</button>${!review?`<button class="icon-button remove-file" data-action="remove-file" data-id="${h(file.id)}" aria-label="Quitar ${h(file.name)}">×</button>`:''}</div>`).join('');
 }
 function questionWork(task,question) {
+  if(!usesDrive){const grade=gradeTask(task,draftFor(task.id).answers);return grade?answerReview(question,draftFor(task.id).answers[question.id],{open:true}):'';}
   const folder=state.drive.problems[question.id];
   return `<div class="problem-work">${folder?`<a class="button" href="${h(folder.folderUrl)}" target="_blank" rel="noopener noreferrer">Subir al Drive</a>`:'<button class="button" disabled title="El profesor debe asignar una carpeta a este problema.">Subir al Drive</button>'}</div>`;
 }
 function questionSteps(task) {
-  const draft=draftFor(task.id);
+  const draft=draftFor(task.id),grade=gradeTask(task,draft.answers);
   return task.questions.map((question,index)=>{
     const available=canOpenQuestion(task,draft.answers,index),answered=hasAnswer(question,draft.answers),current=index===state.questionIndex;
-    const label=`Pregunta ${index+1}${!available?', bloqueada: responde las anteriores':answered?', respondida':', pendiente'}`;
-    return `<button type="button" class="question-step ${answered?'answered':''}" data-action="question-go" data-id="${index}" aria-label="${h(label)}" title="${h(label)}" ${current?'aria-current="step"':''} ${!available?'disabled':''}>${index+1}${answered?'<span aria-hidden="true">✓</span>':''}</button>`;
+    const result=grade?.results[index];
+    const label=`Pregunta ${index+1}${result?(result.correct?', correcta':', incorrecta: repasar'):!available?', bloqueada: responde las anteriores':answered?', respondida':', pendiente'}`;
+    return `<button type="button" class="question-step ${answered?'answered':''} ${result?(result.correct?'graded-correct':'graded-incorrect'):''}" data-action="question-go" data-id="${index}" aria-label="${h(label)}" title="${h(label)}" ${current?'aria-current="step"':''} ${!available?'disabled':''}>${index+1}${answered?`<span aria-hidden="true">${result&&!result.correct?'×':'✓'}</span>`:''}</button>`;
   }).join('');
 }
 function questionNavigation(task) {
   const index=state.questionIndex, draft=draftFor(task.id),last=index===task.questions.length-1;
+  if(gradeTask(task,draft.answers))return `<button class="button secondary" data-action="question-go" data-id="${index-1}" ${index===0?'disabled':''}>← Anterior</button><button class="button secondary" data-action="show-grade">Ver mi nota</button>${last?'<a class="button" href="#tareas">Ver mis tareas</a>':`<button class="button" data-action="question-go" data-id="${index+1}">Siguiente solución →</button>`}`;
   return `<button class="button secondary" data-action="question-go" data-id="${index-1}" ${index===0?'disabled':''}>← Anterior</button>${last?`<a class="button" href="#tareas">Ver mis tareas</a>`:`<button class="button" data-action="question-go" data-id="${index+1}" ${!canOpenQuestion(task,draft.answers,index+1)?'disabled':''}>Siguiente pregunta →</button>`}`;
 }
 function questionSaveText(task) {
   if(!state.storage)return 'No se puede guardar el avance en este navegador.';
   const draft=draftFor(task.id),question=task.questions[state.questionIndex];
+  if(gradeTask(task,draft.answers))return 'Tarea calificada. Tus respuestas están guardadas y puedes revisar todos los solucionarios.';
   if(hasAnswer(question,draft.answers))return answersReady(task,draft)?'Todas tus respuestas están guardadas. Puedes revisarlas cuando quieras.':'Respuesta guardada. Ya puedes pasar a la siguiente pregunta.';
   return state.questionIndex===task.questions.length-1?'Marca una alternativa para completar la tarea.':'Marca una alternativa para habilitar la siguiente pregunta.';
 }
 function renderQuestionStage(task) {
-  const index=state.questionIndex,question=task.questions[index],draft=draftFor(task.id);
-  return `<section class="panel sequence-panel"><div class="section-heading"><h2 id="question-heading" tabindex="-1">Pregunta ${index+1} de ${task.questions.length}</h2><span>PASO A PASO</span></div><p>Marca una respuesta para continuar. Puedes volver a las preguntas anteriores y revisarlas.</p><nav id="question-steps" class="question-steps" aria-label="Preguntas de la tarea">${questionSteps(task)}</nav></section>
-  <fieldset class="panel question-card" id="problem-${h(question.id)}"><legend><span class="question-number">${String(index+1).padStart(2,'0')}</span><span>${m(question.text)}</span></legend><div class="options">${question.options.map((option,i)=>`<label class="answer-option ${draft.answers[question.id]===i?'selected':''}"><input type="radio" name="${h(question.id)}" value="${i}" data-answer="${h(question.id)}" data-task="${h(task.id)}" ${draft.answers[question.id]===i?'checked':''} ${!state.storage?'disabled':''}><span class="option-letter">${letters[i]}</span><span>${m(option)}</span></label>`).join('')}</div><div id="work-${h(question.id)}">${questionWork(task,question)}</div><p id="question-save-status" class="save-status" aria-live="polite">${questionSaveText(task)}</p></fieldset>
+  const index=state.questionIndex,question=task.questions[index],draft=draftFor(task.id),grade=gradeTask(task,draft.answers);
+  return `<section class="panel sequence-panel"><div class="section-heading"><h2 id="question-heading" tabindex="-1">Pregunta ${index+1} de ${task.questions.length}</h2><span>${grade?'REVISIÓN':'PASO A PASO'}</span></div><p>${grade?'Consulta en cada pregunta tu respuesta, la alternativa correcta y su desarrollo.':task.autoGrade?'Marca una respuesta para continuar. Puedes cambiarla antes de completar las 10 preguntas; después verás tu nota y las soluciones.':'Marca una respuesta para continuar. Puedes volver a las preguntas anteriores y revisarlas.'}</p><nav id="question-steps" class="question-steps" aria-label="Preguntas de la tarea">${questionSteps(task)}</nav></section>
+  <fieldset class="panel question-card" id="problem-${h(question.id)}"><legend><span class="question-number">${String(index+1).padStart(2,'0')}</span><span>${m(question.text)}</span></legend><div class="options">${question.options.map((option,i)=>`<label class="answer-option ${draft.answers[question.id]===i?'selected':''} ${grade?(i===question.grading.correctIndex?'correct-option':draft.answers[question.id]===i?'incorrect-option':''):''}"><input type="radio" name="${h(question.id)}" value="${i}" data-answer="${h(question.id)}" data-task="${h(task.id)}" ${draft.answers[question.id]===i?'checked':''} ${!state.storage||grade?'disabled':''}><span class="option-letter">${letters[i]}</span><span>${m(option)}</span></label>`).join('')}</div><div id="work-${h(question.id)}">${questionWork(task,question)}</div><p id="question-save-status" class="save-status" aria-live="polite">${questionSaveText(task)}</p></fieldset>
   <div class="question-navigation" id="question-navigation">${questionNavigation(task)}</div>`;
 }
 function updateQuestionControls(task) {
@@ -132,23 +142,24 @@ function renderTask(task) {
   if(!canOpenQuestion(task,draft.answers,state.questionIndex))state.questionIndex=sequence.resumeAt;
   return `<a class="back" href="#tareas">← Volver a mis tareas</a><div class="page-heading"><div><p class="eyebrow">${h(task.subject)}</p><h1>${h(taskName(task))}</h1><p>${task.questions.length} preguntas · ${h(formatDate(task.due))}</p></div>${state.role==='parent'?`<button class="button secondary" data-action="edit-task" data-id="${h(task.id)}">Editar tarea</button>`:''}</div>${isLocal(task.id)?'<p class="local-edit-notice">Esta versión tiene cambios guardados únicamente en este dispositivo.</p>':''}
   <div class="detail-layout"><div><details class="panel task-instructions"><summary>Indicaciones de la tarea</summary><p class="prewrap instructions">${m(task.instructions)}</p></details>
-  <div id="question-stage">${renderQuestionStage(task)}</div>
+  <div id="task-result" aria-live="polite">${gradeSummary(task,draft.answers)}</div><div id="question-stage">${renderQuestionStage(task)}</div>
   </div>
-  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Tu tarea, paso a paso</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><div class="progress-caption"><strong id="answer-percent">${sequence.percent}%</strong><span id="task-progress-state">${sequence.complete?'Todas las preguntas respondidas':`${sequence.total-count} preguntas pendientes`}</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="last-saved" class="save-status">${draft.updatedAt?`Último avance guardado: ${h(formatTime(draft.updatedAt))}`:'Tu avance se guardará al marcar una respuesta.'}</p><p class="resume-note">Al volver a esta tarea, continuarás desde la primera pregunta pendiente.</p><div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>Usa «Subir al Drive» y añade tu foto o PDF en la carpeta. Esta página no verifica los archivos subidos a Drive.</p></div></section></aside></div>`;
+  <aside class="detail-aside"><section class="panel progress-panel"><p class="eyebrow">TU AVANCE</p><h2>Tu tarea, paso a paso</h2><div class="progress-count"><strong id="answer-count">${count}</strong><span>de ${task.questions.length} respuestas</span></div><div class="progress-caption"><strong id="answer-percent">${sequence.percent}%</strong><span id="task-progress-state">${sequence.complete?'Todas las preguntas respondidas':`${sequence.total-count} preguntas pendientes`}</span></div><progress id="answer-progress" max="${task.questions.length}" value="${count}" aria-label="Preguntas respondidas"></progress><p id="last-saved" class="save-status">${draft.updatedAt?`Último avance guardado: ${h(formatTime(draft.updatedAt))}`:'Tu avance se guardará al marcar una respuesta.'}</p><p class="resume-note">Al volver a esta tarea, continuarás desde la primera pregunta pendiente.</p>${usesDrive?'<div class="delivery-note"><strong>Entrega en la carpeta del problema.</strong><p>Usa «Subir al Drive» y añade tu foto o PDF en la carpeta. Esta página no verifica los archivos subidos a Drive.</p></div>':task.autoGrade?'<div class="delivery-note"><strong>Tu nota al terminar.</strong><p>Cada respuesta correcta vale 2 puntos en estas tareas de 10 preguntas. Al completarlas verás la nota sobre 20 y el solucionario de cada problema. No necesitas subir archivos.</p></div>':''}</section></aside></div>`;
 }
 function renderTeacher() {
   return `<div class="page-heading"><div><p class="eyebrow">HERRAMIENTAS DEL PROFESOR</p><h1>Prepara la próxima clase.</h1><p>Crea tareas y revisa copias de trabajo desde este dispositivo.</p></div><button class="button" data-action="new-task" ${!state.storage?'disabled':''}>${icon('plus',18)} Nueva tarea</button></div>${nav('profesor')}
   <div class="local-note"><p><strong>Este editor guarda cambios locales.</strong> Para compartir las tareas con ${h(student.name)}, descarga el contenido y actualízalo en tu repositorio. El acceso privado se configurará después.</p></div>
-  ${renderDriveSettings()}<div class="teacher-grid"><section class="panel"><h2>Publicar las tareas</h2><p>La web carga sus tareas desde tu repositorio de GitHub.</p><ol class="steps"><li>Prepara y guarda las tareas aquí.</li><li>Descarga <strong>${h(student.courseFile)}</strong>.</li><li>Súbelo a <strong>docs/data</strong> en GitHub y confirma el cambio.</li></ol><div class="button-row"><button class="button" data-action="export-course">${icon('download',18)} Descargar contenido</button><a class="button secondary" href="https://github.com/aludenah/fernando/upload/main/docs/data" target="_blank" rel="noopener noreferrer">Abrir carpeta en GitHub ↗</a></div><p class="source-note">Las tareas marcadas como borrador también se incluyen en el archivo público. Guárdalo solo cuando estén listas para compartirse; no añadas datos privados ni claves de respuestas.</p></section>
+  ${renderDriveSettings()}<div class="teacher-grid"><section class="panel"><h2>Publicar las tareas</h2><p>La web carga sus tareas desde tu repositorio de GitHub.</p><ol class="steps"><li>Prepara y guarda las tareas aquí.</li><li>Descarga <strong>${h(student.courseFile)}</strong>.</li><li>Súbelo a <strong>docs/data</strong> en GitHub y confirma el cambio.</li></ol><div class="button-row"><button class="button" data-action="export-course">${icon('download',18)} Descargar contenido</button><a class="button secondary" href="https://github.com/aludenah/fernando/upload/main/docs/data" target="_blank" rel="noopener noreferrer">Abrir carpeta en GitHub ↗</a></div><p class="source-note">Las tareas marcadas como borrador también se incluyen en el archivo público. Guárdalo solo cuando estén listas para compartirse; no añadas datos privados. Las claves y los solucionarios de las tareas autocorregibles forman parte del contenido público.</p></section>
   <section class="panel"><h2>Revisar una copia de trabajo</h2><p>Puedes abrir el archivo que ${h(student.name)} descargó desde una tarea. Se leerá en este dispositivo.</p><label class="upload-box compact">${icon('file',24)}<strong>Importar trabajo para revisar</strong><span>Archivo .json generado por el aula</span><input type="file" id="import-review" accept=".json,application/json" aria-label="Importar trabajo para revisar" ${!state.storage?'disabled':''}></label><p class="source-note">Los archivos y las notas de revisión permanecen en este navegador.</p></section></div>
   <div class="section-heading"><h2>Tareas preparadas</h2><span>${state.tasks.length} tareas · ${state.localTasks.length} con cambios locales</span></div>${state.tasks.map((t,i)=>taskCard(t,i,true)).join('')}
   <section class="panel"><h2>Trabajos importados</h2>${state.reviews.length?state.reviews.map(r=>`<button class="review-row" data-action="open-review" data-id="${h(r.id)}"><span><strong>${h(r.task.title)}</strong><small>${h(formatTime(r.createdAt))}</small></span><span class="badge ${r.score!=null?'prepared':''}">${r.score!=null?`${r.score}/20`:'Por revisar'}</span>${icon('arrow',18)}</button>`).join(''):'<p class="muted">Aún no has importado trabajos para revisar.</p>'}</section>`;
 }
 function renderDriveSettings() {
+  if(!usesDrive)return '<section class="panel"><h2>Calificación automática</h2><p>Fernando recibe una nota sobre 20 al completar cada tarea, con revisión de errores y soluciones paso a paso. La nota se calcula con sus respuestas guardadas y también aparece en el acceso a padres.</p></section>';
   return `<section class="panel drive-settings"><h2>Solucionarios en Google Drive</h2><p>Cada botón «Subir al Drive» abre la carpeta de su problema en una pestaña nueva.</p><a class="button secondary" href="${h(state.drive.rootFolderUrl)}" target="_blank" rel="noopener noreferrer">Abrir carpetas del aula ↗</a><h3>Permisos de las carpetas</h3><p>En la carpeta principal, selecciona Compartir → Acceso general → Cualquier persona con el enlace → Editor. Los permisos se aplican a sus subcarpetas.</p><p class="source-note">El permiso Editor permite subir, modificar y eliminar archivos. Para subir archivos, ${h(student.name)} debe iniciar sesión en Google. El material del profesor se guarda por separado.</p></section>`;
 }
 function editorQuestion(question, index) {
-  return `<fieldset class="panel edit-question" data-question="${h(question.id)}"><legend>Pregunta ${index+1}</legend><label class="field-label">Enunciado<textarea data-field="text" rows="2" required maxlength="3000">${h(question.text)}</textarea></label><div class="edit-options">${question.options.map((option,i)=>`<label><span>${letters[i]}</span><input data-option="${i}" aria-label="Pregunta ${index+1}, alternativa ${letters[i]}" value="${h(option)}" required maxlength="800"></label>`).join('')}</div><button class="text-button" type="button" data-action="remove-question" data-id="${h(question.id)}">Quitar pregunta</button></fieldset>`;
+  return `<fieldset class="panel edit-question" data-question="${h(question.id)}"><legend>Pregunta ${index+1}</legend><label class="field-label">Enunciado<textarea data-field="text" rows="2" required maxlength="3000">${h(question.text)}</textarea></label><div class="edit-options">${question.options.map((option,i)=>`<label><span>${letters[i]}</span><input data-option="${i}" aria-label="Pregunta ${index+1}, alternativa ${letters[i]}" value="${h(option)}" required maxlength="800"></label>`).join('')}</div>${state.editor.autoGrade?`<div class="grading-editor"><label class="field-label">Alternativa correcta<select data-field="correctIndex" required><option value="" disabled ${!question.grading?'selected':''}>Selecciona una alternativa</option>${question.options.map((_,i)=>`<option value="${i}" ${question.grading?.correctIndex===i?'selected':''}>${letters[i]}</option>`).join('')}</select></label><label class="field-label">Solucionario (un paso por línea; mínimo 2)<textarea data-field="solutionSteps" rows="6" required>${h(question.grading?.steps.join('\n')||'')}</textarea></label><label class="field-label">Qué repasar si se equivoca<textarea data-field="hint" rows="2" maxlength="1200" required>${h(question.grading?.hint||'')}</textarea></label></div>`:''}<button class="text-button" type="button" data-action="remove-question" data-id="${h(question.id)}">Quitar pregunta</button></fieldset>`;
 }
 function renderEditor() {
   const task = state.editor;
@@ -198,6 +209,7 @@ function route(focus = false) {
   }
   updateSyncStatus();
   if (focus) {document.querySelector('#main').focus({preventScroll:true}); window.scrollTo({top:0});}
+  if(tab==='curso'&&id){const topic=[...app.querySelectorAll('[data-topic-section]')].find(el=>el.dataset.topicSection===id);if(topic){topic.open=true;topic.querySelector('summary').focus({preventScroll:true});topic.scrollIntoView({block:'start'});}}
 }
 async function refresh() {
   [state.drafts,state.files,state.localTasks,state.reviews] = await Promise.all(['drafts','files','tasks','reviews'].map(all));
@@ -220,12 +232,16 @@ function enqueue(action) {
   return queue;
 }
 async function saveAnswer(taskId, questionId, value) {
+  if(gradeTask(taskFor(taskId),draftFor(taskId).answers))throw new Error('Esta tarea ya está calificada. Puedes consultar tus respuestas y sus soluciones.');
   if(!isLocal(taskId))await sharedProgress.saveAnswer(taskId,questionId,value);
   else await put('drafts',{...draftFor(taskId),answers:{...draftFor(taskId).answers,[questionId]:value},preparedAt:null,updatedAt:new Date().toISOString()});
   await refresh();
   if(message.classList.contains('error'))notify('');
   updateProgress(taskId);
-  if(location.hash===`#tarea/${taskId}`)updateProblemControls(taskId);
+  if(location.hash===`#tarea/${taskId}`){
+    if(gradeTask(taskFor(taskId),draftFor(taskId).answers)){route();focusGrade();}
+    else updateProblemControls(taskId);
+  }
   signalProgress();
   if(!isLocal(taskId))void sharedProgress.sync();
 }
@@ -260,10 +276,12 @@ function captureEditor() {
   const form=document.querySelector('#task-editor');
   if(!form||!state.editor) return;
   const fields=new FormData(form);
-  state.editor={...state.editor,title:fields.get('title'),subject:fields.get('subject'),due:fields.get('due'),instructions:fields.get('instructions'),published:fields.has('published'),questions:[...form.querySelectorAll('.edit-question')].map(q=>({id:q.dataset.question,topic:state.editor.questions.find(item=>item.id===q.dataset.question)?.topic||'',text:q.querySelector('[data-field="text"]').value,options:[...q.querySelectorAll('[data-option]')].map(o=>o.value)}))};
+  state.editor={...state.editor,title:fields.get('title'),subject:fields.get('subject'),due:fields.get('due'),instructions:fields.get('instructions'),published:fields.has('published'),questions:[...form.querySelectorAll('.edit-question')].map(q=>({id:q.dataset.question,topic:state.editor.questions.find(item=>item.id===q.dataset.question)?.topic||'',text:q.querySelector('[data-field="text"]').value,options:[...q.querySelectorAll('[data-option]')].map(o=>o.value),...(state.editor.autoGrade?{grading:{correctIndex:q.querySelector('[data-field="correctIndex"]').value===''?NaN:Number(q.querySelector('[data-field="correctIndex"]').value),steps:q.querySelector('[data-field="solutionSteps"]').value.split('\n').map(s=>s.trim()).filter(Boolean),hint:q.querySelector('[data-field="hint"]').value,...(state.editor.questions.find(item=>item.id===q.dataset.question)?.grading?.topicId?{topicId:state.editor.questions.find(item=>item.id===q.dataset.question).grading.topicId}:{})}}:{})}))};
 }
 const blankQuestion=()=>({id:crypto.randomUUID(),text:'',options:['','','','','']});
+function focusGrade(){const heading=app.querySelector('.grade-heading');if(heading){heading.focus({preventScroll:true});heading.scrollIntoView({block:'start'});}}
 async function action(name,id) {
+  if(name==='show-grade'){focusGrade();return;}
   if(name==='question-go') {
     const [tab,taskId]=location.hash.slice(1).split('/'),task=taskFor(taskId),index=Number(id);
     if(tab!=='tarea'||!task||!canOpenQuestion(task,draftFor(taskId).answers,index))throw new Error('Marca las respuestas anteriores antes de continuar.');
@@ -282,7 +300,7 @@ async function action(name,id) {
   if(name==='parent-report'&&state.parentReport){state.parentSource='report';route();return;}
 
   if(name==='new-task'||name==='edit-task') {
-    state.editor=name==='edit-task'?structuredClone(taskFor(id)):{id:crypto.randomUUID(),title:'',subject:student.subject,courseId:student.courseId,chapterId:state.course.lesson.id,instructions:'Resuelve cada pregunta, marca una alternativa y usa «Subir al Drive» para entregar tu desarrollo en la carpeta del problema.',due:'',published:true,questions:[blankQuestion()]};
+    state.editor=name==='edit-task'?structuredClone(taskFor(id)):{id:crypto.randomUUID(),title:'',subject:student.subject,courseId:student.courseId,chapterId:state.course.lesson.id,autoGrade:!usesDrive,instructions:usesDrive?'Resuelve cada pregunta, marca una alternativa y usa «Subir al Drive» para entregar tu desarrollo en la carpeta del problema.':'Resuelve en orden. Al marcar todas las respuestas, verás tu nota y los solucionarios.',due:'',published:true,questions:[blankQuestion()]};
     location.hash='editar';route(true);return;
   }
   if(name==='add-question') {captureEditor();if(state.editor.questions.length>=30) throw new Error('El máximo es 30 preguntas.');state.editor.questions.push(blankQuestion());document.querySelector('#editor-questions').innerHTML=state.editor.questions.map(editorQuestion).join('');document.querySelector('.edit-question:last-child textarea').focus();return;}
@@ -394,9 +412,11 @@ async function init() {
     const response=await fetch(new URL(`./data/${student.courseFile}`,import.meta.url),{cache:'no-cache'});
     if(!response.ok)throw new Error('No se pudo cargar el curso. Vuelve a cargar la página.');
     const content=await response.json();
-    const driveResponse=await fetch(new URL(`./data/${student.driveFile}`,import.meta.url),{cache:'no-cache'});
-    if(!driveResponse.ok)throw new Error('No se pudo cargar la configuración de Drive.');
-    state.drive=await driveResponse.json();
+    if(usesDrive){
+      const driveResponse=await fetch(new URL(`./data/${student.driveFile}`,import.meta.url),{cache:'no-cache'});
+      if(!driveResponse.ok)throw new Error('No se pudo cargar la configuración de Drive.');
+      state.drive=await driveResponse.json();
+    }
     state.course=publicCourse(content,content.tasks);state.tasks=state.course.tasks;
     let transport=null;
     try{
@@ -420,7 +440,7 @@ async function init() {
           signalProgress();
         })});
       await sharedProgress.initialize();
-    }catch(error){state.storage=false;notify(`Puedes leer el curso, pero no guardar respuestas o archivos. ${storageError(error)}`,true);}
+    }catch(error){state.storage=false;notify(`Puedes leer el curso, pero no guardar respuestas. ${storageError(error)}`,true);}
     route();
     if(state.storage){void sharedProgress.sync();setInterval(()=>{if(document.visibilityState==='visible'&&state.role)void sharedProgress.sync();},30000);}
   }catch(error){app.innerHTML='<section class="panel"><h1>No pudimos abrir el aula.</h1><p>Comprueba tu conexión y vuelve a cargar esta página.</p></section>';notify(storageError(error),true);}

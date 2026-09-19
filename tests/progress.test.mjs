@@ -22,7 +22,7 @@ test('partial and complete work count separately, independent of correctness or 
   const summary=summarizeProgress(snapshot);
   assert.equal(summary.answered,12);assert.equal(summary.pending,18);assert.equal(summary.percent,40);
   assert.equal(summary.completed,1);assert.equal(summary.learned,1);assert.equal(summary.lastActivity,time);
-  assert.deepEqual(summary.tasks.map(t=>t.status),['En progreso','Respondida','Pendiente']);
+  assert.deepEqual(summary.tasks.map(t=>t.status),['En progreso','Calificada','Pendiente']);
   assert.equal(Object.hasOwn(summary,'correct'),false);assert.equal(Object.hasOwn(summary,'uploads'),false);
 });
 test('snapshot round-trip supports unfinished work without files and does not share mutable drafts',()=>{

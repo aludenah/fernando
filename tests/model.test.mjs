@@ -22,14 +22,15 @@ test('course preserves the chapter, 28 chapters, ten theory sections and thirty 
   assert.deepEqual(course.lesson.taskIds,course.tasks.map(t=>t.id));
   for(const task of course.tasks) assert.equal(normalizeTask(task).questions.length,10);
 });
-test('public content omits answer keys, private solutions and arbitrary input fields',()=>{
+test('public content keeps the grading schema while omitting arbitrary private input fields',()=>{
   const input=structuredClone(task);
   input.email='private@example.invalid';
   input.questions[0].correct=1;
   input.questions[0].solution='private solution';
   const json=JSON.stringify(publicCourse(course,[input]));
   assert.doesNotMatch(json,/"correct"|"solution"|private@example/);
-  assert.doesNotMatch(JSON.stringify(course),/"correct"|"solution"/);
+  assert.equal(publicCourse(course,[input]).tasks[0].autoGrade,true);
+  assert.deepEqual(publicCourse(course,[input]).tasks[0].questions[0].grading,input.questions[0].grading);
 });
 test('only current, in-range integer answers count',()=>{
   const normalized=normalizeAnswers(task,{...answers,'removed-question':2});

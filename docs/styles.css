@@ -43,3 +43,54 @@
 .sync-status[data-phase="offline"],.sync-status[data-phase="unconfigured"] {background:#fff8e9; border-color:#efdcb4; color:#735520;}
 .sync-status button {flex-shrink:0;}
 @media(max-width:600px) {.sync-status {align-items:flex-start; flex-direction:column; gap:8px;}}
+/* Automatic grading and worked examples. Labels accompany every result color. */
+.grade-summary {border:1px solid #c5d5f5;background:linear-gradient(120deg,#f2f6ff,#fff);margin-bottom:24px}
+.grade-header,.grade-stats,.example-heading {display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.grade-header h2 {font-size:1.5rem;line-height:1.3;margin:8px 0 16px}
+.grade-score {display:flex;align-items:baseline;gap:6px;color:#244a9b;white-space:nowrap}
+.grade-score strong {font-size:3rem;line-height:1}
+.grade-score span {font-size:1.2rem}
+.grade-stats {justify-content:flex-start;gap:10px 24px;padding:16px 0;border-top:1px solid #d5dff1}
+.grade-stats strong {color:#173a77}
+.grade-summary .source-note {margin-bottom:0}
+.review-question-link {font:inherit;color:#923622;background:#fff1eb;border:1px solid #e5b7aa;border-radius:7px;padding:6px 10px;margin:4px 3px;cursor:pointer}
+.answer-review {margin-top:24px;padding:20px;border-radius:12px;border:1px solid #bdd9cc;background:#f2faf6;min-width:0}
+.answer-review.is-incorrect {border-color:#e2b4a9;background:#fff7f4}
+.answer-review h3 {margin:0 0 12px;color:#17633d;font-size:1.15rem}
+.answer-review.is-incorrect h3 {color:#9b3223}
+.answer-review p {line-height:1.65}
+.review-hint {border-top:1px solid #e6c8bf;padding-top:14px}
+.solution {border-top:1px solid #d3dccc;padding-top:14px;margin-top:16px;min-width:0}
+.solution summary {cursor:pointer;font-weight:700;color:#203f7e;padding:6px 0}
+.solution-steps {padding-left:24px;margin:18px 0;line-height:1.8}
+.solution-steps li {padding-left:6px;margin:12px 0;overflow-wrap:anywhere;min-width:0}
+.solution-steps li::marker {font-weight:700;color:#385787}
+.solution-theory {display:inline-block;font-weight:600;margin:8px 0}
+.worked-examples {margin-top:26px;min-width:0}
+.worked-examples>h3 {font-size:1.1rem;line-height:1.5}
+.worked-examples .worked-example {margin:18px 0;padding:20px;border:1px solid #d7e3f4;border-radius:12px;background:#f7faff}
+.example-heading {align-items:flex-start;gap:8px}
+.example-heading h4 {font-size:1rem;line-height:1.5;margin:0;flex:1;min-width:160px}
+.worked-example>p {margin-top:16px}
+.answer-option.correct-option {border:2px solid #28784d;background:#edf8f0}
+.answer-option.incorrect-option {border:2px solid #b74939;background:#fff1ed}
+.answer-option:has(input:disabled) {cursor:default}
+.answer-option.correct-option .option-letter {background:#247548;color:#fff}
+.answer-option.incorrect-option .option-letter {background:#a93527;color:#fff}
+.question-step.graded-correct {background:#edf8f0;color:#17633d;border-color:#7fae94}
+.question-step.graded-incorrect {background:#fff1ed;color:#9b3223;border-color:#d9978c}
+.question-step.graded-correct[aria-current],.question-step.graded-incorrect[aria-current] {outline:3px solid #314fdb;outline-offset:3px}
+.grading-editor {padding-top:16px;border-top:1px solid #dce4f1;margin-top:16px}
+.grading-editor select {font:inherit;background:#fff;border:1px solid #c6d5ec;border-radius:8px;padding:12px;max-width:100%}
+.parent-task-body .grade-summary {margin-top:20px}
+.parent-question-text>div {min-width:0;flex:1}
+.question-navigation {flex-wrap:wrap;gap:10px}
+[data-topic-section],.grade-heading {scroll-margin-top:24px}
+@media(max-width:600px){
+  .grade-header {align-items:flex-start;gap:12px}
+  .grade-header h2 {font-size:1.25rem}
+  .grade-score strong {font-size:2.5rem}
+  .answer-review,.worked-examples .worked-example {padding:16px}
+  .grade-stats {gap:10px 16px;font-size:.9rem}
+  .parent-task .parent-count {white-space:normal}
+}

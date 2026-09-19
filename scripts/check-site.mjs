@@ -18,7 +18,13 @@ for(const filename of await readdir(root)) {
   assert.doesNotMatch(source,/chatgpt\.site|cloudflare:|TEACHER_EMAIL|ALGEBRA_CH1_|appgprj_|fetch\(['"]\/api\//,filename);
 }
 assert.match(html,/<html lang="es">/);
-assert.doesNotMatch(JSON.stringify(content),/"correct"|"solution"|@gmail\.com|appgprj_/);
+assert.doesNotMatch(JSON.stringify(content),/@gmail\.com|appgprj_/);
+assert.ok(content.tasks.every(task=>task.autoGrade));
+assert.equal(content.lesson.topics.reduce((n,topic)=>n+topic.examples.length,0),30);
+for(const task of content.tasks){
+ assert.doesNotMatch(task.instructions,/Drive/);
+ for(const q of task.questions)assert.ok(content.lesson.topics.some(topic=>topic.id===q.grading.topicId));
+}
 const drive=JSON.parse(await readFile(resolve(root,'data/drive.json'),'utf8'));
 const questions=content.tasks.flatMap(t=>t.questions);
 assert.equal(questions.length,30);
@@ -58,4 +64,4 @@ assert.doesNotMatch(JSON.stringify(josue),/"correct"|"solution"|@gmail\.com|appg
 
 const css=await readFile(resolve(root,'vendor/katex/katex.min.css'),'utf8');
 for(const [,font] of css.matchAll(/url\(([^)]+)\)/g))await access(resolve(root,'vendor/katex',font));
-console.log(`Sitio comprobado: 2 alumnos, 60 problemas, 60 carpetas, ${expressions} expresiones LaTeX válidas y sus fuentes locales.`);
+console.log(`Sitio comprobado: 2 alumnos, 60 problemas, 30 solucionarios de Fernando, 30 ejemplos resueltos, ${expressions} expresiones LaTeX válidas y sus fuentes locales.`);

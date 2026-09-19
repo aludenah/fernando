@@ -21,7 +21,13 @@ export function normalizeTask(input) {
     const id = identifier(q.id);
     if (ids.has(id)) throw new Error('Hay preguntas repetidas.');
     ids.add(id);
-    return { id, number: index+1, topic: typeof q.topic==='string'?q.topic.slice(0,120):'', text: text(q.text, 3000, 'Pregunta'), options: q.options.map(o => text(o, 800, 'Alternativa')) };
+    let grading;
+    if(input.autoGrade === true) {
+      if(!object(q.grading) || !Number.isInteger(q.grading.correctIndex) || q.grading.correctIndex < 0 || q.grading.correctIndex >= q.options.length) throw new Error('Cada pregunta necesita una alternativa correcta válida.');
+      if(!Array.isArray(q.grading.steps) || q.grading.steps.length < 2 || q.grading.steps.length > 15) throw new Error('Cada pregunta necesita un solucionario con 2 a 15 pasos.');
+      grading = {correctIndex:q.grading.correctIndex,steps:q.grading.steps.map(s=>text(s,3000,'Paso del solucionario')),hint:text(q.grading.hint,1200,'Orientación para repasar'),...(q.grading.topicId?{topicId:identifier(q.grading.topicId)}:{})};
+    }
+    return { id, number: index+1, topic: typeof q.topic==='string'?q.topic.slice(0,120):'', text: text(q.text, 3000, 'Pregunta'), options: q.options.map(o => text(o, 800, 'Alternativa')), ...(grading?{grading}:{}) };
   });
   const due = input.due || '';
   if (typeof due !== 'string' || (due && (!/^\d{4}-\d{2}-\d{2}$/.test(due) || Number.isNaN(Date.parse(`${due}T12:00:00Z`)) || new Date(`${due}T12:00:00Z`).toISOString().slice(0,10) !== due))) throw new Error('Fecha no válida.');
@@ -31,7 +37,7 @@ export function normalizeTask(input) {
     level: ['basico','intermedio','avanzado'].includes(input.level)?input.level:'personalizado',
     subject: text(input.subject || 'Álgebra · Capítulo 1', 120, 'Curso'),
     instructions: text(input.instructions, 6000, 'Indicaciones'), due, published: input.published !== false,
-    questions,
+    questions, ...(input.autoGrade===true?{autoGrade:true}:{}),
   };
 }
 export function normalizeAnswers(task, input = {}) {
