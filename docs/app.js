@@ -3,7 +3,7 @@ import {math as m} from './math.js';
 import {gradeTask} from './grading.js';
 import {gradeSummary,answerReview,workedExamples,scoreText} from './grading-views.js';
 import {createStudentStore} from './store.js?v=sync-1';
-import {createProgressSync,appsScriptTransport} from './sync.js?v=chapters-2';
+import {createProgressSync,appsScriptTransport} from './sync.js?v=all-chapters-1';
 import {students,studentProfile} from './students.js';
 import {competitionHome,preparationOutline} from './competition-views.js';
 import {hasAnswer, questionSequence, canOpenQuestion} from './sequence.js';
@@ -56,7 +56,7 @@ function notify(text, error = false) {
   message.textContent = text;
 }
 function storageNote() {
-  if(!usesDrive)return `<div class="local-note">${icon('check',18)}<p>Al completar las 10 respuestas de cada nivel, verás tu nota, las preguntas por repasar y sus soluciones paso a paso. Tus respuestas se guardan automáticamente.</p></div>`;
+  if(!usesDrive)return `<div class="local-note">${icon('check',18)}<p>Al completar las 10 respuestas de cada nivel, verás tu nota, las preguntas por repasar y sus soluciones paso a paso. Antes de cambiar de dispositivo, espera el aviso «Avance sincronizado».</p></div>`;
   return `<div class="local-note">${icon('file',18)}<p>Marca tus respuestas aquí. Para entregar el desarrollo, pulsa <strong>Subir al Drive</strong> en cada problema y añade el archivo a su carpeta. ${sharedStatus.enabled?'Las respuestas pendientes se envían al recuperar la conexión.':'El guardado entre dispositivos está pendiente de activación.'}</p></div>`;
 }
 function updateSyncStatus() {

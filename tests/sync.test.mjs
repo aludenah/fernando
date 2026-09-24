@@ -13,13 +13,15 @@ const courses={};
 for(const [id,file] of [['fernando','course'],['josue','josue-course']])courses[id]=JSON.parse(await readFile(new URL(`../docs/data/${file}.json`,import.meta.url),'utf8'));
 const code=await readFile(new URL('../integrations/progress/Code.gs',import.meta.url),'utf8');
 const core=await readFile(new URL('../integrations/progress/Core.gs',import.meta.url),'utf8');
+const liveCatalog=await readFile(new URL('../integrations/progress/Catalog.gs',import.meta.url),'utf8');
 const fTask=courses.fernando.tasks[0],fQuestions=fTask.questions;
 const answerField=(index=0)=>`answer:${fTask.id}:${fQuestions[index].id}`;
 const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
 
-function server(){
+function server(services={}){
   const properties={};let locked=false;
   const context=vm.createContext({
+    ...services,
     PropertiesService:{getScriptProperties:()=>({getProperties:()=>({...properties}),setProperties:(values,remove)=>{
       assert.equal(locked,true);assert.equal(remove,false);
       for(const [key,value] of Object.entries(values)){assert.ok(value.length<9000);properties[key]=value;}
@@ -27,7 +29,7 @@ function server(){
     LockService:{getScriptLock:()=>({waitLock:()=>{assert.equal(locked,false);locked=true;},releaseLock:()=>{locked=false;}})},
     ContentService:{MimeType:{JSON:'application/json'},createTextOutput:text=>({text,setMimeType(){return this;}})}
   });
-  vm.runInContext(core+'\n'+code,context);
+  vm.runInContext(core+'\n'+liveCatalog+'\n'+code,context);
   const send=payload=>JSON.parse(context.doPost({postData:{contents:JSON.stringify(payload)}}).text);
   const read=studentId=>JSON.parse(context.doGet({parameter:{studentId}}).text).state;
   return {send,read,properties,context};
@@ -35,7 +37,7 @@ function server(){
 async function device(service,id='fernando',options={}){
   const store=options.store||createStudentStore(id,new IDBFactory());
   const statuses=[],changes=[];
-  const sync=createProgressSync({studentId:id,course:courses[id],store,transport:options.transport|| (async payload=>service.send(payload)),onStatus:value=>statuses.push(value),onChange:value=>changes.push(value)});
+  const sync=createProgressSync({studentId:id,course:options.course||courses[id],store,transport:options.transport|| (async payload=>service.send(payload)),onStatus:value=>statuses.push(value),onChange:value=>changes.push(value)});
   await sync.initialize();
   return {store,sync,statuses,changes};
 }

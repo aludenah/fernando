@@ -132,7 +132,7 @@ export function appsScriptTransport(endpoint,fetcher=globalThis.fetch,timeoutMs=
       const response=await fetcher(url.href,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),redirect:'follow',cache:'no-store',credentials:'omit',signal:controller.signal});
       if(!response.ok)throw new Error('El servicio de guardado no está disponible.');
       const text=await response.text();
-      if(text.length>150000)throw new Error('La respuesta del servicio es demasiado grande.');
+      if(text.length>2500000)throw new Error('La respuesta del servicio es demasiado grande.');
       try{return JSON.parse(text);}catch{throw new Error('El servicio aún no permite guardar el avance.');}
     }finally{clearTimeout(timer);}
   };

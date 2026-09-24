@@ -2,11 +2,13 @@
 function progressJson_(value) {
   return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON);
 }
-function progressRequest_(input) {
+function progressRequest_(input,readAll) {
   if(input.version!==1||!Object.prototype.hasOwnProperty.call(SYNC_CATALOGS,input.studentId))throw new Error('Alumno o versión no válidos.');
-  var catalog=SYNC_CATALOGS[input.studentId];
   var known=input.knownFields===undefined?SYNC_LEGACY_FIELDS[input.studentId]:input.knownFields;
   if(!Array.isArray(known)||known.length>5000||known.some(function(field){return typeof field!=='string'||field.length>250;}))throw new Error('Catálogo de cliente no válido.');
+  var published=progressPublishedCatalog_(input.studentId,readAll?null:known),catalog=published.catalog;
+  if(published.unavailable&&known.some(function(field){return !Object.prototype.hasOwnProperty.call(catalog,field);}))throw new Error('No se pudo consultar el capítulo.');
+  if(readAll)known=Object.keys(catalog);
   validateOperations(input.operations,catalog); // Reject the entire invalid batch before any write.
   var lock=LockService.getScriptLock();
   lock.waitLock(10000);
@@ -14,12 +16,12 @@ function progressRequest_(input) {
     var properties=PropertiesService.getScriptProperties();
     var prefix='progress-v1:'+input.studentId+':',saved=properties.getProperties();
     var state=emptyProgress(input.studentId);
-    for(var field of Object.keys(catalog)){
-      var serialized=saved[prefix+field];
-      if(serialized){
-        var entry=JSON.parse(serialized);state.fields[field]=entry;
-        state.revision=Math.max(state.revision,entry.revision);
-      }
+    for(var key of Object.keys(saved)){
+      if(!key.startsWith(prefix))continue;
+      var field=key.slice(prefix.length),entry=JSON.parse(saved[key]);
+      state.revision=Math.max(state.revision,entry.revision);
+      if(Object.prototype.hasOwnProperty.call(catalog,field))state.fields[field]=entry;
+      else if(readAll&&published.unavailable)throw new Error('No se pudo consultar todo el avance.');
     }
     var result=mergeProgress(state,input.operations,catalog,new Date().toISOString());
     var changed={};
@@ -33,13 +35,14 @@ function progressRequest_(input) {
     // Filtering the response never deletes properties belonging to other chapters.
     result.state.fields=Object.fromEntries(Object.entries(result.state.fields).filter(function(entry){return known.indexOf(entry[0])!==-1;}));
     result.supportedFields=Object.keys(catalog);
+    result.catalogSource=published.source;
     return result;
   }finally{lock.releaseLock();}
 }
 function doPost(event) {
   try{
     var body=event&&event.postData&&event.postData.contents;
-    if(typeof body!=='string'||body.length>60000)throw new Error('Petición no válida.');
+    if(typeof body!=='string'||body.length>1500000)throw new Error('Petición no válida.');
     return progressJson_(progressRequest_(JSON.parse(body)));
   }catch(error){return progressJson_({ok:false,error:'No se pudo confirmar el avance. Reintenta en unos momentos.'});}
 }
@@ -47,6 +50,6 @@ function doGet(event) {
   try{
     var studentId=event&&event.parameter&&event.parameter.studentId;
     if(!studentId)return progressJson_({ok:true,service:'aula-progress',version:1});
-    return progressJson_(progressRequest_({version:1,studentId:studentId,knownFields:Object.keys(SYNC_CATALOGS[studentId]||{}),operations:[]}));
+    return progressJson_(progressRequest_({version:1,studentId:studentId,operations:[]},true));
   }catch(error){return progressJson_({ok:false,error:'No se pudo consultar el avance.'});}
 }

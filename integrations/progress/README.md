@@ -10,19 +10,19 @@ Para incorporar respuestas de antes de la activación, abre una vez el aula en e
 
 Si `endpoint` se deja vacío, la web vuelve a indicar que el avance solo está guardado en el dispositivo. Las siguientes instrucciones sirven para mantener la implementación o instalar una copia independiente.
 
-## Actualizar el capítulo 2 sin perder el avance
+## Actualizar una vez para los capítulos actuales y futuros
 
-El código de esta carpeta admite los capítulos 1 y 2 de Fernando y la unidad actual de Josué. La implementación existente debe publicar esta nueva versión para aceptar las preguntas añadidas. Guardar el código en el editor no actualiza por sí solo la aplicación web.
+La versión con catálogo automático lee exclusivamente los JSON públicos de `aludenah/fernando` (`docs/data/course.json` y `docs/data/josue-course.json`). Las preguntas se validan en el servidor; el navegador no puede crear preguntas ni cambiar el catálogo. Las respuestas nunca se envían a GitHub.
 
-1. Abre **Aula Alex Ludeña — Avance**, el proyecto que ya usas en Google Apps Script.
-2. Copia todo [Instalar.gs](Instalar.gs) con **Copy raw file** y reemplaza el contenido de **Code.gs** (o **Código.gs**) del mismo proyecto. Guarda. Si tu instalación usa archivos separados, actualiza **Core.gs y Code.gs** en vez de pegar el instalador único.
-3. Pulsa **Implementar → Administrar implementaciones**. Elige la aplicación web actual y pulsa el lápiz para editarla.
-4. En **Versión**, selecciona **Nueva versión** y pulsa **Implementar**. Conserva «Ejecutar como: Yo», «Cualquier persona» y la misma URL terminada en `/exec`.
-5. Vuelve al aula, abre el capítulo 2 y pulsa **Sincronizar ahora**. El aviso de actualización pendiente debe desaparecer. Si ya hay respuestas locales, abre también el dispositivo donde se marcaron para enviarlas.
+1. Abre el proyecto existente **Aula Alex Ludeña — Avance**.
+2. Copia todo [Instalar.gs](Instalar.gs) en el archivo de código del mismo proyecto y guarda. En la instalación separada, usa `Core.gs`, `Catalog.gs` y `Code.gs`.
+3. Si el manifiesto contiene `oauthScopes: []`, añade únicamente `https://www.googleapis.com/auth/script.external_request`, como indica `appsscript.json`. La lectura del curso público requiere ese permiso; no se solicitan permisos de Drive ni de correo.
+4. En **Implementar → Administrar implementaciones**, edita la implementación actual y selecciona **Nueva versión**. Conserva la cuenta ejecutora, el acceso existente y la misma URL `/exec`. Completa la autorización de conexión externa si Google la solicita.
+5. Comprueba una consulta GET con `studentId=fernando`: `catalogSource` debe ser `published` o `cache` y `supportedFields` debe incluir el capítulo 2. Comprueba que las respuestas anteriores no cambiaron. No crees otro proyecto ni borres sus propiedades.
 
-Usa el mismo proyecto: sus propiedades contienen las respuestas anteriores. No borres propiedades ni crees una implementación independiente para esta actualización. No se requieren permisos nuevos de Drive o correo.
+Los capítulos siguientes se reconocerán al publicar sus preguntas y temas en GitHub, normalmente en uno o pocos minutos según la caché de origen. Se conservan las claves anteriores y las respuestas se guardan por campo. Un dispositivo con una versión antigua recibe solo los campos que conoce y no borra los capítulos nuevos.
 
-La respuesta del servicio actualizado anuncia `supportedFields`; para Fernando contiene 80 campos (60 respuestas y 20 temas). Las consultas de páginas antiguas reciben solo los campos del capítulo 1, aunque el servicio conserve ambos capítulos. Una consulta GET con `studentId=fernando` permite comprobar el catálogo y el avance sin escribir datos.
+El catálogo se conserva temporalmente en caché. Si falla el origen y no existe una definición disponible de un capítulo solicitado, no se confirma el guardado ni se devuelve un avance vacío como si estuviera completo; las respuestas pendientes se mantienen en el dispositivo. Antes de cambiar de equipo hay que esperar **Avance sincronizado**. Las respuestas que solo existían en un navegador perdido no pueden reconstruirse ni calificarse automáticamente.
 
 ## Activar una vez, como propietario
 
@@ -34,12 +34,12 @@ La respuesta del servicio actualizado anuncia `supportedFields`; para Fernando c
 4. Pulsa **Implementar → Nueva implementación**. En el engranaje, elige **Aplicación web**. Selecciona **Ejecutar como: Yo** y **Quién tiene acceso: Cualquier persona**. Implementa.
 5. Copia la **URL de la aplicación web**, que termina en `/exec`. Esa dirección es la que se debe configurar en `docs/data/sync.json`. La sincronización no queda activa con solo guardar el código.
 
-Esta instalación utiliza únicamente el archivo `Instalar.gs` pegado en `Code.gs`. La ruta de desarrollo que sigue utiliza los dos archivos por separado; elige una sola de las dos rutas en cada proyecto.
+Esta instalación utiliza únicamente el archivo `Instalar.gs` pegado en `Code.gs`. La ruta de desarrollo que sigue utiliza los tres archivos por separado; elige una sola de las dos rutas en cada proyecto. Si hay permisos explícitos en el manifiesto, aplica el permiso de conexión externa indicado arriba.
 
 ### Instalación para desarrollo (archivos separados)
 
 1. En Google Apps Script, crea un proyecto llamado **Aula Alex Ludeña — Avance**.
-2. Pega `Code.gs` y añade un archivo `Core.gs` con el contenido de esta carpeta. En Configuración activa la visualización del manifiesto y reemplaza `appsscript.json` por el incluido. No añadas permisos de Drive ni correo.
+2. Pega `Code.gs` y añade `Core.gs` y `Catalog.gs` con el contenido de esta carpeta. En Configuración activa la visualización del manifiesto y reemplaza `appsscript.json` por el incluido. No añadas permisos de Drive ni correo.
 3. Implementar → Nueva implementación → Aplicación web. Ejecutar como **Yo**; acceso **Cualquier persona**, incluso sin iniciar sesión. Publica y copia la URL que termina en `/exec`.
 4. Coloca esa URL en `endpoint`, en `docs/data/sync.json`, y confirma el cambio en GitHub. El sitio carga esta configuración sin caché.
 5. Comprueba que el GET sin parámetros devuelve `aula-progress`. Comprueba desde GitHub Pages una consulta POST sin operaciones para cada alumno: debe responder JSON legible por el navegador. Si Google exige iniciar sesión, corrige el acceso de la implementación; no uses `mode: no-cors`, porque ocultaría fallos de guardado.
@@ -59,7 +59,7 @@ No solicita correo ni contraseña al alumno. En esta modalidad abierta, quien pu
 
 ## Mantener el servicio
 
-Al publicar preguntas nuevas, ejecuta `node scripts/build-progress-service.mjs`, actualiza `Instalar.gs` en el mismo proyecto (o los dos archivos `Core.gs` y `Code.gs` en una instalación separada) y edita la implementación existente para usar la nueva versión. Conserva la misma URL y las propiedades del proyecto. No crees otro proyecto para cada actualización, porque perderías el acceso al estado anterior.
+Al publicar preguntas nuevas, mantén identificadores únicos y estables, ejecuta `node scripts/build-progress-service.mjs` para conservar actualizada la copia de respaldo incluida y publica los JSON del curso junto a la web. El catálogo automático evita una nueva implementación por capítulo. Solo hay que volver a implementar si cambia el código del servicio o su protocolo. Conserva siempre la misma URL y las propiedades del proyecto.
 
 Las propiedades de Apps Script tienen límites de almacenamiento y peticiones. Esta implementación está acotada a los campos publicados de dos alumnos y usa un registro pequeño por campo. Al ampliar a muchas aulas, debe migrarse a una base de datos con autenticación y copias de seguridad.
 
