@@ -25,10 +25,14 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
   const isParent=()=>win.location.hash.slice(1).split('/')[0]==='padres';
   const isHome=()=>['inicio',''].includes(win.location.hash.slice(1))&&!(!win.location.hash&&new URLSearchParams(win.location.search).get('alumno')==='fernando');
 
-  async function readLearned() {
+  async function readLearned({adopt}={}) {
     const settings=await store.all('settings');
+    // Compare the selection at the time the read finishes. A local navigation
+    // that happened while reading is not a remote change and needs no redraw.
+    const before=work.current,wasSolved=learned.has(before);
     learned=new Set((settings.find(value=>value.id==='learned')?.topics||[]).filter(id=>bank.some(exercise=>exercise.id===id)));
-    exercises=reconcileMatrixPractice(work,bank,learned);
+    if(adopt??!busy)exercises=reconcileMatrixPractice(work,bank,learned);
+    return {redraw:before!==work.current||!wasSolved&&learned.has(work.current)};
   }
   function saveWork() {
     if(!storage)return Promise.resolve();
@@ -113,6 +117,7 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
     entry.checked=true;
     if(result.complete)entry.attempts++;
     busy=true;const button=root.querySelector('.mx-verify');button.disabled=true;
+    for(const input of root.querySelectorAll('[data-mx-input]'))input.readOnly=true;
     if(result.solved)entry.solved=true;
     await saveWork();
     if(result.solved&&shared&&storage) {
@@ -136,7 +141,7 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
     }
   }
   function editInput(input) {
-    if(solved(current()))return;
+    if(busy||solved(current()))return;
     const entry=entryFor(current());
     entry.answers[input.dataset.mxInput]=input.value;entry.checked=false;
     root.querySelector('#mx-feedback').innerHTML=feedbackFor(current());
@@ -156,12 +161,18 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
       input.value=input.value.startsWith('-')?input.value.slice(1):'-'+input.value.replace(/^\+/,'');editInput(input);input.focus();return;
     }
     const list=exercises,index=list.findIndex(exercise=>exercise.id===work.current);
-    if(name==='previous'&&index>0)work.current=list[index-1].id;
+    let target;
+    if(name==='previous'&&index>0)target=list[index-1].id;
     else if(name==='next'&&solved(current())) {
-      if(index<list.length-1)work.current=list[index+1].id;
+      if(index<list.length-1)target=list[index+1].id;
       else return;
     } else return;
-    await saveWork();render(true);
+    busy=true;button.disabled=true;
+    for(const input of root.querySelectorAll('[data-mx-input]'))input.readOnly=true;
+    work.current=target;
+    await saveWork();
+    if(storage)await readLearned({adopt:true});
+    busy=false;render(true);
   }
   try {
     const response=await fetcher(new URL('./data/course.json',import.meta.url),{cache:'no-cache'});
@@ -175,13 +186,13 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
     if(storage) {
       shared=createProgressSync({studentId:'fernando',course,store,transport,recordId:'matrices-round-v2-cloud-sync-v1',uuid:()=>win.crypto?.randomUUID?.()||`matrix-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,onStatus:value=>{syncStatus=value;updateSync();},onChange:async()=>{
         if(destroyed)return;
-        const previousCurrent=work.current,wasSolved=learned.has(previousCurrent);await readLearned();if(destroyed)return;
+        const change=await readLearned();if(destroyed)return;
         // A background read must not replace the matrix or steal a typing focus.
-        if(isParent()||!busy&&(previousCurrent!==work.current||!wasSolved&&learned.has(work.current)))render();else updateCounters();
+        if(isParent()||!busy&&change.redraw)render();else updateCounters();
       }});
       await shared.initialize();
       for(const exercise of exercises.filter(value=>entryFor(value).solved&&!learned.has(value.id)))await shared.saveTopic(exercise.id,true);
-      try{if(typeof win.BroadcastChannel==='function'){channel=new win.BroadcastChannel('fernando-matrices');listen(channel,'message',async()=>{if(destroyed)return;const before=work.current;await readLearned();if(destroyed)return;if(isParent()||before!==work.current)render();else updateCounters();});}}catch{}
+      try{if(typeof win.BroadcastChannel==='function'){channel=new win.BroadcastChannel('fernando-matrices');listen(channel,'message',async()=>{if(destroyed)return;const change=await readLearned();if(destroyed)return;if(isParent()||!busy&&change.redraw)render();else updateCounters();});}}catch{}
     } else syncStatus={enabled:false,phase:'unconfigured'};
     listen(root,'click',event=>{void action(event);});
     listen(root,'submit',event=>{if(event.target.id==='mx-form')void verify(event);});
