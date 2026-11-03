@@ -19,7 +19,7 @@ for(const filename of await readdir(root)) {
 }
 assert.match(html,/<html lang="es">/);
 assert.doesNotMatch(JSON.stringify(content),/Introducción al álgebra|Exponentes y radicales|alg-uni-c|@gmail\.com|appgprj_/);
-assert.equal(content.matrixPractice.exercises.length,20);
+assert.equal(content.matrixPractice.practiceSize,5);
 const shapes={};
 for(const exercise of content.matrixPractice.exercises) {
   const key=`${exercise.rows}x${exercise.columns}`;shapes[key]=(shapes[key]||0)+1;
@@ -54,4 +54,4 @@ for(const task of josue.tasks)for(const question of task.questions) {
 }
 const css=await readFile(resolve(root,'vendor/katex/katex.min.css'),'utf8');
 for(const [,font] of css.matchAll(/url\(([^)]+)\)/g))await access(resolve(root,'vendor/katex',font));
-console.log(`Sitio comprobado: 20 ejercicios de matrices, cuatro tamaños hasta 3 × 3; 30 problemas de Josué y ${expressions} expresiones LaTeX válidas.`);
+console.log(`Sitio comprobado: prácticas de cinco matrices con tamaños aleatorios hasta 3 × 3; 30 problemas de Josué y ${expressions} expresiones LaTeX válidas.`);

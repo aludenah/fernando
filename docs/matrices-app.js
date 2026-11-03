@@ -4,17 +4,17 @@ import {accessView} from './family-views.js?v=matrices-1';
 import {studentLink} from './students.js';
 import {createStudentStore} from './store.js?v=sync-1';
 import {createProgressSync,appsScriptTransport} from './sync.js?v=matrices-1';
-import {matrixRules,validateMatrixCourse,cellsFor,cellKey,matrixValue,checkMatrix,restoreMatrixWork} from './matrices.js';
+import {matrixRules,validateMatrixCourse,cellsFor,cellKey,matrixValue,checkMatrix,restoreMatrixWork,reconcileMatrixPractice} from './matrices.js?v=matrices-2';
 
 const tex = value => m(`\\(${value}\\)`);
 const orders = ['2x2','2x3','3x2','3x3'];
 const orderName = exercise => `${exercise.rows} × ${exercise.columns}`;
 
-export async function mountMatrixApp({doc=document,win=window,store=createStudentStore('fernando'),fetcher=globalThis.fetch}={}) {
+export async function mountMatrixApp({doc=document,win=window,store=createStudentStore('fernando'),fetcher=globalThis.fetch,random=Math.random}={}) {
   const root=doc.querySelector('#app'),message=doc.querySelector('#message'),syncBox=doc.querySelector('#sync-status');
   const disposers=[];
   const listen=(target,type,handler)=>{target.addEventListener(type,handler);disposers.push(()=>target.removeEventListener(type,handler));};
-  let course,exercises,work,shared,storage=true,busy=false,started=false,destroyed=false,channel;
+  let course,bank,exercises,work,shared,storage=true,busy=false,started=false,destroyed=false,channel;
   let learned=new Set(),active={i:1,j:1},saveQueue=Promise.resolve();
   let syncStatus={enabled:false,phase:'loading',pending:0,lastSyncedAt:null};
   function notify(text) {message.textContent=text;message.className=text?'message error':'';message.setAttribute('role','alert');}
@@ -22,19 +22,19 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
   const entryFor=exercise=>work.entries[exercise.id]||(work.entries[exercise.id]={answers:{},attempts:0,checked:false,solved:false});
   const solved=exercise=>learned.has(exercise.id)||entryFor(exercise).solved;
   const completed=()=>exercises.filter(solved).length;
-  const filtered=()=>exercises.filter(exercise=>work.filter==='all'||`${exercise.rows}x${exercise.columns}`===work.filter);
   const isParent=()=>win.location.hash.slice(1).split('/')[0]==='padres';
   const isHome=()=>['inicio',''].includes(win.location.hash.slice(1))&&!(!win.location.hash&&new URLSearchParams(win.location.search).get('alumno')==='fernando');
 
   async function readLearned() {
     const settings=await store.all('settings');
-    learned=new Set((settings.find(value=>value.id==='learned')?.topics||[]).filter(id=>exercises.some(exercise=>exercise.id===id)));
+    learned=new Set((settings.find(value=>value.id==='learned')?.topics||[]).filter(id=>bank.some(exercise=>exercise.id===id)));
+    exercises=reconcileMatrixPractice(work,bank,learned);
   }
   function saveWork() {
     if(!storage)return Promise.resolve();
     const snapshot=structuredClone(work);
     saveQueue=saveQueue.then(()=>store.update(['settings'],settings=>{
-      const previous=restoreMatrixWork(settings.settings.find(value=>value.id===snapshot.id),exercises);
+      const previous=restoreMatrixWork(settings.settings.find(value=>value.id===snapshot.id),bank,random);
       const value={...snapshot,entries:{...previous.entries,...snapshot.entries}};
       return {operations:[{store:'settings',value}],result:null};
     })).catch(()=>{storage=false;notify('No se pudo guardar en este navegador. Puedes seguir practicando; mantén esta pestaña abierta.');updateSync();});
@@ -73,16 +73,16 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
   function cellMarkup(exercise,cell) {
     const entry=entryFor(exercise),done=solved(exercise);
     const value=done?String(matrixValue(exercise,cell.i,cell.j)):entry.answers[cell.key]||'';
-    return `<label class="mx-cell" data-cell="${cell.key}"><span class="sr-only">Elemento a${cell.i}${cell.j}. Fila ${cell.i}, columna ${cell.j}</span><span class="mx-cell-index" aria-hidden="true">a<sub>${cell.i}${cell.j}</sub></span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" maxlength="24" data-mx-input="${cell.key}" data-i="${cell.i}" data-j="${cell.j}" value="${h(value)}" aria-describedby="mx-cell-help mx-feedback" ${done?'readonly':''}><span class="mx-cell-status" aria-hidden="true"></span></label>`;
+    return `<label class="mx-cell" data-cell="${cell.key}"><span class="sr-only">Casilla ${(cell.i-1)*exercise.columns+cell.j}</span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" maxlength="24" data-mx-input="${cell.key}" data-i="${cell.i}" data-j="${cell.j}" value="${h(value)}" aria-describedby="mx-feedback" ${done?'readonly':''}><span class="mx-cell-status" aria-hidden="true"></span></label>`;
   }
   function practiceView() {
-    const exercise=current(),list=filtered(),index=list.findIndex(value=>value.id===exercise.id),done=solved(exercise),rule=matrixRules[exercise.rule];
+    const exercise=current(),list=exercises,index=list.findIndex(value=>value.id===exercise.id),done=solved(exercise),rule=matrixRules[exercise.rule];
     active={i:1,j:1};
     return `${audience()}<section class="matrix-app"><header class="mx-heading"><div><p class="eyebrow">EL AULA DE FERNANDO · ÁLGEBRA</p><h1>Construye la matriz.</h1><p>Una regla. Cada posición. Tu respuesta.</p></div>${doc.fullscreenEnabled!==false&&typeof doc.documentElement.requestFullscreen==='function'?'<button type="button" class="button secondary mx-fullscreen" data-mx-action="fullscreen" aria-label="Abrir o salir de pantalla completa">⛶ <span>Pantalla completa</span></button>':''}</header>
       <div class="mx-progress">${progressMarkup()}</div>
-      <div class="mx-layout"><aside class="mx-instructions panel"><span class="mx-step-label">01 · LEE LA INDICACIÓN</span><h2>Problema ${exercises.indexOf(exercise)+1}</h2><p>Construye la matriz ${tex(`A=(a_{ij})_{${exercise.rows}\\times${exercise.columns}}`)} definida por:</p><div class="mx-rule" data-rule>${tex(`a_{ij}=${rule.tex}`)}</div><div class="mx-dimensions"><strong>${orderName(exercise)}</strong><span>${exercise.rows} filas y ${exercise.columns} columnas</span></div><div class="mx-index-guide"><p><span class="mx-i">i</span><span>Indica la <strong>fila</strong>, de 1 a ${exercise.rows}.</span></p><p><span class="mx-j">j</span><span>Indica la <strong>columna</strong>, de 1 a ${exercise.columns}.</span></p></div><p class="mx-reminder">En cada casilla, reemplaza ${tex('i')} y ${tex('j')} por su posición y calcula.</p><label class="mx-order-label" for="mx-order">Tamaño para practicar</label><select id="mx-order">${[['all','Todos los tamaños'],...orders.map(value=>[value,value.replace('x',' × ')])].map(([value,label])=>`<option value="${value}" ${work.filter===value?'selected':''}>${label}</option>`).join('')}</select></aside>
-      <section class="mx-work panel" aria-labelledby="mx-work-heading"><div class="mx-work-heading"><div><span class="mx-step-label">02 · COMPLETA Y COMPRUEBA</span><h2 id="mx-work-heading" tabindex="-1">Completa cada casilla.</h2></div><span class="mx-order-badge">${orderName(exercise)}</span></div><form id="mx-form" novalidate><div class="mx-matrix-space"><span class="mx-matrix-letter" aria-hidden="true">A =</span><div class="mx-grid" style="--mx-columns:${exercise.columns}"><span class="mx-grid-corner" aria-hidden="true">i ↓ · j →</span>${Array.from({length:exercise.columns},(_,j)=>`<span class="mx-column-label" data-mx-column="${j+1}">j = ${j+1}</span>`).join('')}${Array.from({length:exercise.rows},(_,row)=>`<span class="mx-row-label" data-mx-row="${row+1}">i = ${row+1}</span>${cellsFor(exercise).filter(cell=>cell.i===row+1).map(cell=>cellMarkup(exercise,cell)).join('')}`).join('')}</div></div>
-      <div id="mx-cell-help" class="mx-cell-help"><div class="mx-position"></div><p class="mx-substitution"></p></div><div class="mx-input-note"><span>Puedes escribir números negativos.</span><button type="button" class="mx-sign-button" data-mx-action="negative" ${done?'disabled':''} aria-label="Cambiar el signo de la casilla seleccionada">− / +</button></div><div id="mx-feedback" role="status" aria-live="polite" aria-atomic="true">${feedbackFor(exercise)}</div><div class="mx-actions"><button class="button mx-verify" type="submit" ${done?'disabled':''}>Verificar matriz <span aria-hidden="true">✓</span></button><button class="button secondary mx-next" type="button" data-mx-action="next" ${!done||completed()===exercises.length&&index===list.length-1?'disabled':''}>${index===list.length-1&&work.filter!=='all'?'Otros tamaños':'Siguiente problema'} <span aria-hidden="true">→</span></button></div></form><div class="mx-work-bottom"><button type="button" data-mx-action="previous" ${index<=0?'disabled':''}>← Anterior</button><span>${index+1} de ${list.length} problemas${work.filter==='all'?'':` · ${work.filter.replace('x',' × ')}`}</span></div>${completed()===exercises.length?'<div class="mx-all-done"><strong>¡Completaste los 20 problemas!</strong><p>Recorre las matrices anteriores para repasar lo que construiste.</p></div>':''}</section></div></section>`;
+      <div class="mx-layout"><aside class="mx-instructions panel"><span class="mx-step-label">01 · LEE LA INDICACIÓN</span><h2>Problema ${exercises.indexOf(exercise)+1}</h2><p>Construye la matriz ${tex(`A=(a_{ij})_{${exercise.rows}\\times${exercise.columns}}`)} definida por:</p><div class="mx-rule" data-rule>${tex(`a_{ij}=${rule.tex}`)}</div><div class="mx-dimensions"><strong>${orderName(exercise)}</strong><span>${exercise.rows} filas y ${exercise.columns} columnas</span></div></aside>
+      <section class="mx-work panel" aria-labelledby="mx-work-heading"><div class="mx-work-heading"><div><span class="mx-step-label">02 · COMPLETA Y COMPRUEBA</span><h2 id="mx-work-heading" tabindex="-1">Completa cada casilla.</h2></div><span class="mx-order-badge">${orderName(exercise)}</span></div><form id="mx-form" novalidate><div class="mx-matrix-space"><span class="mx-matrix-letter" aria-hidden="true">A =</span><div class="mx-grid" style="--mx-columns:${exercise.columns}">${cellsFor(exercise).map(cell=>cellMarkup(exercise,cell)).join('')}</div></div>
+      <div class="mx-input-note"><span>Puedes escribir números negativos.</span><button type="button" class="mx-sign-button" data-mx-action="negative" ${done?'disabled':''} aria-label="Cambiar el signo de la casilla seleccionada">− / +</button></div><div id="mx-feedback" role="status" aria-live="polite" aria-atomic="true">${feedbackFor(exercise)}</div><div class="mx-actions"><button class="button mx-verify" type="submit" ${done?'disabled':''}>Verificar matriz <span aria-hidden="true">✓</span></button><button class="button secondary mx-next" type="button" data-mx-action="next" ${!done||index===list.length-1?'disabled':''}>Siguiente problema <span aria-hidden="true">→</span></button></div></form><div class="mx-work-bottom"><button type="button" data-mx-action="previous" ${index<=0?'disabled':''}>← Anterior</button><span>${index+1} de ${list.length} problemas</span></div>${completed()===exercises.length?'<div class="mx-all-done"><strong>¡Completaste los cinco problemas!</strong><p>Recorre las matrices anteriores para repasar lo que construiste.</p></div>':''}</section></div></section>`;
   }
   function parentView() {
     const sharedText=shared?.enabled&&syncStatus.lastSyncedAt?'Las matrices resueltas se consultan en el avance compartido.':'Se muestra el avance disponible en este dispositivo.';
@@ -97,17 +97,6 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
       input.setAttribute('aria-invalid',String(status==='incorrect'||status==='missing'));
       input.closest('.mx-cell').querySelector('.mx-cell-status').textContent=status==='correct'?'✓':status==='incorrect'?'×':status==='missing'?'!':'';
     }
-    updateHelp(active.i,active.j);
-  }
-  function updateHelp(i,j) {
-    active={i,j};
-    const help=root.querySelector('#mx-cell-help');if(!help)return;
-    for(const label of root.querySelectorAll('[data-mx-row]'))label.classList.toggle('is-active',Number(label.dataset.mxRow)===i);
-    for(const label of root.querySelectorAll('[data-mx-column]'))label.classList.toggle('is-active',Number(label.dataset.mxColumn)===j);
-    for(const cell of root.querySelectorAll('.mx-cell'))cell.classList.toggle('is-active',cell.dataset.cell===cellKey(i,j));
-    help.querySelector('.mx-position').innerHTML=`<strong>${tex(`a_{${i}${j}}`)}</strong><span class="mx-i-text">Fila i = ${i}</span><span class="mx-j-text">Columna j = ${j}</span>`;
-    help.querySelector('.mx-substitution').innerHTML=tex(`a_{${i}${j}}:\\quad ${matrixRules[current().rule].at(i,j)}`);
-    const sign=root.querySelector('[data-mx-action="negative"]');if(sign)sign.setAttribute('aria-label',`Cambiar el signo de a${i}${j}, fila ${i}, columna ${j}`);
   }
   function render(focus=false) {
     if(destroyed)return;
@@ -135,12 +124,12 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
     root.querySelector('#mx-feedback').innerHTML=feedbackFor(exercise);
     decorate();updateCounters();
     root.querySelector('.mx-verify').disabled=result.solved;
-    root.querySelector('.mx-next').disabled=!result.solved||completed()===exercises.length&&filtered().at(-1)?.id===exercise.id;
+    root.querySelector('.mx-next').disabled=!result.solved||exercises.at(-1)?.id===exercise.id;
     root.querySelector('[data-mx-action="negative"]').disabled=result.solved;
     for(const input of root.querySelectorAll('[data-mx-input]'))input.readOnly=result.solved;
     if(result.solved) {
       const next=root.querySelector('.mx-next');if(!next.disabled)next.focus();
-      if(completed()===exercises.length&&!root.querySelector('.mx-all-done'))root.querySelector('.mx-work').insertAdjacentHTML('beforeend','<div class="mx-all-done"><strong>¡Completaste los 20 problemas!</strong><p>Recorre las matrices anteriores para repasar lo que construiste.</p></div>');
+      if(completed()===exercises.length&&!root.querySelector('.mx-all-done'))root.querySelector('.mx-work').insertAdjacentHTML('beforeend','<div class="mx-all-done"><strong>¡Completaste los cinco problemas!</strong><p>Recorre las matrices anteriores para repasar lo que construiste.</p></div>');
     } else {
       const cell=result.cells.find(value=>result.complete?!value.correct:!value.valid);
       root.querySelector(`[data-mx-input="${cell.key}"]`)?.focus();
@@ -166,45 +155,44 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
       const input=root.querySelector(`[data-mx-input="${cellKey(active.i,active.j)}"]`);if(!input||input.readOnly)return;
       input.value=input.value.startsWith('-')?input.value.slice(1):'-'+input.value.replace(/^\+/,'');editInput(input);input.focus();return;
     }
-    const list=filtered(),index=list.findIndex(exercise=>exercise.id===work.current);
+    const list=exercises,index=list.findIndex(exercise=>exercise.id===work.current);
     if(name==='previous'&&index>0)work.current=list[index-1].id;
     else if(name==='next'&&solved(current())) {
       if(index<list.length-1)work.current=list[index+1].id;
-      else {work.filter='all';work.current=(exercises.find(exercise=>!solved(exercise))||exercises[0]).id;}
+      else return;
     } else return;
     await saveWork();render(true);
   }
   try {
     const response=await fetcher(new URL('./data/course.json',import.meta.url),{cache:'no-cache'});
     if(!response.ok)throw new Error('No se pudo cargar la práctica.');
-    course=validateMatrixCourse(await response.json());exercises=course.matrixPractice.exercises;
-    try{await store.openDatabase();const settings=await store.all('settings');work=restoreMatrixWork(settings.find(value=>value.id==='matrices-practice-v1'),exercises);await readLearned();}
-    catch{storage=false;work=restoreMatrixWork(null,exercises);notify('El navegador no permite guardar. Puedes practicar mientras mantengas abierta esta pestaña.');}
-    if(!filtered().some(exercise=>exercise.id===work.current))work.current=filtered()[0].id;
+    course=validateMatrixCourse(await response.json());bank=course.matrixPractice.exercises;
+    try{await store.openDatabase();const settings=await store.all('settings');work=restoreMatrixWork(settings.find(value=>value.id==='matrices-practice-v2'),bank,random);exercises=work.exerciseIds.map(id=>bank.find(exercise=>exercise.id===id));await readLearned();}
+    catch{storage=false;work=restoreMatrixWork(null,bank,random);exercises=work.exerciseIds.map(id=>bank.find(exercise=>exercise.id===id));notify('El navegador no permite guardar. Puedes practicar mientras mantengas abierta esta pestaña.');}
+    await saveWork();
     let transport=null;
     try{const response=await fetcher(new URL('./data/sync.json',import.meta.url),{cache:'no-store'});if(response.ok){const config=await response.json();if(config.endpoint)transport=appsScriptTransport(config.endpoint,fetcher);}}catch{}
     if(storage) {
-      shared=createProgressSync({studentId:'fernando',course,store,transport,recordId:'matrices-cloud-sync-v1',uuid:()=>win.crypto?.randomUUID?.()||`matrix-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,onStatus:value=>{syncStatus=value;updateSync();},onChange:async()=>{
+      shared=createProgressSync({studentId:'fernando',course,store,transport,recordId:'matrices-round-v2-cloud-sync-v1',uuid:()=>win.crypto?.randomUUID?.()||`matrix-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,onStatus:value=>{syncStatus=value;updateSync();},onChange:async()=>{
         if(destroyed)return;
-        const wasSolved=learned.has(work.current);await readLearned();if(destroyed)return;
+        const previousCurrent=work.current,wasSolved=learned.has(previousCurrent);await readLearned();if(destroyed)return;
         // A background read must not replace the matrix or steal a typing focus.
-        if(isParent()||!busy&&!wasSolved&&learned.has(work.current))render();else updateCounters();
+        if(isParent()||!busy&&(previousCurrent!==work.current||!wasSolved&&learned.has(work.current)))render();else updateCounters();
       }});
       await shared.initialize();
       for(const exercise of exercises.filter(value=>entryFor(value).solved&&!learned.has(value.id)))await shared.saveTopic(exercise.id,true);
-      try{if(typeof win.BroadcastChannel==='function'){channel=new win.BroadcastChannel('fernando-matrices');listen(channel,'message',async()=>{await readLearned();if(isParent())render();else updateCounters();});}}catch{}
+      try{if(typeof win.BroadcastChannel==='function'){channel=new win.BroadcastChannel('fernando-matrices');listen(channel,'message',async()=>{if(destroyed)return;const before=work.current;await readLearned();if(destroyed)return;if(isParent()||before!==work.current)render();else updateCounters();});}}catch{}
     } else syncStatus={enabled:false,phase:'unconfigured'};
     listen(root,'click',event=>{void action(event);});
     listen(root,'submit',event=>{if(event.target.id==='mx-form')void verify(event);});
     listen(root,'input',event=>{if(event.target.matches('[data-mx-input]'))editInput(event.target);});
-    listen(root,'focusin',event=>{if(event.target.matches('[data-mx-input]'))updateHelp(Number(event.target.dataset.i),Number(event.target.dataset.j));});
+    listen(root,'focusin',event=>{if(event.target.matches('[data-mx-input]'))active={i:Number(event.target.dataset.i),j:Number(event.target.dataset.j)};});
     listen(root,'keydown',event=>{
       if(!event.target.matches('[data-mx-input]')||!['ArrowUp','ArrowDown','Enter'].includes(event.key))return;
       const inputs=[...root.querySelectorAll('[data-mx-input]')],index=inputs.indexOf(event.target);
       const next=event.key==='ArrowUp'?index-current().columns:event.key==='ArrowDown'?index+current().columns:index+1;
       if(inputs[next]){event.preventDefault();inputs[next].focus();}
     });
-    listen(root,'change',event=>{if(event.target.id==='mx-order'&&!busy){work.filter=event.target.value;work.current=(filtered().find(exercise=>!solved(exercise))||filtered()[0]).id;void saveWork();render(true);}});
     listen(win,'hashchange',()=>render(true));
     const refresh=()=>{if(!isHome()&&storage&&doc.visibilityState!=='hidden')void shared?.sync();};
     listen(win,'online',refresh);listen(win,'focus',refresh);listen(doc,'visibilitychange',refresh);

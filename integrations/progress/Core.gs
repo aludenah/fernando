@@ -501,85 +501,85 @@ const SYNC_CATALOGS={
       "kind": "topic",
       "topicId": "uni-c2-estrategias"
     },
-    "topic:matrices-p01": {
+    "topic:matrices-r2-p1-2x2": {
       "kind": "topic",
-      "topicId": "matrices-p01"
+      "topicId": "matrices-r2-p1-2x2"
     },
-    "topic:matrices-p02": {
+    "topic:matrices-r2-p1-2x3": {
       "kind": "topic",
-      "topicId": "matrices-p02"
+      "topicId": "matrices-r2-p1-2x3"
     },
-    "topic:matrices-p03": {
+    "topic:matrices-r2-p1-3x2": {
       "kind": "topic",
-      "topicId": "matrices-p03"
+      "topicId": "matrices-r2-p1-3x2"
     },
-    "topic:matrices-p04": {
+    "topic:matrices-r2-p1-3x3": {
       "kind": "topic",
-      "topicId": "matrices-p04"
+      "topicId": "matrices-r2-p1-3x3"
     },
-    "topic:matrices-p05": {
+    "topic:matrices-r2-p2-2x2": {
       "kind": "topic",
-      "topicId": "matrices-p05"
+      "topicId": "matrices-r2-p2-2x2"
     },
-    "topic:matrices-p06": {
+    "topic:matrices-r2-p2-2x3": {
       "kind": "topic",
-      "topicId": "matrices-p06"
+      "topicId": "matrices-r2-p2-2x3"
     },
-    "topic:matrices-p07": {
+    "topic:matrices-r2-p2-3x2": {
       "kind": "topic",
-      "topicId": "matrices-p07"
+      "topicId": "matrices-r2-p2-3x2"
     },
-    "topic:matrices-p08": {
+    "topic:matrices-r2-p2-3x3": {
       "kind": "topic",
-      "topicId": "matrices-p08"
+      "topicId": "matrices-r2-p2-3x3"
     },
-    "topic:matrices-p09": {
+    "topic:matrices-r2-p3-2x2": {
       "kind": "topic",
-      "topicId": "matrices-p09"
+      "topicId": "matrices-r2-p3-2x2"
     },
-    "topic:matrices-p10": {
+    "topic:matrices-r2-p3-2x3": {
       "kind": "topic",
-      "topicId": "matrices-p10"
+      "topicId": "matrices-r2-p3-2x3"
     },
-    "topic:matrices-p11": {
+    "topic:matrices-r2-p3-3x2": {
       "kind": "topic",
-      "topicId": "matrices-p11"
+      "topicId": "matrices-r2-p3-3x2"
     },
-    "topic:matrices-p12": {
+    "topic:matrices-r2-p3-3x3": {
       "kind": "topic",
-      "topicId": "matrices-p12"
+      "topicId": "matrices-r2-p3-3x3"
     },
-    "topic:matrices-p13": {
+    "topic:matrices-r2-p4-2x2": {
       "kind": "topic",
-      "topicId": "matrices-p13"
+      "topicId": "matrices-r2-p4-2x2"
     },
-    "topic:matrices-p14": {
+    "topic:matrices-r2-p4-2x3": {
       "kind": "topic",
-      "topicId": "matrices-p14"
+      "topicId": "matrices-r2-p4-2x3"
     },
-    "topic:matrices-p15": {
+    "topic:matrices-r2-p4-3x2": {
       "kind": "topic",
-      "topicId": "matrices-p15"
+      "topicId": "matrices-r2-p4-3x2"
     },
-    "topic:matrices-p16": {
+    "topic:matrices-r2-p4-3x3": {
       "kind": "topic",
-      "topicId": "matrices-p16"
+      "topicId": "matrices-r2-p4-3x3"
     },
-    "topic:matrices-p17": {
+    "topic:matrices-r2-p5-2x2": {
       "kind": "topic",
-      "topicId": "matrices-p17"
+      "topicId": "matrices-r2-p5-2x2"
     },
-    "topic:matrices-p18": {
+    "topic:matrices-r2-p5-2x3": {
       "kind": "topic",
-      "topicId": "matrices-p18"
+      "topicId": "matrices-r2-p5-2x3"
     },
-    "topic:matrices-p19": {
+    "topic:matrices-r2-p5-3x2": {
       "kind": "topic",
-      "topicId": "matrices-p19"
+      "topicId": "matrices-r2-p5-3x2"
     },
-    "topic:matrices-p20": {
+    "topic:matrices-r2-p5-3x3": {
       "kind": "topic",
-      "topicId": "matrices-p20"
+      "topicId": "matrices-r2-p5-3x3"
     }
   },
   "josue": {

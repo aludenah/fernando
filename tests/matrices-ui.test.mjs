@@ -11,7 +11,7 @@ const course=JSON.parse(await readFile(new URL('../docs/data/course.json',import
 const html=await readFile(new URL('../docs/index.html',import.meta.url),'utf8');
 const catalog=progressCatalog(course);
 function server(){let state=emptyProgress('fernando');return {state:()=>state,send(payload){const result=mergeProgress(state,payload.operations,catalog,new Date().toISOString());state=result.state;return {...result,supportedFields:Object.keys(catalog)};}};}
-async function open({factory=new IDBFactory(),service=server(),route='matrices',student='fernando',offline=false}={}) {
+async function open({factory=new IDBFactory(),service=server(),route='matrices',student='fernando',offline=false,random=()=>0.99}={}) {
   const dom=new JSDOM(html,{url:`https://aula.example/${student?'?alumno='+student:''}#${route}`,pretendToBeVisual:true});
   const store=createStudentStore('fernando',factory),requests=[];
   const fetcher=async(url,options={})=>{
@@ -19,7 +19,7 @@ async function open({factory=new IDBFactory(),service=server(),route='matrices',
     if(String(url).startsWith('https://script.google.com/')){if(offline)throw new Error('Offline');return new Response(JSON.stringify(service.send(JSON.parse(options.body))));}
     return new Response(await readFile(new URL(url)));
   };
-  const app=await mountMatrixApp({doc:dom.window.document,win:dom.window,store,fetcher});
+  const app=await mountMatrixApp({doc:dom.window.document,win:dom.window,store,fetcher,random});
   const doc=dom.window.document;
   return {app,doc,win:dom.window,service,store,factory,requests,close(){app.destroy();dom.window.close();}};
 }
@@ -48,9 +48,9 @@ test('incomplete matrices, errors, correction, next problem and saved progress f
     submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-warning'));
     assert.equal(ui.doc.querySelector('.mx-next').disabled,true);
     const selected=ui.doc.querySelector('[data-mx-input="2-1"]');selected.focus();
-    assert.match(ui.doc.querySelector('.mx-position').textContent,/Fila i = 2.*Columna j = 1/);
-    assert.ok(ui.doc.querySelector('[data-mx-row="2"]').classList.contains('is-active'));
-    fill(ui,[2,3,3,99]);submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-error'));
+    assert.equal(ui.doc.querySelectorAll('#mx-order,#mx-cell-help,.mx-cell-index,[data-mx-row],[data-mx-column],.is-active').length,0);
+    assert.doesNotMatch(ui.doc.body.textContent,/Tamaño para practicar|Fila i =|Columna j =/);
+    fill(ui,[2,-1,1,99]);submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-error'));
     assert.match(ui.doc.querySelector('#mx-feedback').textContent,/3 de 4/);
     assert.equal(ui.doc.querySelectorAll('.mx-cell[data-result="incorrect"]').length,1);
     assert.equal(ui.doc.querySelector('.mx-next').disabled,true);
@@ -58,53 +58,59 @@ test('incomplete matrices, errors, correction, next problem and saved progress f
     input(ui,'2-2','4');submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-success'));
     assert.equal(ui.doc.querySelectorAll('input[readonly]').length,4);
     assert.equal(ui.doc.querySelector('.mx-next').disabled,false);
-    await until(()=>ui.service.state().fields['topic:matrices-p01']?.value===true);
+    await until(()=>ui.service.state().fields['topic:matrices-r2-p1-2x2']?.value===true);
     ui.doc.querySelector('.mx-next').click();await until(()=>ui.doc.querySelectorAll('[data-mx-input]').length===6);
     assert.match(ui.doc.querySelector('.mx-instructions').textContent,/Problema 2/);
-    assert.equal(ui.doc.querySelectorAll('[data-mx-row]').length,2);
-    assert.equal(ui.doc.querySelectorAll('[data-mx-column]').length,3);
+    assert.equal(ui.doc.querySelectorAll('.mx-grid .mx-cell').length,6);
+    assert.match(ui.doc.querySelector('.mx-order-badge').textContent,/2 × 3/);
     input(ui,'2-3','-4');await ui.app.flush();
     ui.win.dispatchEvent(new ui.win.Event('focus'));
     await until(()=>ui.doc.querySelector('#sync-status').dataset.phase==='synced');
     assert.equal(ui.doc.querySelector('[data-mx-input="2-3"]').value,'-4');
     ui.win.location.hash='padres';await until(()=>ui.doc.querySelector('#parent-matrices'));
-    assert.match(ui.doc.querySelector('#parent-matrices').textContent,/1.*20/);
+    assert.match(ui.doc.querySelector('#parent-matrices').textContent,/1.*5/);
     assert.equal(ui.doc.querySelectorAll('.mx-result-badge.is-solved').length,1);
     assert.doesNotMatch(ui.doc.body.textContent,/Introducción al álgebra|Exponentes y radicales/);
     assert.ok(ui.doc.querySelector('a[href*="alumno=josue#padres"]'));
   }finally{ui.close();}
 });
 
-test('zeros, negatives, rectangular orientation and the four size filters are usable',async()=>{
+test('exactly five problems are presented, with random sizes, conditional rules, and no indexing aids on focus',async()=>{
   const ui=await open();
+  const expected=[[[2,-1,-2],[1,4,-1],[2,1,6]],[[2,3,4],[3,4,5],[4,5,6]],[[2,3,4],[1,4,5],[2,1,6]],[[1,0,0],[0,1,0],[0,0,1]],[[0,3,4],[1,0,5],[2,1,0]]];
   try{
-    const select=ui.doc.querySelector('#mx-order');select.value='3x3';select.dispatchEvent(new ui.win.Event('change',{bubbles:true}));
-    assert.equal(ui.doc.querySelectorAll('[data-mx-input]').length,9);
-    fill(ui,[0,-1,-2,1,0,-1,2,1,0]);submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-success'));
-    for(const [order,rows,columns] of [['3x2',3,2],['2x3',2,3],['2x2',2,2]]){
-      const select=ui.doc.querySelector('#mx-order');select.value=order;select.dispatchEvent(new ui.win.Event('change',{bubbles:true}));
-      assert.equal(ui.doc.querySelectorAll('[data-mx-row]').length,rows);
-      assert.equal(ui.doc.querySelectorAll('[data-mx-column]').length,columns);
-      assert.equal(ui.doc.querySelectorAll('[data-mx-input]').length,rows*columns);
+    assert.match(ui.doc.querySelector('[data-mx-counter]').textContent,/0 de 5/);
+    assert.match(ui.doc.querySelector('[data-rule] annotation').textContent,/i=j/);
+    for(let index=0;index<5;index++){
+      assert.match(ui.doc.querySelector('.mx-instructions h2').textContent,new RegExp('Problema '+(index+1)));
+      const fields=[...ui.doc.querySelectorAll('[data-mx-input]')];
+      fields.at(-1).focus();
+      assert.equal(ui.doc.querySelectorAll('#mx-order,#mx-cell-help,.mx-cell-index,[data-mx-row],[data-mx-column],.is-active').length,0);
+      for(const field of fields)input(ui,field.dataset.mxInput,String(expected[index][Number(field.dataset.i)-1][Number(field.dataset.j)-1]));
+      submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-success'));
+      assert.match(ui.doc.querySelector('[data-mx-counter]').textContent,new RegExp((index+1)+' de 5'));
+      if(index<4){ui.doc.querySelector('.mx-next').click();await until(()=>ui.doc.querySelector('.mx-instructions h2').textContent==='Problema '+(index+2));}
     }
-    const cell=ui.doc.querySelector('[data-mx-input="1-1"]');cell.focus();
-    ui.doc.querySelector('[data-mx-action="negative"]').click();assert.equal(cell.value,'-');
-    input(ui,'1-1','-3');ui.doc.querySelector('[data-mx-action="negative"]').click();assert.equal(cell.value,'3');
+    assert.equal(ui.doc.querySelector('.mx-next').disabled,true);
+    assert.match(ui.doc.querySelector('.mx-all-done').textContent,/cinco problemas/);
     assert.equal(ui.doc.querySelectorAll('.math-fallback').length,0);
+    ui.win.location.hash='padres';await until(()=>ui.doc.querySelector('#parent-matrices'));
+    assert.equal(ui.doc.querySelectorAll('.mx-parent-row').length,5);
+    assert.match(ui.doc.querySelector('#parent-matrices').textContent,/5.*5/);
   }finally{await ui.app.flush();ui.close();}
 });
 
 test('drafts survive reloading offline and completed matrices reach a separate parent device',async()=>{
   const factory=new IDBFactory(),service=server();
   const first=await open({factory,service});
-  fill(first,[2,3,3,4]);submit(first);await until(()=>service.state().fields['topic:matrices-p01']);
+  fill(first,[2,-1,1,4]);submit(first);await until(()=>service.state().fields['topic:matrices-r2-p1-2x2']);
   first.doc.querySelector('.mx-next').click();await until(()=>first.doc.querySelectorAll('[data-mx-input]').length===6);
   input(first,'2-1','0');await first.app.flush();first.close();
-  const offline=await open({factory,service,offline:true});
+  const offline=await open({factory,service,offline:true,random:()=>0});
   try{assert.equal(offline.doc.querySelector('[data-mx-input="2-1"]').value,'0');assert.match(offline.doc.querySelector('.mx-instructions').textContent,/Problema 2/);}
   finally{offline.close();}
-  const parent=await open({service,route:'padres'});
-  try{await until(()=>parent.doc.querySelectorAll('.mx-result-badge.is-solved').length===1);assert.match(parent.doc.querySelector('#parent-matrices').textContent,/1.*20/);}
+  const parent=await open({service,route:'padres',random:()=>0});
+  try{await until(()=>parent.doc.querySelectorAll('.mx-result-badge.is-solved').length===1);assert.match(parent.doc.querySelector('#parent-matrices').textContent,/1.*5/);}
   finally{parent.close();}
 });
 
@@ -114,11 +120,11 @@ test('retired algebra data cannot become matrix progress or block its new sync q
   await store.put('settings',{id:'cloud-sync-v1',remote:emptyProgress('fernando'),outbox:{'answer:old:question':{id:'old-pending-answer'}}});
   const ui=await open({factory});
   try{
-    assert.match(ui.doc.querySelector('[data-mx-counter]').textContent,/0 de 20/);
-    fill(ui,[2,3,3,4]);submit(ui);await until(()=>ui.service.state().fields['topic:matrices-p01']);
+    assert.match(ui.doc.querySelector('[data-mx-counter]').textContent,/0 de 5/);
+    fill(ui,[2,-1,1,4]);submit(ui);await until(()=>ui.service.state().fields['topic:matrices-r2-p1-2x2']);
     const settings=await store.all('settings');
     assert.ok(settings.find(value=>value.id==='cloud-sync-v1').outbox['answer:old:question']);
-    assert.ok(settings.find(value=>value.id==='matrices-cloud-sync-v1'));
+    assert.ok(settings.find(value=>value.id==='matrices-round-v2-cloud-sync-v1'));
     assert.ok(settings.find(value=>value.id==='learned').topics.includes('uni-c1-mapa'));
   }finally{ui.close();(await store.openDatabase()).close();}
 });

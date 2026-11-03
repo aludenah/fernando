@@ -17,6 +17,7 @@ export const matrixRules = Object.freeze({
   squareColumn: {tex: 'i+j^2', value: (i,j) => i+j*j, at: (i,j) => `${i}+${j}^2`},
   parity: {tex: '(-1)^{i+j}', value: (i,j) => (-1)**(i+j), at: (i,j) => `(-1)^{${i}+${j}}`},
   diagonal: {tex: '\\begin{cases}2i,&i=j\\\\i+j,&i\\ne j\\end{cases}', value: (i,j) => i===j?2*i:i+j, at: (i,j) => i===j?`${i}=${j}\\;\\Rightarrow\\;2(${i})`:`${i}\\ne${j}\\;\\Rightarrow\\;${i}+${j}`},
+  byEquality: {tex: '\\begin{cases}i+j,&i=j\\\\i-j,&i\\ne j\\end{cases}', value: (i,j) => i===j?i+j:i-j, at: (i,j) => i===j?`${i}+${j}`:`${i}-${j}`},
   signedTriangle: {tex: '\\begin{cases}i+j,&i<j\\\\0,&i=j\\\\i-j,&i>j\\end{cases}', value: (i,j) => i<j?i+j:i===j?0:i-j, at: (i,j) => i<j?`${i}<${j}\\;\\Rightarrow\\;${i}+${j}`:i===j?`${i}=${j}\\;\\Rightarrow\\;0`:`${i}>${j}\\;\\Rightarrow\\;${i}-${j}`},
   combined: {tex: '2ij-i+j', value: (i,j) => 2*i*j-i+j, at: (i,j) => `2(${i})(${j})-${i}+${j}`},
   distance: {tex: '|i-j|', value: (i,j) => Math.abs(i-j), at: (i,j) => `|${i}-${j}|`},
@@ -25,11 +26,15 @@ export const matrixRules = Object.freeze({
 
 export function validateMatrixCourse(course) {
   const exercises=course?.matrixPractice?.exercises;
-  if(course?.schemaVersion!==2 || course.lesson?.id!=='matrices' || !Array.isArray(course.tasks) || course.tasks.length || !Array.isArray(exercises) || !exercises.length || exercises.length>100) throw new Error('No se pudo leer la práctica de matrices.');
+  if(course?.schemaVersion!==2 || course.lesson?.id!=='matrices' || !Array.isArray(course.tasks) || course.tasks.length || course.matrixPractice?.practiceSize!==5 || !Array.isArray(exercises) || exercises.length!==20) throw new Error('No se pudo leer la práctica de matrices.');
   const ids=new Set();
   for(const exercise of exercises) {
-    if(!/^matrices-p\d{2,3}$/.test(exercise.id)||ids.has(exercise.id)||![2,3].includes(exercise.rows)||![2,3].includes(exercise.columns)||!Object.hasOwn(matrixRules,exercise.rule)) throw new Error('Hay un ejercicio de matrices no válido.');
+    if(!Number.isInteger(exercise.problem)||exercise.problem<1||exercise.problem>5||exercise.id!==`matrices-r2-p${exercise.problem}-${exercise.rows}x${exercise.columns}`||ids.has(exercise.id)||![2,3].includes(exercise.rows)||![2,3].includes(exercise.columns)||!Object.hasOwn(matrixRules,exercise.rule)) throw new Error('Hay un ejercicio de matrices no válido.');
     ids.add(exercise.id);
+  }
+  for(let problem=1;problem<=5;problem++){
+    const variants=exercises.filter(exercise=>exercise.problem===problem);
+    if(variants.length!==4||new Set(variants.map(exercise=>exercise.rule)).size!==1)throw new Error('Cada problema necesita sus cuatro tamaños.');
   }
   if(!Array.isArray(course.lesson.topics)||course.lesson.topics.length!==exercises.length||course.lesson.topics.some((topic,index)=>topic.id!==exercises[index].id)) throw new Error('El catálogo de avance no corresponde a los ejercicios.');
   return course;
@@ -54,21 +59,46 @@ export function checkMatrix(exercise,answers={}) {
   return {cells,total:cells.length,missing,invalid,correct,complete:!missing&&!invalid,solved:correct===cells.length};
 }
 
-export function restoreMatrixWork(value,exercises) {
-  const work={id:'matrices-practice-v1',current:exercises[0].id,filter:'all',entries:{}};
-  if(!value||typeof value!=='object'||Array.isArray(value))return work;
-  if(exercises.some(exercise=>exercise.id===value.current))work.current=value.current;
-  if(['all','2x2','2x3','3x2','3x3'].includes(value.filter))work.filter=value.filter;
-  for(const exercise of exercises) {
-    const saved=value.entries?.[exercise.id];
-    if(!saved||typeof saved!=='object')continue;
+// A practice has five problems. Shuffle the four sizes, then draw the fifth;
+// its chosen sizes are kept with the draft, never re-rolled on reload.
+export function chooseMatrixPractice(bank,random=Math.random) {
+  const orders=['2x2','2x3','3x2','3x3'];
+  for(let i=orders.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[orders[i],orders[j]]=[orders[j],orders[i]];}
+  return Array.from({length:5},(_,index)=>{
+    const order=orders[index]||orders[Math.floor(random()*orders.length)];
+    return bank.find(exercise=>exercise.problem===index+1&&`${exercise.rows}x${exercise.columns}`===order);
+  });
+}
+
+export function restoreMatrixWork(value,bank,random=Math.random) {
+  const saved=value&&typeof value==='object'&&!Array.isArray(value)?value:{};
+  const selection=Array.isArray(saved.exerciseIds)&&saved.exerciseIds.length===5?saved.exerciseIds.map(id=>bank.find(exercise=>exercise.id===id)):[];
+  const selected=selection.length===5&&selection.every((exercise,index)=>exercise?.problem===index+1)?selection:chooseMatrixPractice(bank,random);
+  const work={id:'matrices-practice-v2',exerciseIds:selected.map(exercise=>exercise.id),current:selected[0].id,entries:{}};
+  if(work.exerciseIds.includes(saved.current))work.current=saved.current;
+  for(const exercise of bank) {
+    const entry=saved.entries?.[exercise.id];
+    if(!entry||typeof entry!=='object')continue;
     const answers={};
     for(const cell of cellsFor(exercise)) {
-      const raw=saved.answers?.[cell.key];
+      const raw=entry.answers?.[cell.key];
       if(typeof raw==='string'&&raw.length<=24)answers[cell.key]=raw;
     }
-    const checked=saved.checked===true;
-    work.entries[exercise.id]={answers,checked,attempts:Number.isSafeInteger(saved.attempts)&&saved.attempts>=0?saved.attempts:0,solved:checked&&checkMatrix(exercise,answers).solved};
+    const checked=entry.checked===true;
+    work.entries[exercise.id]={answers,checked,attempts:Number.isSafeInteger(entry.attempts)&&entry.attempts>=0?entry.attempts:0,solved:checked&&checkMatrix(exercise,answers).solved};
   }
   return work;
+}
+
+// Completion identifies the exact rule and size, so another device displays
+// the matrix actually completed rather than treating a different size as done.
+export function reconcileMatrixPractice(work,bank,completed) {
+  const currentProblem=bank.find(exercise=>exercise.id===work.current)?.problem||1;
+  work.exerciseIds=work.exerciseIds.map(id=>{
+    if(completed.has(id))return id;
+    const problem=bank.find(exercise=>exercise.id===id).problem;
+    return bank.find(exercise=>exercise.problem===problem&&completed.has(exercise.id))?.id||id;
+  });
+  work.current=work.exerciseIds[currentProblem-1];
+  return work.exerciseIds.map(id=>bank.find(exercise=>exercise.id===id));
 }

@@ -6,210 +6,231 @@
     "title": "Construcción de matrices",
     "topics": [
       {
-        "id": "matrices-p01",
+        "id": "matrices-r2-p1-2x2",
         "title": "Problema 1 · Matriz 2 × 2"
       },
       {
-        "id": "matrices-p02",
+        "id": "matrices-r2-p1-2x3",
+        "title": "Problema 1 · Matriz 2 × 3"
+      },
+      {
+        "id": "matrices-r2-p1-3x2",
+        "title": "Problema 1 · Matriz 3 × 2"
+      },
+      {
+        "id": "matrices-r2-p1-3x3",
+        "title": "Problema 1 · Matriz 3 × 3"
+      },
+      {
+        "id": "matrices-r2-p2-2x2",
+        "title": "Problema 2 · Matriz 2 × 2"
+      },
+      {
+        "id": "matrices-r2-p2-2x3",
         "title": "Problema 2 · Matriz 2 × 3"
       },
       {
-        "id": "matrices-p03",
+        "id": "matrices-r2-p2-3x2",
+        "title": "Problema 2 · Matriz 3 × 2"
+      },
+      {
+        "id": "matrices-r2-p2-3x3",
+        "title": "Problema 2 · Matriz 3 × 3"
+      },
+      {
+        "id": "matrices-r2-p3-2x2",
+        "title": "Problema 3 · Matriz 2 × 2"
+      },
+      {
+        "id": "matrices-r2-p3-2x3",
+        "title": "Problema 3 · Matriz 2 × 3"
+      },
+      {
+        "id": "matrices-r2-p3-3x2",
         "title": "Problema 3 · Matriz 3 × 2"
       },
       {
-        "id": "matrices-p04",
+        "id": "matrices-r2-p3-3x3",
+        "title": "Problema 3 · Matriz 3 × 3"
+      },
+      {
+        "id": "matrices-r2-p4-2x2",
+        "title": "Problema 4 · Matriz 2 × 2"
+      },
+      {
+        "id": "matrices-r2-p4-2x3",
+        "title": "Problema 4 · Matriz 2 × 3"
+      },
+      {
+        "id": "matrices-r2-p4-3x2",
+        "title": "Problema 4 · Matriz 3 × 2"
+      },
+      {
+        "id": "matrices-r2-p4-3x3",
         "title": "Problema 4 · Matriz 3 × 3"
       },
       {
-        "id": "matrices-p05",
+        "id": "matrices-r2-p5-2x2",
         "title": "Problema 5 · Matriz 2 × 2"
       },
       {
-        "id": "matrices-p06",
-        "title": "Problema 6 · Matriz 2 × 3"
+        "id": "matrices-r2-p5-2x3",
+        "title": "Problema 5 · Matriz 2 × 3"
       },
       {
-        "id": "matrices-p07",
-        "title": "Problema 7 · Matriz 3 × 2"
+        "id": "matrices-r2-p5-3x2",
+        "title": "Problema 5 · Matriz 3 × 2"
       },
       {
-        "id": "matrices-p08",
-        "title": "Problema 8 · Matriz 3 × 3"
-      },
-      {
-        "id": "matrices-p09",
-        "title": "Problema 9 · Matriz 2 × 2"
-      },
-      {
-        "id": "matrices-p10",
-        "title": "Problema 10 · Matriz 2 × 3"
-      },
-      {
-        "id": "matrices-p11",
-        "title": "Problema 11 · Matriz 3 × 2"
-      },
-      {
-        "id": "matrices-p12",
-        "title": "Problema 12 · Matriz 3 × 3"
-      },
-      {
-        "id": "matrices-p13",
-        "title": "Problema 13 · Matriz 2 × 2"
-      },
-      {
-        "id": "matrices-p14",
-        "title": "Problema 14 · Matriz 2 × 3"
-      },
-      {
-        "id": "matrices-p15",
-        "title": "Problema 15 · Matriz 3 × 2"
-      },
-      {
-        "id": "matrices-p16",
-        "title": "Problema 16 · Matriz 3 × 3"
-      },
-      {
-        "id": "matrices-p17",
-        "title": "Problema 17 · Matriz 2 × 2"
-      },
-      {
-        "id": "matrices-p18",
-        "title": "Problema 18 · Matriz 2 × 3"
-      },
-      {
-        "id": "matrices-p19",
-        "title": "Problema 19 · Matriz 3 × 2"
-      },
-      {
-        "id": "matrices-p20",
-        "title": "Problema 20 · Matriz 3 × 3"
+        "id": "matrices-r2-p5-3x3",
+        "title": "Problema 5 · Matriz 3 × 3"
       }
     ]
   },
   "tasks": [],
   "matrixPractice": {
-    "version": 1,
+    "version": 2,
+    "practiceSize": 5,
     "exercises": [
       {
-        "id": "matrices-p01",
+        "id": "matrices-r2-p1-2x2",
+        "problem": 1,
+        "rows": 2,
+        "columns": 2,
+        "rule": "byEquality"
+      },
+      {
+        "id": "matrices-r2-p1-2x3",
+        "problem": 1,
+        "rows": 2,
+        "columns": 3,
+        "rule": "byEquality"
+      },
+      {
+        "id": "matrices-r2-p1-3x2",
+        "problem": 1,
+        "rows": 3,
+        "columns": 2,
+        "rule": "byEquality"
+      },
+      {
+        "id": "matrices-r2-p1-3x3",
+        "problem": 1,
+        "rows": 3,
+        "columns": 3,
+        "rule": "byEquality"
+      },
+      {
+        "id": "matrices-r2-p2-2x2",
+        "problem": 2,
         "rows": 2,
         "columns": 2,
         "rule": "sum"
       },
       {
-        "id": "matrices-p02",
+        "id": "matrices-r2-p2-2x3",
+        "problem": 2,
         "rows": 2,
         "columns": 3,
-        "rule": "twiceRow"
+        "rule": "sum"
       },
       {
-        "id": "matrices-p03",
+        "id": "matrices-r2-p2-3x2",
+        "problem": 2,
         "rows": 3,
         "columns": 2,
-        "rule": "twiceColumn"
+        "rule": "sum"
       },
       {
-        "id": "matrices-p04",
-        "rows": 3,
-        "columns": 3,
-        "rule": "difference"
-      },
-      {
-        "id": "matrices-p05",
-        "rows": 2,
-        "columns": 2,
-        "rule": "tripleRow"
-      },
-      {
-        "id": "matrices-p06",
-        "rows": 2,
-        "columns": 3,
-        "rule": "product"
-      },
-      {
-        "id": "matrices-p07",
-        "rows": 3,
-        "columns": 2,
-        "rule": "squareRow"
-      },
-      {
-        "id": "matrices-p08",
+        "id": "matrices-r2-p2-3x3",
+        "problem": 2,
         "rows": 3,
         "columns": 3,
-        "rule": "linear"
+        "rule": "sum"
       },
       {
-        "id": "matrices-p09",
+        "id": "matrices-r2-p3-2x2",
+        "problem": 3,
         "rows": 2,
         "columns": 2,
-        "rule": "identity"
+        "rule": "triangle"
       },
       {
-        "id": "matrices-p10",
+        "id": "matrices-r2-p3-2x3",
+        "problem": 3,
         "rows": 2,
         "columns": 3,
         "rule": "triangle"
       },
       {
-        "id": "matrices-p11",
+        "id": "matrices-r2-p3-3x2",
+        "problem": 3,
         "rows": 3,
         "columns": 2,
-        "rule": "squares"
+        "rule": "triangle"
       },
       {
-        "id": "matrices-p12",
+        "id": "matrices-r2-p3-3x3",
+        "problem": 3,
         "rows": 3,
         "columns": 3,
-        "rule": "shiftedProduct"
+        "rule": "triangle"
       },
       {
-        "id": "matrices-p13",
+        "id": "matrices-r2-p4-2x2",
+        "problem": 4,
         "rows": 2,
         "columns": 2,
-        "rule": "columnMinusRow"
+        "rule": "identity"
       },
       {
-        "id": "matrices-p14",
+        "id": "matrices-r2-p4-2x3",
+        "problem": 4,
         "rows": 2,
         "columns": 3,
-        "rule": "squareColumn"
+        "rule": "identity"
       },
       {
-        "id": "matrices-p15",
+        "id": "matrices-r2-p4-3x2",
+        "problem": 4,
         "rows": 3,
         "columns": 2,
-        "rule": "parity"
+        "rule": "identity"
       },
       {
-        "id": "matrices-p16",
+        "id": "matrices-r2-p4-3x3",
+        "problem": 4,
         "rows": 3,
         "columns": 3,
-        "rule": "diagonal"
+        "rule": "identity"
       },
       {
-        "id": "matrices-p17",
+        "id": "matrices-r2-p5-2x2",
+        "problem": 5,
         "rows": 2,
         "columns": 2,
         "rule": "signedTriangle"
       },
       {
-        "id": "matrices-p18",
+        "id": "matrices-r2-p5-2x3",
+        "problem": 5,
         "rows": 2,
         "columns": 3,
-        "rule": "combined"
+        "rule": "signedTriangle"
       },
       {
-        "id": "matrices-p19",
+        "id": "matrices-r2-p5-3x2",
+        "problem": 5,
         "rows": 3,
         "columns": 2,
-        "rule": "distance"
+        "rule": "signedTriangle"
       },
       {
-        "id": "matrices-p20",
+        "id": "matrices-r2-p5-3x3",
+        "problem": 5,
         "rows": 3,
         "columns": 3,
-        "rule": "last"
+        "rule": "signedTriangle"
       }
     ]
   }
