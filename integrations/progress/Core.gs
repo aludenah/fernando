@@ -500,6 +500,86 @@ const SYNC_CATALOGS={
     "topic:uni-c2-estrategias": {
       "kind": "topic",
       "topicId": "uni-c2-estrategias"
+    },
+    "topic:matrices-p01": {
+      "kind": "topic",
+      "topicId": "matrices-p01"
+    },
+    "topic:matrices-p02": {
+      "kind": "topic",
+      "topicId": "matrices-p02"
+    },
+    "topic:matrices-p03": {
+      "kind": "topic",
+      "topicId": "matrices-p03"
+    },
+    "topic:matrices-p04": {
+      "kind": "topic",
+      "topicId": "matrices-p04"
+    },
+    "topic:matrices-p05": {
+      "kind": "topic",
+      "topicId": "matrices-p05"
+    },
+    "topic:matrices-p06": {
+      "kind": "topic",
+      "topicId": "matrices-p06"
+    },
+    "topic:matrices-p07": {
+      "kind": "topic",
+      "topicId": "matrices-p07"
+    },
+    "topic:matrices-p08": {
+      "kind": "topic",
+      "topicId": "matrices-p08"
+    },
+    "topic:matrices-p09": {
+      "kind": "topic",
+      "topicId": "matrices-p09"
+    },
+    "topic:matrices-p10": {
+      "kind": "topic",
+      "topicId": "matrices-p10"
+    },
+    "topic:matrices-p11": {
+      "kind": "topic",
+      "topicId": "matrices-p11"
+    },
+    "topic:matrices-p12": {
+      "kind": "topic",
+      "topicId": "matrices-p12"
+    },
+    "topic:matrices-p13": {
+      "kind": "topic",
+      "topicId": "matrices-p13"
+    },
+    "topic:matrices-p14": {
+      "kind": "topic",
+      "topicId": "matrices-p14"
+    },
+    "topic:matrices-p15": {
+      "kind": "topic",
+      "topicId": "matrices-p15"
+    },
+    "topic:matrices-p16": {
+      "kind": "topic",
+      "topicId": "matrices-p16"
+    },
+    "topic:matrices-p17": {
+      "kind": "topic",
+      "topicId": "matrices-p17"
+    },
+    "topic:matrices-p18": {
+      "kind": "topic",
+      "topicId": "matrices-p18"
+    },
+    "topic:matrices-p19": {
+      "kind": "topic",
+      "topicId": "matrices-p19"
+    },
+    "topic:matrices-p20": {
+      "kind": "topic",
+      "topicId": "matrices-p20"
     }
   },
   "josue": {

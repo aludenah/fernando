@@ -8,7 +8,7 @@ import {createProgressReport} from '../docs/progress.js';
 import {parentsView} from '../docs/family-views.js';
 import {progressCatalog} from '../docs/sync-protocol.js';
 
-const course=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url)));
+const course=JSON.parse(await readFile(new URL('./fixtures/legacy-course.json',import.meta.url)));
 const josue=JSON.parse(await readFile(new URL('../docs/data/josue-course.json',import.meta.url)));
 const keys=[[1,3,0,4,2,0,2,1,4,3],[4,1,3,0,2,4,0,3,1,2],[2,0,4,1,3,1,4,2,3,0],[1,3,0,4,2,0,2,1,4,3],[4,1,3,0,2,4,0,3,1,2],[2,0,4,1,3,1,4,2,3,0]];
 const answersFor=(task,indices)=>Object.fromEntries(task.questions.map((q,i)=>[q.id,indices[i]]));

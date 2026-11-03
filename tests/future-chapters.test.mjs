@@ -7,7 +7,9 @@ import {createStudentStore} from '../docs/store.js';
 import {createProgressSync,appsScriptTransport} from '../docs/sync.js';
 import {progressCatalog} from '../docs/sync-protocol.js';
 
-const base=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url),'utf8'));
+const base=JSON.parse(await readFile(new URL('./fixtures/legacy-course.json',import.meta.url),'utf8'));
+const matrixCourse=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url),'utf8'));
+const matrixFields=matrixCourse.lesson.topics.length;
 const installer=await readFile(new URL('../integrations/progress/Instalar.gs',import.meta.url),'utf8');
 function withChapters(count){
   const course=structuredClone(base);
@@ -53,7 +55,7 @@ test('publishing chapter 3 automatically synchronizes its answers and theory on 
   await a.sync.saveTopic(course.additionalLessons[1].topics[0].id,true);
   assert.equal(await a.sync.sync(),true);assert.equal(await b.sync.sync(),true);
   assert.deepEqual(await answers(b,task.id),{[task.questions[0].id]:4,[task.questions[1].id]:2});
-  assert.equal(server.read().supportedFields.length,Object.keys(progressCatalog(course)).length);
+  assert.equal(server.read().supportedFields.length,Object.keys(progressCatalog(course)).length+matrixFields);
   assert.equal(server.requests.length,1,'a cached catalog is shared across requests');
 });
 
@@ -109,7 +111,7 @@ test('cached future chapters remain available during a temporary source outage',
 test('all 28 chapters fit the catalog cache and transport, keeping the same service',async()=>{
   const course=withChapters(28),server=service(course),a=await device(server,course),task=course.tasks.at(-1);
   await a.sync.saveAnswer(task.id,task.questions[0].id,4);assert.equal(await a.sync.sync(),true);
-  const response=server.read();assert.equal(response.supportedFields.length,Object.keys(progressCatalog(course)).length);
+  const response=server.read();assert.equal(response.supportedFields.length,Object.keys(progressCatalog(course)).length+matrixFields);
   assert.equal(server.cache.size,1);assert.equal(server.requests.length,1);
   const b=await device(server,course);assert.equal(await b.sync.sync(),true);
   assert.deepEqual(await answers(b,task.id),{[task.questions[0].id]:4});

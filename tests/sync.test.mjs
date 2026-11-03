@@ -10,7 +10,7 @@ import {parentsView} from '../docs/family-views.js';
 import {questionSequence} from '../docs/sequence.js';
 
 const courses={};
-for(const [id,file] of [['fernando','course'],['josue','josue-course']])courses[id]=JSON.parse(await readFile(new URL(`../docs/data/${file}.json`,import.meta.url),'utf8'));
+for(const [id,file] of [['fernando','course'],['josue','josue-course']])courses[id]=JSON.parse(await readFile(new URL(id==='fernando'?'./fixtures/legacy-course.json':`../docs/data/${file}.json`,import.meta.url),'utf8'));
 const code=await readFile(new URL('../integrations/progress/Code.gs',import.meta.url),'utf8');
 const core=await readFile(new URL('../integrations/progress/Core.gs',import.meta.url),'utf8');
 const liveCatalog=await readFile(new URL('../integrations/progress/Catalog.gs',import.meta.url),'utf8');

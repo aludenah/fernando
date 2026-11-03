@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {createProgressReport,validateProgressReport,summarizeProgress} from '../docs/progress.js';
 import {parentsView} from '../docs/family-views.js';
 
-const course=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url),'utf8'));
+const course=JSON.parse(await readFile(new URL('./fixtures/legacy-course.json',import.meta.url),'utf8'));
 const time='2026-09-16T06:00:00.000Z';
 const report=(drafts=[],learned=[])=>createProgressReport(course,course.tasks,drafts,learned,null,time);
 

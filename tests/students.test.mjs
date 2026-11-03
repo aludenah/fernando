@@ -7,7 +7,7 @@ import {studentProfile,studentLink} from '../docs/students.js';
 import {createProgressReport,validateProgressReport,summarizeProgress} from '../docs/progress.js';
 import {accessView,parentsView} from '../docs/family-views.js';
 
-const fernando=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url),'utf8'));
+const fernando=JSON.parse(await readFile(new URL('./fixtures/legacy-course.json',import.meta.url),'utf8'));
 const josue=JSON.parse(await readFile(new URL('../docs/data/josue-course.json',import.meta.url),'utf8'));
 const stamp='2026-09-16T18:00:00.000Z';
 const report=(course,id,drafts=[])=>createProgressReport(course,course.tasks,drafts,[],null,stamp,id);

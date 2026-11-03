@@ -1,8 +1,8 @@
 import {emptyProgress,progressCatalog,validateRemote,validValue} from './sync-protocol.js?v=chapters-2';
 
-const RECORD='cloud-sync-v1';
 const stamp=()=>new Date().toISOString();
-export function createProgressSync({studentId,course,store,transport=null,onStatus=()=>{},onChange=()=>{},uuid=()=>crypto.randomUUID()}) {
+export function createProgressSync({studentId,course,store,transport=null,onStatus=()=>{},onChange=()=>{},uuid=()=>crypto.randomUUID(),recordId='cloud-sync-v1'}) {
+  const RECORD=recordId;
   const catalog=progressCatalog(course);
   const knownFields=Object.keys(catalog);
   // The original deployment only knows the first lesson. Never send new fields

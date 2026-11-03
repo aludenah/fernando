@@ -6,7 +6,7 @@ import {IDBFactory} from 'fake-indexeddb';
 import {createStudentStore} from '../docs/store.js';
 import {emptyProgress,progressCatalog,mergeProgress} from '../docs/sync-protocol.js';
 
-const course=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url)));
+const course=JSON.parse(await readFile(new URL('./fixtures/legacy-course.json',import.meta.url)));
 const html=await readFile(new URL('../docs/index.html',import.meta.url),'utf8');
 const task=course.tasks[0];
 const catalog=progressCatalog(course);
@@ -28,10 +28,11 @@ async function classroom({factory=new IDBFactory(),remote=emptyProgress('fernand
       remote=result.state;
       return new Response(JSON.stringify({...result,supportedFields:Object.keys(catalog)}));
     }
+    if(path.endsWith('/data/course.json'))return new Response(JSON.stringify(course));
     if(path.includes('/data/'))return new Response(await readFile(new URL(path)));
     throw new Error('Unexpected external request: '+path);
   };
-  await import(`../docs/app.js?ui-test=${crypto.randomUUID()}`);
+  await import(`../docs/classroom.js?ui-test=${crypto.randomUUID()}`);
   try{await until(()=>document.querySelector('#sync-status')?.dataset.phase==='synced'&&document.querySelector('#question-stage, .family-stats'));}catch(error){for(const id of timers)clearInterval(id);globalThis.setInterval=nativeInterval;dom.window.close();throw error;}
   // The sync callback queues the final DOM refresh after the status change.
   await settle();

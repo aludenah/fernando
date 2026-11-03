@@ -5,8 +5,8 @@ import {createContext,runInContext} from 'node:vm';
 import {createHash} from 'node:crypto';
 
 const source=await readFile(new URL('../integrations/google-drive/Code.gs',import.meta.url),'utf8');
-const course=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url),'utf8'));
-const drive=JSON.parse(await readFile(new URL('../docs/data/drive.json',import.meta.url),'utf8'));
+const course=JSON.parse(await readFile(new URL('./fixtures/legacy-course.json',import.meta.url),'utf8'));
+const drive=JSON.parse(await readFile(new URL('./fixtures/legacy-drive.json',import.meta.url),'utf8'));
 const code='test-only-delivery-code';
 const nonce='12345678-1234-4234-8234-123456789012';
 const bytes=Array.from(Buffer.from('%PDF-1.4\nTest file\n%%EOF'));

@@ -23,6 +23,9 @@ jobs:
       - name: Verificar JavaScript y contenido
         run: |
           node --check docs/app.js
+          node --check docs/classroom.js
+          node --check docs/matrices.js
+          node --check docs/matrices-app.js
           node --check docs/math.js
           node --check docs/grading.js
           node --check docs/grading-views.js

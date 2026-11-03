@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {normalizeTask,normalizeAnswers,answerCount,isReady,validateFiles,matchesSignature,validateSubmission,publicCourse,html,MAX_FILE_SIZE,MAX_TOTAL_SIZE} from '../docs/model.js';
 
-const course=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url),'utf8'));
+const course=JSON.parse(await readFile(new URL('./fixtures/legacy-course.json',import.meta.url),'utf8'));
 const task=course.tasks[0];
 const pdf=Buffer.from('%PDF-1.4\nExample exercise solution\n%%EOF\n');
 const file={name:'solucionario.pdf',type:'application/pdf',size:pdf.length,data:pdf.toString('base64')};
