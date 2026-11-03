@@ -72,3 +72,40 @@
 
 /* The prompt and input cells are the only position information shown. */
 @media(max-width:780px){.mx-instructions.panel{display:block}.mx-rule{margin:18px 0}.mx-dimensions{justify-content:flex-start;margin:0}}
+
+/* Fernando's application catalog and downloadable activity receipt. */
+.single-access{grid-template-columns:minmax(0,390px);justify-content:start}
+.activities-home .page-heading p{margin-top:12px;color:var(--muted)}
+.activity-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:28px 0}
+.activity-card{display:flex;flex-direction:column;align-items:flex-start;min-height:370px;padding:30px;border:1px solid #dce4f1;border-radius:18px;background:#fff;text-decoration:none;box-shadow:0 5px 25px #17366e04;transition:border-color .15s,transform .15s}
+.activity-card:hover{border-color:#758ee5;transform:translateY(-2px)}
+.activity-icon{display:grid;place-items:center;width:108px;height:102px;border-radius:20px;background:#eef2ff;color:#314fdb;margin-bottom:24px}
+.activity-card .eyebrow{font-size:.65rem;color:#6a7b99}
+.activity-card h2{font-size:1.4rem;line-height:1.3;margin:9px 0 13px}
+.activity-card p{font-size:.9rem;line-height:1.7;color:#63728b;margin-bottom:14px}
+.activity-card small{font-size:.73rem;color:#7a879c;margin-bottom:28px}
+.activity-open{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:auto;border-top:1px solid #e5eaf4;padding-top:17px;font-weight:700;font-size:.83rem;color:#314fdb}
+.receipt-view{max-width:1000px}
+.receipt-check{display:grid;place-items:center;flex:none;width:65px;height:65px;border-radius:50%;background:#e6f6ec;color:#21784f;font-size:2rem}
+.receipt-panel{padding:32px!important;border-color:#cbdcf2!important}
+.receipt-panel h2{font-size:1.5rem;margin-bottom:14px}
+.receipt-panel>p{color:#60718d;line-height:1.8;max-width:660px;margin-bottom:24px}
+.receipt-panel .button-row{margin-top:20px;gap:13px}
+.receipt-delivery-note{font-size:.83rem;color:#677a96;margin-top:18px}
+.receipt-loading{color:#566c91;padding:13px 0;font-size:.9rem}
+.receipt-error{color:#9c3b2a;margin:12px 0 17px}
+.receipt-review{margin-top:24px;padding:24px 30px}
+.receipt-review>summary{font-weight:700;cursor:pointer;color:#304d91}
+.receipt-answer{display:grid;grid-template-columns:minmax(0,1fr) 200px;align-items:center;gap:30px;padding:28px 0;border-bottom:1px solid #e0e7f1}
+.receipt-answer:last-child{border:0;padding-bottom:0}
+.receipt-answer h2{font-size:1rem;margin-bottom:16px}
+.receipt-answer p{font-size:1rem;margin-bottom:13px;overflow-x:auto}
+.receipt-answer small{font-size:.75rem;color:#74839c}
+.receipt-matrix{position:relative;display:grid;grid-template-columns:repeat(var(--mx-columns),minmax(30px,48px));justify-content:center;gap:12px;padding:13px 19px;width:max-content;margin:auto;font-variant-numeric:tabular-nums}
+.receipt-matrix::before,.receipt-matrix::after{content:"";position:absolute;top:0;bottom:0;width:8px;border:2px solid #425a83}
+.receipt-matrix::before{left:0;border-right:0}.receipt-matrix::after{right:0;border-left:0}
+.receipt-matrix span{text-align:center;font-size:1.2rem}
+.receipt-bottom{display:flex;justify-content:space-between;gap:20px;margin-top:25px;font-size:.85rem;color:#4e6691}
+.receipt-bottom button{background:none;color:#4e6691;font-size:inherit;text-decoration:underline}
+@media(max-width:1000px){.activity-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.activity-cards{grid-template-columns:1fr}.activity-card{min-height:330px;max-width:480px}.receipt-check{width:48px;height:48px;font-size:1.5rem}.receipt-panel{padding:23px!important}.receipt-panel h2{font-size:1.22rem}.receipt-panel .button-row{flex-direction:column;align-items:stretch}.receipt-panel .button{justify-content:center}.receipt-answer{grid-template-columns:1fr;gap:21px}.receipt-bottom{flex-direction:column;align-items:flex-start}.receipt-review{padding:22px}.single-access{grid-template-columns:1fr;max-width:390px}}

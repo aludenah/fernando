@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {validateMatrixCourse,cellsFor,matrixValue,parseMatrixNumber,checkMatrix,restoreMatrixWork,chooseMatrixPractice,reconcileMatrixPractice} from '../docs/matrices.js';
+import {validateMatrixCourse,cellsFor,matrixValue,parseMatrixNumber,checkMatrix,createMatrixSession,chooseMatrixPractice} from '../docs/matrices.js';
 
 const course=validateMatrixCourse(JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url))));
 const bank=course.matrixPractice.exercises;
@@ -38,23 +38,15 @@ test('empty cells never count as zero, and malformed or executable input is reje
   assert.equal(parseMatrixNumber('0'),0);assert.equal(parseMatrixNumber('−2'),-2);
   assert.equal(parseMatrixNumber('  -2,5  '),-2.5);assert.equal(parseMatrixNumber('+3.0'),3);
 });
-test('random sizes and drafts survive reloads; a saved success flag cannot bypass verification',()=>{
-  const work=restoreMatrixWork(null,bank,()=>0.99),exercise=bank.find(exercise=>exercise.id===work.current);
-  work.entries[exercise.id]={answers:{'1-1':'2','1-2':'-1'},checked:true,solved:true,attempts:2};
-  const restored=restoreMatrixWork(work,bank,()=>0);
-  assert.deepEqual(restored.exerciseIds,work.exerciseIds);assert.equal(restored.current,work.current);
-  assert.equal(restored.entries[exercise.id].answers['1-2'],'-1');
-  assert.equal(restored.entries[exercise.id].solved,false);
-});
-test('a shared result adopts its actual size on a second device and still counts as one of five problems',()=>{
-  const a=restoreMatrixWork(null,bank,()=>0.99),b=restoreMatrixWork(null,bank,()=>0);
-  assert.notEqual(a.current,b.current);
-  const exercises=reconcileMatrixPractice(b,bank,new Set([a.current]));
-  assert.equal(exercises.length,5);assert.equal(b.current,a.current);
-  assert.equal(exercises[0].id,a.current);
+test('a new activity creates a fresh session without recovering earlier answers',()=>{
+  const first=createMatrixSession(bank,{random:()=>0.99});
+  first.entries[first.current]={answers:{'1-1':'2'},solved:true};
+  const second=createMatrixSession(bank,{random:()=>0});
+  assert.equal(second.exerciseIds.length,5);assert.deepEqual(second.entries,{});
+  assert.equal(second.finishedAt,null);assert.notDeepEqual(first.exerciseIds,second.exerciseIds);
 });
 test('course validation rejects oversized matrices, unknown rules and invalid round sizes',()=>{
-  for(const change of [value=>value.matrixPractice.exercises[0].rows=4,value=>value.matrixPractice.practiceSize=20,value=>value.matrixPractice.exercises[0].rule='__proto__',value=>value.lesson.topics[0].id='other']) {
+  for(const change of [value=>value.matrixPractice.exercises[0].rows=4,value=>value.matrixPractice.practiceSize=20,value=>value.matrixPractice.exercises[0].rule='__proto__',value=>value.matrixPractice.exercises[0].problem=6]) {
     const clone=structuredClone(course);change(clone);assert.throws(()=>validateMatrixCourse(clone));
   }
 });

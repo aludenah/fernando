@@ -23,23 +23,12 @@ jobs:
       - name: Verificar JavaScript y contenido
         run: |
           node --check docs/app.js
-          node --check docs/classroom.js
+          node --check docs/activities.js
+          node --check docs/html.js
           node --check docs/matrices.js
           node --check docs/matrices-app.js
+          node --check docs/activity-report.js
+          node --check docs/report-pdf.js
           node --check docs/math.js
-          node --check docs/grading.js
-          node --check docs/grading-views.js
-          node --check docs/sequence.js
-          node --check docs/model.js
-          node --check docs/store.js
-          node --check docs/sync.js
-          node --check docs/sync-protocol.js
-          node scripts/build-progress-service.mjs --check
-          node --check docs/students.js
-          node --check docs/competition-views.js
-          node --check docs/course-views.js
-          node --check docs/drive.js
-          node --check docs/progress.js
-          node --check docs/family-views.js
           npm test
           npm run check

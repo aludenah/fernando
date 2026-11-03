@@ -1,29 +1,32 @@
-# Profesor Alex Ludeña · Matemáticas y Física
+# Profesor Alex Ludeña · Aplicaciones de matemáticas
 
-Web publicada en [GitHub Pages](https://aludenah.github.io/fernando/), desde `main` y `/docs`. La portada conserva los accesos de **Padres**, **Fernando** y **Josué**, sin correo ni contraseña.
+Web publicada en [GitHub Pages](https://aludenah.github.io/fernando/), desde `main` y `/docs`.
 
-## Fernando · Construcción de matrices
+## Acceso y aplicaciones
 
-[Entrar a la práctica](https://aludenah.github.io/fernando/?alumno=fernando#matrices).
+La portada tiene una sola entrada: **Fernando**. Al pulsarla se abre su catálogo de aplicaciones. El primer icono es **Construcción de matrices**; nuevas aplicaciones se incorporan al registro de `docs/activities.js`.
 
-El contenido anterior de Álgebra se ha retirado de su aula. Fernando construye una matriz a partir de una regla para sus elementos `aᵢⱼ`: `i` indica la fila y `j`, la columna; ambos comienzan en 1.
+Los accesos de Padres y Josué y sus materiales se han retirado de la web. También se han retirado los paneles de avance, el guardado de respuestas, la sincronización y la conexión con Apps Script. La aplicación no utiliza IndexedDB, almacenamiento local, cookies de sesión ni solicitudes para registrar resultados. La selección y las respuestas permanecen únicamente en memoria mientras la página está abierta; una recarga inicia una actividad nueva.
 
-- Cinco problemas por práctica. Sus tamaños se eligen al azar entre **2 × 2**, **2 × 3**, **3 × 2** y **3 × 3**, y se conservan al recargar la página. No hay selector de tamaño.
-- El primer problema ya incluye condiciones `i = j` e `i ≠ j`. La práctica combina reglas simples con reglas por casos: igualdad, desigualdad y comparación de los índices. Todas las respuestas son enteras, incluidos ceros.
-- La matriz solo muestra sus casillas: sin etiquetas de fila o columna, subíndices de posición, sustituciones, ayudas al seleccionar ni recuadros de enfoque adicionales.
-- **Verificar matriz** distingue casillas correctas e incorrectas mediante símbolos y texto. Una matriz vacía nunca se interpreta como una matriz de ceros. La matriz debe estar completa y correcta para habilitar **Siguiente problema**.
-- Las respuestas incompletas y la posición de trabajo se conservan en el navegador. Las matrices resueltas se registran aparte y pueden consultarse desde **Padres → Fernando**, también desde otro dispositivo cuando el servicio de avance las confirma.
-- La práctica se adapta a celulares y tabletas y permite pantalla completa en navegadores compatibles. El botón **− / +** facilita escribir negativos con teclados móviles.
+El acceso por nombre es libre; no constituye una cuenta autenticada.
 
-`docs/data/course.json` define las variantes de tamaño para los cinco problemas y sus identificadores de avance. Las reglas se implementan explícitamente en `docs/matrices.js`: no se evalúan expresiones de texto. `docs/matrices-app.js` presenta la práctica y el panel de Padres. `docs/matrices.css` contiene sus estilos. `docs/app.js` elige el aula según el perfil.
+## Construcción de matrices
 
-El guardado de matrices utiliza una cola independiente (`matrices-round-v2-cloud-sync-v1`) dentro de la base original de Fernando. Cada combinación de regla y tamaño tiene su propio identificador; al consultar un resultado desde otro dispositivo se muestra la matriz que realmente se completó. Los borradores antiguos no bloquean la práctica nueva. El servicio de Apps Script descubre los identificadores publicados mediante su catálogo automático. Si la implementación antigua no admite un identificador nuevo o no hay conexión, se conserva el pendiente local y se muestra el estado real; nunca se anuncia una sincronización sin confirmación. Las casillas incompletas permanecen en el dispositivo donde se escribieron.
+- Cinco problemas por actividad. Los tamaños se seleccionan al azar entre 2 × 2, 2 × 3, 3 × 2 y 3 × 3.
+- Reglas simples y por condiciones, con `i = j`, `i ≠ j` y comparaciones entre índices. El primer problema ya incluye casos.
+- Sin selector de tamaño, etiquetas de posiciones, sustituciones ni recuadros adicionales al seleccionar las casillas.
+- Fernando completa las casillas y pulsa **Verificar matriz**. Debe corregir los errores antes de avanzar. Los ceros y los valores negativos se comprueban correctamente.
+- La interfaz conserva el botón de pantalla completa en navegadores compatibles y se adapta a celulares y tabletas.
 
-## Padres y Josué
+## Comprobante de actividad
 
-Padres conserva el selector de alumno. Para Fernando muestra las matrices resueltas y el avance por tamaño; para Josué mantiene el panel de sus tareas y teoría.
+Al verificar correctamente las cinco matrices, la aplicación prepara un PDF con el nombre de Fernando, la actividad, las fechas de inicio y finalización, las reglas y respuestas de cada problema, sus intentos y el resultado de su primera verificación completa.
 
-Josué conserva su preparación para concursos, sus nueve unidades previstas, la primera unidad desarrollada con diez temas y treinta problemas, y sus carpetas de solucionarios. Sus datos, estilos y ejercicios permanecen separados de los de Fernando. `docs/classroom.js` conserva ese funcionamiento; sus archivos están en `docs/data/josue-course.json` y `docs/data/josue-drive.json`.
+El botón **Descargar PDF** permite guardar el archivo y adjuntarlo manualmente a un mensaje de WhatsApp o correo. Cuando el dispositivo admite compartir archivos, aparece **Compartir PDF**, que abre su menú nativo. Ninguna opción envía mensajes automáticamente ni asegura que el profesor los haya recibido.
+
+El comprobante se genera desde las respuestas verificadas de esa sesión; no es un documento firmado ni acredita la identidad de quien resolvió. Un futuro panel docente con entregas centralizadas requerirá autenticación del alumno y del profesor y validación en un servidor.
+
+`docs/activity-report.js` valida los resultados completos. `docs/report-pdf.js` compone el documento. El generador y su fuente están alojados en el propio sitio, con sus licencias; no se envían respuestas a un servicio externo para crear el PDF.
 
 ## Desarrollo y comprobación
 
@@ -33,14 +36,11 @@ Con Node 22 o superior y Python 3:
 npm ci
 npm test
 npm run check
-node scripts/build-progress-service.mjs --check
 npm start
 ```
 
-La web estática se sirve en `http://localhost:4173`; no requiere compilación. Cada confirmación en `main` ejecuta las comprobaciones del repositorio y actualiza GitHub Pages.
+La web estática se sirve en `http://localhost:4173`. No requiere servidor de aplicación ni compilación. Cada cambio en `main` ejecuta las pruebas y actualiza GitHub Pages.
 
-Las pruebas verifican los resultados con cálculos independientes y la selección aleatoria de exactamente cinco problemas, casillas vacías, ceros, negativos, correcciones, navegación, guardado, aislamiento de alumnos y sincronización con un servidor de prueba. No envían respuestas de prueba al servicio real.
+Las pruebas verifican las reglas con resultados calculados de forma independiente, el límite de cinco matrices, la navegación, la corrección de errores, la ausencia de almacenamiento y seguimiento y la generación, descarga y disponibilidad del menú para compartir el PDF. Los mensajes y las funciones para compartir se prueban con simulaciones, sin enviar nada a personas reales.
 
-Los materiales retirados solo se conservan como fixtures de compatibilidad en `tests/fixtures/`, fuera de `/docs`. Los identificadores históricos del servicio se mantienen en `integrations/progress/legacy-fernando.json` para conservar la lectura del avance anterior; no se muestran como contenido del aula actual. Al modificar el catálogo se regenera el servicio con `node scripts/build-progress-service.mjs`.
-
-[Configuración del servicio de avance](integrations/progress/README.md).
+El generador PDF es `jspdf@4.2.1`, fijado en `package-lock.json`; su distribución UMD y licencia se conservan en `docs/vendor/jspdf`. La fuente AulaSans es un subconjunto de DejaVu Sans para los caracteres utilizados en el comprobante. Las expresiones de la web siguen utilizando KaTeX con sus fuentes locales.

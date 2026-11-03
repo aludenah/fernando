@@ -1,201 +1,145 @@
-import {html as h} from './model.js';
+import {html as h} from './html.js';
 import {math as m} from './math.js';
-import {accessView} from './family-views.js?v=matrices-1';
-import {studentLink} from './students.js';
-import {createStudentStore} from './store.js?v=sync-1';
-import {createProgressSync,appsScriptTransport} from './sync.js?v=matrices-1';
-import {matrixRules,validateMatrixCourse,cellsFor,cellKey,matrixValue,checkMatrix,restoreMatrixWork,reconcileMatrixPractice} from './matrices.js?v=matrices-2';
+import {landingView,activitiesView} from './activities.js?v=activities-3';
+import {matrixRules,validateMatrixCourse,cellsFor,cellKey,matrixValue,checkMatrix,createMatrixSession} from './matrices.js?v=activities-3';
+import {createCompletionReport,reportFilename} from './activity-report.js?v=activities-3';
+import {prepareCompletionPdf} from './report-pdf.js?v=activities-3';
 
-const tex = value => m(`\\(${value}\\)`);
-const orders = ['2x2','2x3','3x2','3x3'];
-const orderName = exercise => `${exercise.rows} × ${exercise.columns}`;
-
-export async function mountMatrixApp({doc=document,win=window,store=createStudentStore('fernando'),fetcher=globalThis.fetch,random=Math.random}={}) {
-  const root=doc.querySelector('#app'),message=doc.querySelector('#message'),syncBox=doc.querySelector('#sync-status');
-  const disposers=[];
+const tex=value=>m(`\\(${value}\\)`);
+const orderName=exercise=>`${exercise.rows} × ${exercise.columns}`;
+export async function mountMatrixApp({doc=document,win=window,fetcher=globalThis.fetch,random=Math.random,now=()=>new Date(),makePdf}={}) {
+  const root=doc.querySelector('#app'),message=doc.querySelector('#message'),disposers=[];
   const listen=(target,type,handler)=>{target.addEventListener(type,handler);disposers.push(()=>target.removeEventListener(type,handler));};
-  let course,bank,exercises,work,shared,storage=true,busy=false,started=false,destroyed=false,channel;
-  let learned=new Set(),active={i:1,j:1},saveQueue=Promise.resolve();
-  let syncStatus={enabled:false,phase:'loading',pending:0,lastSyncedAt:null};
-  function notify(text) {message.textContent=text;message.className=text?'message error':'';message.setAttribute('role','alert');}
-  const current=()=>exercises.find(exercise=>exercise.id===work.current)||exercises[0];
-  const entryFor=exercise=>work.entries[exercise.id]||(work.entries[exercise.id]={answers:{},attempts:0,checked:false,solved:false});
-  const solved=exercise=>learned.has(exercise.id)||entryFor(exercise).solved;
-  const completed=()=>exercises.filter(solved).length;
-  const isParent=()=>win.location.hash.slice(1).split('/')[0]==='padres';
-  const isHome=()=>['inicio',''].includes(win.location.hash.slice(1))&&!(!win.location.hash&&new URLSearchParams(win.location.search).get('alumno')==='fernando');
-
-  async function readLearned({adopt}={}) {
-    const settings=await store.all('settings');
-    // Compare the selection at the time the read finishes. A local navigation
-    // that happened while reading is not a remote change and needs no redraw.
-    const before=work.current,wasSolved=learned.has(before);
-    learned=new Set((settings.find(value=>value.id==='learned')?.topics||[]).filter(id=>bank.some(exercise=>exercise.id===id)));
-    if(adopt??!busy)exercises=reconcileMatrixPractice(work,bank,learned);
-    return {redraw:before!==work.current||!wasSolved&&learned.has(work.current)};
+  let bank,session,exercises,report,destroyed=false,active={i:1,j:1},generation=0;
+  let artifact={phase:'idle',file:null,url:null};
+  const stamp=()=>new Date(now()).toISOString();
+  const current=()=>exercises.find(exercise=>exercise.id===session.current);
+  const entryFor=exercise=>session.entries[exercise.id]||(session.entries[exercise.id]={answers:{},checked:false,attempts:0,firstCorrect:null,solved:false,verifiedAt:null});
+  const solved=exercise=>entryFor(exercise).solved;
+  const allDone=()=>exercises?.every(solved);
+  const view=()=>{
+    if(new URLSearchParams(win.location.search).get('alumno')&&new URLSearchParams(win.location.search).get('alumno')!=='fernando')return 'inicio';
+    const route=win.location.hash.slice(1).split('/')[0];
+    if(route==='matrices')return 'matrices';
+    if(['actividades','aplicaciones','cursos'].includes(route))return 'actividades';
+    if(!route&&new URLSearchParams(win.location.search).get('alumno')==='fernando')return 'actividades';
+    return 'inicio';
+  };
+  function notify(text,error=false) {message.textContent=text;message.className=text?`message ${error?'error':'success'}`:'';message.setAttribute('role',error?'alert':'status');}
+  function start() {
+    generation++;if(artifact.url)win.URL.revokeObjectURL(artifact.url);
+    artifact={phase:'idle',file:null,url:null};report=null;
+    session=createMatrixSession(bank,{random,startedAt:stamp()});exercises=session.exerciseIds.map(id=>bank.find(exercise=>exercise.id===id));
   }
-  function saveWork() {
-    if(!storage)return Promise.resolve();
-    const snapshot=structuredClone(work);
-    saveQueue=saveQueue.then(()=>store.update(['settings'],settings=>{
-      const previous=restoreMatrixWork(settings.settings.find(value=>value.id===snapshot.id),bank,random);
-      const value={...snapshot,entries:{...previous.entries,...snapshot.entries}};
-      return {operations:[{store:'settings',value}],result:null};
-    })).catch(()=>{storage=false;notify('No se pudo guardar en este navegador. Puedes seguir practicando; mantén esta pestaña abierta.');updateSync();});
-    return saveQueue;
-  }
-  function updateSync() {
-    if(destroyed||!syncBox)return;
-    syncBox.hidden=isHome();
-    const needsActivation=syncStatus.catalogChecked&&(syncStatus.unsupportedFields||[]).length>0;
-    const labels={loading:'Preparando el guardado…',unconfigured:'Tu práctica se guarda en este dispositivo.',pending:'Avance guardado en este dispositivo · Pendiente de sincronizar.',syncing:'Sincronizando las matrices resueltas…',synced:'Matrices resueltas sincronizadas. Las casillas pendientes se conservan en este dispositivo.',offline:'Sin conexión con el avance compartido. Puedes seguir practicando en este dispositivo.','activation-required':'Las matrices se guardan en este dispositivo. Su sincronización está pendiente de activación.'};
-    const phase=!storage?'offline':needsActivation&&['synced','activation-required'].includes(syncStatus.phase)?'activation-required':syncStatus.phase;
-    syncBox.dataset.phase=phase;
-    syncBox.querySelector('span').textContent=!storage?'Puedes practicar; el guardado en este navegador no está disponible.':labels[phase]||labels.loading;
-    syncBox.querySelector('button').hidden=!shared?.enabled||!storage;
-    const footer=doc.querySelector('#storage-footer');
-    if(footer)footer.textContent='Fernando · Construcción de matrices';
-  }
-  function audience(parent=false) {
-    return `<div class="audience-bar"><span class="audience-badge">${parent?'ACCESO A PADRES':'ACCESO DE FERNANDO'}</span><a href="#inicio">Cambiar de acceso</a></div>`;
-  }
-  function progressMarkup() {
-    return `<div class="mx-progress-copy"><span>Tu recorrido</span><strong data-mx-counter>${completed()} de ${exercises.length} matrices resueltas</strong></div><progress data-mx-progress value="${completed()}" max="${exercises.length}" aria-label="Matrices resueltas"></progress>`;
-  }
-  function updateCounters() {
-    const count=root.querySelector('[data-mx-counter]');if(count)count.textContent=`${completed()} de ${exercises.length} matrices resueltas`;
-    const progress=root.querySelector('[data-mx-progress]');if(progress)progress.value=completed();
-  }
+  const audience=()=>'<div class="audience-bar"><a href="#actividades">← Mis aplicaciones</a><span class="audience-badge">FERNANDO</span></div>';
   function feedbackFor(exercise) {
     const entry=entryFor(exercise);
-    if(solved(exercise))return '<div class="mx-feedback is-success"><strong>✓ ¡Matriz correcta!</strong><p>Todos los elementos cumplen la regla. Ya puedes pasar al siguiente problema.</p></div>';
+    if(entry.solved)return '<div class="mx-feedback is-success"><strong>✓ ¡Matriz correcta!</strong><p>Todos los elementos cumplen la regla. Ya puedes pasar al siguiente problema.</p></div>';
     if(!entry.checked)return '<p class="mx-feedback-idle">Completa la matriz y pulsa «Verificar matriz».</p>';
     const result=checkMatrix(exercise,entry.answers);
-    if(!result.complete)return `<div class="mx-feedback is-warning"><strong>${result.missing?`Falta completar ${result.missing===1?'una casilla':`${result.missing} casillas`}.`:'Revisa cómo escribiste los números.'}</strong><p>Escribe un número en cada casilla. Puedes usar el signo menos para los valores negativos.</p></div>`;
+    if(!result.complete)return `<div class="mx-feedback is-warning"><strong>${result.missing?`Falta completar ${result.missing===1?'una casilla':`${result.missing} casillas`}.`:'Revisa cómo escribiste los números.'}</strong><p>Escribe un número en cada casilla.</p></div>`;
     return `<div class="mx-feedback is-error"><strong>${result.correct} de ${result.total} elementos correctos.</strong><p>Revisa las casillas con ×. Las que tienen ✓ ya están bien. Vuelve a verificar después de corregir.</p></div>`;
   }
   function cellMarkup(exercise,cell) {
-    const entry=entryFor(exercise),done=solved(exercise);
-    const value=done?String(matrixValue(exercise,cell.i,cell.j)):entry.answers[cell.key]||'';
-    return `<label class="mx-cell" data-cell="${cell.key}"><span class="sr-only">Casilla ${(cell.i-1)*exercise.columns+cell.j}</span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" maxlength="24" data-mx-input="${cell.key}" data-i="${cell.i}" data-j="${cell.j}" value="${h(value)}" aria-describedby="mx-feedback" ${done?'readonly':''}><span class="mx-cell-status" aria-hidden="true"></span></label>`;
+    const entry=entryFor(exercise);
+    return `<label class="mx-cell" data-cell="${cell.key}"><span class="sr-only">Casilla ${(cell.i-1)*exercise.columns+cell.j}</span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" maxlength="24" data-mx-input="${cell.key}" data-i="${cell.i}" data-j="${cell.j}" value="${h(entry.answers[cell.key]||'')}" aria-describedby="mx-feedback" ${entry.solved?'readonly':''}><span class="mx-cell-status" aria-hidden="true"></span></label>`;
   }
   function practiceView() {
-    const exercise=current(),list=exercises,index=list.findIndex(value=>value.id===exercise.id),done=solved(exercise),rule=matrixRules[exercise.rule];
-    active={i:1,j:1};
-    return `${audience()}<section class="matrix-app"><header class="mx-heading"><div><p class="eyebrow">EL AULA DE FERNANDO · ÁLGEBRA</p><h1>Construye la matriz.</h1><p>Una regla. Cada posición. Tu respuesta.</p></div>${doc.fullscreenEnabled!==false&&typeof doc.documentElement.requestFullscreen==='function'?'<button type="button" class="button secondary mx-fullscreen" data-mx-action="fullscreen" aria-label="Abrir o salir de pantalla completa">⛶ <span>Pantalla completa</span></button>':''}</header>
-      <div class="mx-progress">${progressMarkup()}</div>
-      <div class="mx-layout"><aside class="mx-instructions panel"><span class="mx-step-label">01 · LEE LA INDICACIÓN</span><h2>Problema ${exercises.indexOf(exercise)+1}</h2><p>Construye la matriz ${tex(`A=(a_{ij})_{${exercise.rows}\\times${exercise.columns}}`)} definida por:</p><div class="mx-rule" data-rule>${tex(`a_{ij}=${rule.tex}`)}</div><div class="mx-dimensions"><strong>${orderName(exercise)}</strong><span>${exercise.rows} filas y ${exercise.columns} columnas</span></div></aside>
+    const exercise=current(),index=exercises.indexOf(exercise),done=solved(exercise);active={i:1,j:1};
+    return `${audience()}<section class="matrix-app"><header class="mx-heading"><div><p class="eyebrow">APLICACIÓN DE MATEMÁTICAS</p><h1>Construye la matriz.</h1><p>Una regla. Cada posición. Tu respuesta.</p></div>${doc.fullscreenEnabled!==false&&typeof doc.documentElement.requestFullscreen==='function'?'<button type="button" class="button secondary mx-fullscreen" data-mx-action="fullscreen" aria-label="Abrir o salir de pantalla completa">⛶ <span>Pantalla completa</span></button>':''}</header>
+      <div class="mx-layout"><aside class="mx-instructions panel"><span class="mx-step-label">01 · LEE LA INDICACIÓN</span><h2>Problema ${index+1}</h2><p>Construye la matriz ${tex(`A=(a_{ij})_{${exercise.rows}\\times${exercise.columns}}`)} definida por:</p><div class="mx-rule" data-rule>${tex(`a_{ij}=${matrixRules[exercise.rule].tex}`)}</div><div class="mx-dimensions"><strong>${orderName(exercise)}</strong><span>${exercise.rows} filas y ${exercise.columns} columnas</span></div></aside>
       <section class="mx-work panel" aria-labelledby="mx-work-heading"><div class="mx-work-heading"><div><span class="mx-step-label">02 · COMPLETA Y COMPRUEBA</span><h2 id="mx-work-heading" tabindex="-1">Completa cada casilla.</h2></div><span class="mx-order-badge">${orderName(exercise)}</span></div><form id="mx-form" novalidate><div class="mx-matrix-space"><span class="mx-matrix-letter" aria-hidden="true">A =</span><div class="mx-grid" style="--mx-columns:${exercise.columns}">${cellsFor(exercise).map(cell=>cellMarkup(exercise,cell)).join('')}</div></div>
-      <div class="mx-input-note"><span>Puedes escribir números negativos.</span><button type="button" class="mx-sign-button" data-mx-action="negative" ${done?'disabled':''} aria-label="Cambiar el signo de la casilla seleccionada">− / +</button></div><div id="mx-feedback" role="status" aria-live="polite" aria-atomic="true">${feedbackFor(exercise)}</div><div class="mx-actions"><button class="button mx-verify" type="submit" ${done?'disabled':''}>Verificar matriz <span aria-hidden="true">✓</span></button><button class="button secondary mx-next" type="button" data-mx-action="next" ${!done||index===list.length-1?'disabled':''}>Siguiente problema <span aria-hidden="true">→</span></button></div></form><div class="mx-work-bottom"><button type="button" data-mx-action="previous" ${index<=0?'disabled':''}>← Anterior</button><span>${index+1} de ${list.length} problemas</span></div>${completed()===exercises.length?'<div class="mx-all-done"><strong>¡Completaste los cinco problemas!</strong><p>Recorre las matrices anteriores para repasar lo que construiste.</p></div>':''}</section></div></section>`;
+      <div class="mx-input-note"><span>Puedes escribir números negativos.</span><button type="button" class="mx-sign-button" data-mx-action="negative" ${done?'disabled':''} aria-label="Cambiar el signo de la casilla seleccionada">− / +</button></div><div id="mx-feedback" role="status" aria-live="polite" aria-atomic="true">${feedbackFor(exercise)}</div><div class="mx-actions"><button class="button mx-verify" type="submit" ${done?'disabled':''}>Verificar matriz <span aria-hidden="true">✓</span></button><button class="button secondary mx-next" type="button" data-mx-action="next" ${!done?'disabled':''}>Siguiente problema <span aria-hidden="true">→</span></button></div></form><div class="mx-work-bottom"><button type="button" data-mx-action="previous" ${index<=0?'disabled':''}>← Anterior</button><span>Problema ${index+1} de 5</span></div></section></div></section>`;
   }
-  function parentView() {
-    const sharedText=shared?.enabled&&syncStatus.lastSyncedAt?'Las matrices resueltas se consultan en el avance compartido.':'Se muestra el avance disponible en este dispositivo.';
-    return `${audience(true)}<nav class="profile-tabs" aria-label="Elegir hijo"><a href="${h(studentLink('fernando','padres',win.location.search))}" aria-current="page">Fernando</a><a href="${h(studentLink('josue','padres',win.location.search))}">Josué</a></nav><section class="matrix-app mx-parent"><div class="page-heading"><div><p class="eyebrow">ACOMPAÑANDO SU APRENDIZAJE</p><h1>Las matrices de Fernando.</h1><p>Construcción de matrices a partir de sus índices.</p></div></div><section class="panel mx-parent-summary"><div><span>Matrices resueltas correctamente</span><strong id="parent-matrices">${completed()} <small>/ ${exercises.length}</small></strong><p>${sharedText}</p></div><button type="button" class="button secondary" data-mx-action="refresh">Actualizar avance</button><div class="mx-progress">${progressMarkup()}</div></section><div class="mx-parent-orders">${orders.map(order=>{const list=exercises.filter(exercise=>`${exercise.rows}x${exercise.columns}`===order);return `<article class="panel"><h2>${order.replace('x',' × ')}</h2><strong>${list.filter(solved).length} / ${list.length}</strong><p>Matrices resueltas</p></article>`;}).join('')}</div><section class="panel"><div class="section-heading"><h2>Recorrido de práctica</h2><span>${exercises.length} problemas</span></div><div class="mx-parent-list">${exercises.map((exercise,index)=>`<div class="mx-parent-row"><span class="mx-parent-number">${String(index+1).padStart(2,'0')}</span><div><strong>Construir una matriz ${orderName(exercise)}</strong><span>${tex(`a_{ij}=${matrixRules[exercise.rule].tex}`)}</span></div><span class="mx-result-badge ${solved(exercise)?'is-solved':''}">${solved(exercise)?'✓ Resuelta':'Pendiente'}</span></div>`).join('')}</div></section></section>`;
+  function canShare() {
+    try{return artifact.phase==='ready'&&Boolean(win.navigator.share&&win.navigator.canShare?.({files:[artifact.file]}));}catch{return false;}
+  }
+  function reportControls() {
+    if(artifact.phase==='ready')return `<div class="button-row"><a class="button" data-mx-action="download-report" href="${h(artifact.url)}" download="${h(artifact.file.name)}">Descargar PDF ↓</a>${canShare()?'<button type="button" class="button secondary" data-mx-action="share-report">Compartir PDF ↗</button>':''}</div><p class="receipt-delivery-note">Guarda el PDF antes de cerrar esta página. Adjúntalo a un mensaje de WhatsApp o a un correo para tu profesor.</p>`;
+    if(artifact.phase==='error')return '<p class="receipt-error">No se pudo preparar el PDF. Tus respuestas siguen aquí.</p><button type="button" class="button" data-mx-action="retry-report">Intentar de nuevo</button>';
+    return '<p class="receipt-loading" role="status">Preparando tu comprobante PDF…</p>';
+  }
+  function completionView() {
+    return `${audience()}<section class="matrix-app receipt-view"><header class="mx-heading"><div><p class="eyebrow">CONSTRUCCIÓN DE MATRICES</p><h1>¡Actividad terminada!</h1><p>Las cinco matrices están correctas, Fernando.</p></div><span class="receipt-check" aria-hidden="true">✓</span></header><section class="panel receipt-panel"><span class="mx-step-label">TU COMPROBANTE</span><h2>Listo para entregarlo a tu profesor.</h2><p>El reporte incluye las reglas, tus cinco matrices, la fecha y los intentos de verificación.</p><div id="receipt-controls">${reportControls()}</div></section><details class="panel receipt-review"><summary>Ver mis respuestas</summary>${exercises.map(exercise=>`<article class="receipt-answer"><div><h2>Problema ${exercise.problem} · ${orderName(exercise)}</h2><p>${tex(`a_{ij}=${matrixRules[exercise.rule].tex}`)}</p><small>${entryFor(exercise).attempts} ${entryFor(exercise).attempts===1?'intento':'intentos'}</small></div><div class="receipt-matrix" style="--mx-columns:${exercise.columns}" aria-label="Tu matriz del problema ${exercise.problem}">${cellsFor(exercise).map(cell=>`<span>${h(entryFor(exercise).answers[cell.key])}</span>`).join('')}</div></article>`).join('')}</details><div class="receipt-bottom"><a href="#actividades">← Mis aplicaciones</a><button type="button" data-mx-action="restart">Comenzar una práctica nueva</button></div></section>`;
   }
   function decorate() {
-    const exercise=current(),entry=entryFor(exercise),result=checkMatrix(exercise,entry.answers),done=solved(exercise);
-    for(const input of root.querySelectorAll('[data-mx-input]')) {
+    const exercise=current(),entry=entryFor(exercise),result=checkMatrix(exercise,entry.answers);
+    for(const input of root.querySelectorAll('[data-mx-input]')){
       const cell=result.cells.find(value=>value.key===input.dataset.mxInput);
-      const status=done?'correct':entry.checked?(result.complete?(cell.correct?'correct':'incorrect'):!cell.valid?'missing':''):'';
-      input.closest('.mx-cell').dataset.result=status;
-      input.setAttribute('aria-invalid',String(status==='incorrect'||status==='missing'));
+      const status=entry.solved?'correct':entry.checked?(result.complete?(cell.correct?'correct':'incorrect'):!cell.valid?'missing':''):'';
+      input.closest('.mx-cell').dataset.result=status;input.setAttribute('aria-invalid',String(status==='incorrect'||status==='missing'));
       input.closest('.mx-cell').querySelector('.mx-cell-status').textContent=status==='correct'?'✓':status==='incorrect'?'×':status==='missing'?'!':'';
     }
   }
   function render(focus=false) {
     if(destroyed)return;
-    const home=isHome();
-    root.innerHTML=home?accessView(win.location.search):isParent()?parentView():practiceView();
-    if(!home&&!isParent())decorate();
-    updateSync();
-    if(!home&&!started&&shared&&storage){started=true;void shared.sync();}
+    const page=view();
+    if(page==='matrices'&&!session)start();
+    root.innerHTML=page==='inicio'?landingView(win.location.search):page==='actividades'?activitiesView():allDone()?completionView():practiceView();
+    if(page==='matrices'&&!allDone())decorate();
     if(focus){const heading=root.querySelector('#mx-work-heading,h1');heading?.setAttribute('tabindex','-1');heading?.focus({preventScroll:true});}
   }
-  async function verify(event) {
-    event.preventDefault();if(busy||solved(current()))return;
-    const exercise=current(),entry=entryFor(exercise),result=checkMatrix(exercise,entry.answers);
-    entry.checked=true;
-    if(result.complete)entry.attempts++;
-    busy=true;const button=root.querySelector('.mx-verify');button.disabled=true;
-    for(const input of root.querySelectorAll('[data-mx-input]'))input.readOnly=true;
-    if(result.solved)entry.solved=true;
-    await saveWork();
-    if(result.solved&&shared&&storage) {
-      try{await shared.saveTopic(exercise.id,true);await readLearned();channel?.postMessage({type:'matrices-updated'});void shared.sync();}
-      catch{notify('La matriz está correcta. Su envío quedó pendiente; vuelve a sincronizar cuando recuperes la conexión.');}
+  async function prepareReport() {
+    const token=generation;artifact.phase='preparing';
+    const controls=root.querySelector('#receipt-controls');if(controls)controls.innerHTML=reportControls();
+    try{
+      const bytes=await (makePdf?makePdf(report):prepareCompletionPdf(report,{doc,fetcher}));
+      if(destroyed||token!==generation)return;
+      const file=new win.File([bytes],reportFilename(report),{type:'application/pdf'});
+      artifact={phase:'ready',file,url:win.URL.createObjectURL(file)};
+    }catch{if(destroyed||token!==generation)return;artifact.phase='error';}
+    const target=root.querySelector('#receipt-controls');if(target)target.innerHTML=reportControls();
+  }
+  function verify(event) {
+    event.preventDefault();const exercise=current(),entry=entryFor(exercise);if(entry.solved)return;
+    const result=checkMatrix(exercise,entry.answers);entry.checked=true;
+    if(result.complete){entry.attempts++;if(entry.firstCorrect===null)entry.firstCorrect=result.correct;}
+    if(result.solved){entry.solved=true;entry.verifiedAt=stamp();}
+    if(allDone()){
+      session.finishedAt=stamp();report=createCompletionReport(session,exercises);artifact.phase='preparing';render(true);void prepareReport();return;
     }
-    busy=false;
-    if(destroyed||isHome()||isParent())return;
-    root.querySelector('#mx-feedback').innerHTML=feedbackFor(exercise);
-    decorate();updateCounters();
-    root.querySelector('.mx-verify').disabled=result.solved;
-    root.querySelector('.mx-next').disabled=!result.solved||exercises.at(-1)?.id===exercise.id;
-    root.querySelector('[data-mx-action="negative"]').disabled=result.solved;
-    for(const input of root.querySelectorAll('[data-mx-input]'))input.readOnly=result.solved;
-    if(result.solved) {
-      const next=root.querySelector('.mx-next');if(!next.disabled)next.focus();
-      if(completed()===exercises.length&&!root.querySelector('.mx-all-done'))root.querySelector('.mx-work').insertAdjacentHTML('beforeend','<div class="mx-all-done"><strong>¡Completaste los cinco problemas!</strong><p>Recorre las matrices anteriores para repasar lo que construiste.</p></div>');
-    } else {
-      const cell=result.cells.find(value=>result.complete?!value.correct:!value.valid);
-      root.querySelector(`[data-mx-input="${cell.key}"]`)?.focus();
-    }
+    render();
+    if(result.solved)root.querySelector('.mx-next')?.focus();
+    else {const cell=result.cells.find(value=>result.complete?!value.correct:!value.valid);root.querySelector(`[data-mx-input="${cell.key}"]`)?.focus();}
   }
   function editInput(input) {
-    if(busy||solved(current()))return;
-    const entry=entryFor(current());
+    const entry=entryFor(current());if(entry.solved)return;
     entry.answers[input.dataset.mxInput]=input.value;entry.checked=false;
-    root.querySelector('#mx-feedback').innerHTML=feedbackFor(current());
-    decorate();void saveWork();
+    root.querySelector('#mx-feedback').innerHTML=feedbackFor(current());decorate();
   }
   async function action(event) {
-    const button=event.target.closest('[data-mx-action]');if(!button||button.disabled||busy)return;
+    const button=event.target.closest('[data-mx-action]');if(!button||button.disabled)return;
     const name=button.dataset.mxAction;
-    if(name==='fullscreen') {
-      try{if(doc.fullscreenElement)await doc.exitFullscreen();else await doc.querySelector('#main').requestFullscreen();}
-      catch{notify('No se pudo abrir la pantalla completa en este navegador.');}
-      return;
+    if(name==='fullscreen'){
+      try{if(doc.fullscreenElement)await doc.exitFullscreen();else await doc.querySelector('#main').requestFullscreen();}catch{notify('No se pudo abrir la pantalla completa en este navegador.',true);}return;
     }
-    if(name==='refresh'){if(storage){await saveQueue;await readLearned();render();if(shared)void shared.sync();}return;}
-    if(name==='negative') {
+    if(name==='retry-report'){if(report&&artifact.phase==='error')void prepareReport();return;}
+    if(name==='download-report'){
+      if(artifact.phase!=='ready')return;
+      notify('El PDF está listo para adjuntarlo a tu mensaje de WhatsApp o correo.');return;
+    }
+    if(name==='share-report'){
+      if(!canShare())return;
+      try{await win.navigator.share({files:[artifact.file],title:'Actividad de Fernando - Matrices',text:'Comprobante de la actividad Construcción de matrices.'});}
+      catch(error){if(error.name!=='AbortError')notify('No se pudo abrir la opción de compartir. Descarga el PDF y adjúntalo a tu mensaje.',true);}return;
+    }
+    if(name==='restart'){start();notify('');render(true);return;}
+    if(name==='negative'){
       const input=root.querySelector(`[data-mx-input="${cellKey(active.i,active.j)}"]`);if(!input||input.readOnly)return;
       input.value=input.value.startsWith('-')?input.value.slice(1):'-'+input.value.replace(/^\+/,'');editInput(input);input.focus();return;
     }
-    const list=exercises,index=list.findIndex(exercise=>exercise.id===work.current);
-    let target;
-    if(name==='previous'&&index>0)target=list[index-1].id;
-    else if(name==='next'&&solved(current())) {
-      if(index<list.length-1)target=list[index+1].id;
-      else return;
-    } else return;
-    busy=true;button.disabled=true;
-    for(const input of root.querySelectorAll('[data-mx-input]'))input.readOnly=true;
-    work.current=target;
-    await saveWork();
-    if(storage)await readLearned({adopt:true});
-    busy=false;render(true);
+    const index=exercises.indexOf(current());
+    if(name==='previous'&&index>0)session.current=exercises[index-1].id;
+    else if(name==='next'&&solved(current())&&index<4)session.current=exercises[index+1].id;
+    else return;
+    render(true);
   }
-  try {
+  try{
     const response=await fetcher(new URL('./data/course.json',import.meta.url),{cache:'no-cache'});
-    if(!response.ok)throw new Error('No se pudo cargar la práctica.');
-    course=validateMatrixCourse(await response.json());bank=course.matrixPractice.exercises;
-    try{await store.openDatabase();const settings=await store.all('settings');work=restoreMatrixWork(settings.find(value=>value.id==='matrices-practice-v2'),bank,random);exercises=work.exerciseIds.map(id=>bank.find(exercise=>exercise.id===id));await readLearned();}
-    catch{storage=false;work=restoreMatrixWork(null,bank,random);exercises=work.exerciseIds.map(id=>bank.find(exercise=>exercise.id===id));notify('El navegador no permite guardar. Puedes practicar mientras mantengas abierta esta pestaña.');}
-    await saveWork();
-    let transport=null;
-    try{const response=await fetcher(new URL('./data/sync.json',import.meta.url),{cache:'no-store'});if(response.ok){const config=await response.json();if(config.endpoint)transport=appsScriptTransport(config.endpoint,fetcher);}}catch{}
-    if(storage) {
-      shared=createProgressSync({studentId:'fernando',course,store,transport,recordId:'matrices-round-v2-cloud-sync-v1',uuid:()=>win.crypto?.randomUUID?.()||`matrix-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,onStatus:value=>{syncStatus=value;updateSync();},onChange:async()=>{
-        if(destroyed)return;
-        const change=await readLearned();if(destroyed)return;
-        // A background read must not replace the matrix or steal a typing focus.
-        if(isParent()||!busy&&change.redraw)render();else updateCounters();
-      }});
-      await shared.initialize();
-      for(const exercise of exercises.filter(value=>entryFor(value).solved&&!learned.has(value.id)))await shared.saveTopic(exercise.id,true);
-      try{if(typeof win.BroadcastChannel==='function'){channel=new win.BroadcastChannel('fernando-matrices');listen(channel,'message',async()=>{if(destroyed)return;const change=await readLearned();if(destroyed)return;if(isParent()||!busy&&change.redraw)render();else updateCounters();});}}catch{}
-    } else syncStatus={enabled:false,phase:'unconfigured'};
+    if(!response.ok)throw new Error('No se pudo cargar la aplicación.');
+    bank=validateMatrixCourse(await response.json()).matrixPractice.exercises;
     listen(root,'click',event=>{void action(event);});
-    listen(root,'submit',event=>{if(event.target.id==='mx-form')void verify(event);});
+    listen(root,'submit',event=>{if(event.target.id==='mx-form')verify(event);});
     listen(root,'input',event=>{if(event.target.matches('[data-mx-input]'))editInput(event.target);});
     listen(root,'focusin',event=>{if(event.target.matches('[data-mx-input]'))active={i:Number(event.target.dataset.i),j:Number(event.target.dataset.j)};});
     listen(root,'keydown',event=>{
@@ -204,15 +148,9 @@ export async function mountMatrixApp({doc=document,win=window,store=createStuden
       const next=event.key==='ArrowUp'?index-current().columns:event.key==='ArrowDown'?index+current().columns:index+1;
       if(inputs[next]){event.preventDefault();inputs[next].focus();}
     });
-    listen(win,'hashchange',()=>render(true));
-    const refresh=()=>{if(!isHome()&&storage&&doc.visibilityState!=='hidden')void shared?.sync();};
-    listen(win,'online',refresh);listen(win,'focus',refresh);listen(doc,'visibilitychange',refresh);
-    const syncButton=syncBox?.querySelector('button');if(syncButton)listen(syncButton,'click',refresh);
-    listen(doc,'fullscreenchange',()=>{const text=root.querySelector('.mx-fullscreen span');if(text)text.textContent=doc.fullscreenElement?'Salir de pantalla completa':'Pantalla completa';});
-    const interval=win.setInterval(refresh,30000);disposers.push(()=>win.clearInterval(interval));
+    listen(win,'hashchange',()=>{notify('');render(true);});
+    listen(doc,'fullscreenchange',()=>{const label=root.querySelector('.mx-fullscreen span');if(label)label.textContent=doc.fullscreenElement?'Salir de pantalla completa':'Pantalla completa';});
     render();
-  } catch(error) {
-    root.innerHTML='<section class="panel"><h1>No pudimos abrir la práctica.</h1><p>Comprueba tu conexión y vuelve a cargar la página.</p></section>';notify(error.message);
-  }
-  return {destroy(){destroyed=true;for(const dispose of disposers)dispose();channel?.close();},flush:()=>saveQueue};
+  }catch(error){root.innerHTML='<section class="panel"><h1>No pudimos abrir el aula.</h1><p>Comprueba tu conexión y vuelve a cargar la página.</p></section>';notify(error.message,true);}
+  return {destroy(){destroyed=true;generation++;for(const dispose of disposers)dispose();if(artifact.url)win.URL.revokeObjectURL(artifact.url);}};
 }

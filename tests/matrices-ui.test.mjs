@@ -2,129 +2,80 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {JSDOM} from 'jsdom';
-import {IDBFactory} from 'fake-indexeddb';
 import {mountMatrixApp} from '../docs/matrices-app.js';
-import {createStudentStore} from '../docs/store.js';
-import {emptyProgress,progressCatalog,mergeProgress} from '../docs/sync-protocol.js';
-
-const course=JSON.parse(await readFile(new URL('../docs/data/course.json',import.meta.url)));
+import {expected} from './report-fixture.mjs';
 const html=await readFile(new URL('../docs/index.html',import.meta.url),'utf8');
-const catalog=progressCatalog(course);
-function server(){let state=emptyProgress('fernando');return {state:()=>state,send(payload){const result=mergeProgress(state,payload.operations,catalog,new Date().toISOString());state=result.state;return {...result,supportedFields:Object.keys(catalog)};}};}
-async function open({factory=new IDBFactory(),service=server(),route='matrices',student='fernando',offline=false,random=()=>0.99}={}) {
-  const dom=new JSDOM(html,{url:`https://aula.example/${student?'?alumno='+student:''}#${route}`,pretendToBeVisual:true});
-  const store=createStudentStore('fernando',factory),requests=[];
-  const fetcher=async(url,options={})=>{
-    requests.push(String(url));
-    if(String(url).startsWith('https://script.google.com/')){if(offline)throw new Error('Offline');return new Response(JSON.stringify(service.send(JSON.parse(options.body))));}
-    return new Response(await readFile(new URL(url)));
-  };
-  const app=await mountMatrixApp({doc:dom.window.document,win:dom.window,store,fetcher,random});
-  const doc=dom.window.document;
-  return {app,doc,win:dom.window,service,store,factory,requests,close(){app.destroy();dom.window.close();}};
+async function open({route='matrices',search='?alumno=fernando',share=false,pdfMaker=async()=>new Uint8Array([37,80,68,70,45,49])}={}){
+ const dom=new JSDOM(html,{url:`https://aula.example/${search}#${route}`,pretendToBeVisual:true}),doc=dom.window.document,win=dom.window;
+ const requests=[],reports=[],downloads=[],shares=[];let clock=0;
+ for(const name of ['indexedDB','localStorage','sessionStorage'])Object.defineProperty(win,name,{get(){throw new Error('Storage must not be accessed.');},configurable:true});
+ win.URL.createObjectURL=()=> 'blob:test-report';win.URL.revokeObjectURL=()=>{};
+ doc.addEventListener('click',event=>{const target=event.target.closest('a[download]');if(target){downloads.push({name:target.download,url:target.href});event.preventDefault();}});
+ if(share){Object.defineProperty(win.navigator,'canShare',{value:()=>true});Object.defineProperty(win.navigator,'share',{value:async data=>{shares.push(data);}});}
+ const app=await mountMatrixApp({doc,win,random:()=>.99,now:()=>new Date(Date.parse('2026-11-03T00:00:00Z')+clock++*1000),fetcher:async(url,options={})=>{
+  requests.push({url:String(url),method:options.method||'GET'});assert.equal(options.body,undefined);assert.equal(options.method,undefined);
+  assert.match(String(url),/\/data\/course.json$/);return new Response(await readFile(new URL(url)));
+ },makePdf:async report=>{reports.push(report);return pdfMaker(report);}});
+ return {app,doc,win,requests,reports,downloads,shares,close(){app.destroy();win.close();}};
 }
-async function until(check) {for(let attempt=0;attempt<120;attempt++){if(check())return;await new Promise(resolve=>setTimeout(resolve,10));}throw new Error('Expected UI state was not reached.');}
-function input(ui,key,value){const element=ui.doc.querySelector(`[data-mx-input="${key}"]`);assert.ok(element);element.value=value;element.dispatchEvent(new ui.win.Event('input',{bubbles:true}));}
-function fill(ui,values){for(const [index,value] of values.entries()){const element=ui.doc.querySelectorAll('[data-mx-input]')[index];input(ui,element.dataset.mxInput,String(value));}}
+async function until(check){for(let count=0;count<100;count++){if(check())return;await new Promise(resolve=>setTimeout(resolve,5));}throw new Error('The interface did not reach the expected state.');}
+function fill(ui,values){for(const [index,value]of values.entries()){const field=ui.doc.querySelectorAll('[data-mx-input]')[index];field.value=String(value);field.dispatchEvent(new ui.win.Event('input',{bubbles:true}));}}
 function submit(ui){ui.doc.querySelector('#mx-form').dispatchEvent(new ui.win.Event('submit',{bubbles:true,cancelable:true}));}
+function finish(ui,{startAt=0}={}){
+ for(let problem=startAt;problem<5;problem++){
+  for(const field of ui.doc.querySelectorAll('[data-mx-input]')){field.value=String(expected[problem][Number(field.dataset.i)-1][Number(field.dataset.j)-1]);field.dispatchEvent(new ui.win.Event('input',{bubbles:true}));}
+  submit(ui);if(problem<4)ui.doc.querySelector('.mx-next').click();
+ }
+}
 
-test('home keeps all three accesses and Fernando opens only the matrix practice',async()=>{
-  const ui=await open({student:'',route:'inicio'});
-  try{
-    const links=[...ui.doc.querySelectorAll('.access-card')];
-    assert.deepEqual(links.map(link=>link.querySelector('h2').textContent),['Padres','Fernando','Josué']);
-    assert.match(links[1].href,/alumno=fernando#matrices/);
-    assert.match(links[2].href,/alumno=josue#cursos/);
-    assert.doesNotMatch(ui.doc.body.textContent,/Introducción al álgebra|Exponentes y radicales|30 problemas/);
-    ui.win.location.hash='matrices';await until(()=>ui.doc.querySelector('#mx-form'));
-    assert.equal(ui.doc.querySelectorAll('[data-mx-input]').length,4);
-    assert.doesNotMatch(ui.doc.body.textContent,/Mis cursos|Temario|Subir al Drive/);
-  }finally{ui.close();}
+test('Fernando is the only access; his catalog opens the matrix application as an icon',async()=>{
+ const ui=await open({route:'inicio',search:''});
+ try{
+  assert.deepEqual([...ui.doc.querySelectorAll('.access-card h2')].map(node=>node.textContent),['Fernando']);
+  assert.match(ui.doc.querySelector('.access-card').href,/alumno=fernando#actividades/);
+  assert.doesNotMatch(ui.doc.body.textContent,/Padres|Josué|avance|progreso/i);
+  ui.win.location.hash='actividades';await until(()=>ui.doc.querySelector('.activity-card'));
+  assert.equal(ui.doc.querySelectorAll('.activity-card').length,1);assert.ok(ui.doc.querySelector('.activity-icon svg'));
+  ui.doc.querySelector('.activity-card').click();await until(()=>ui.doc.querySelector('#mx-form'));
+  assert.equal(ui.doc.querySelectorAll('[data-mx-input]').length,4);
+  assert.equal(ui.doc.querySelectorAll('progress,#sync-status,#mx-order,#mx-cell-help,.mx-cell-index').length,0);
+ }finally{ui.close();}
 });
-
-test('incomplete matrices, errors, correction, next problem and saved progress follow the actual interaction',async()=>{
-  const ui=await open();
-  try{
-    submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-warning'));
-    assert.equal(ui.doc.querySelector('.mx-next').disabled,true);
-    const selected=ui.doc.querySelector('[data-mx-input="2-1"]');selected.focus();
-    assert.equal(ui.doc.querySelectorAll('#mx-order,#mx-cell-help,.mx-cell-index,[data-mx-row],[data-mx-column],.is-active').length,0);
-    assert.doesNotMatch(ui.doc.body.textContent,/Tamaño para practicar|Fila i =|Columna j =/);
-    fill(ui,[2,-1,1,99]);submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-error'));
-    assert.match(ui.doc.querySelector('#mx-feedback').textContent,/3 de 4/);
-    assert.equal(ui.doc.querySelectorAll('.mx-cell[data-result="incorrect"]').length,1);
-    assert.equal(ui.doc.querySelector('.mx-next').disabled,true);
-    assert.equal(ui.doc.activeElement.dataset.mxInput,'2-2');
-    input(ui,'2-2','4');submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-success'));
-    assert.equal(ui.doc.querySelectorAll('input[readonly]').length,4);
-    assert.equal(ui.doc.querySelector('.mx-next').disabled,false);
-    await until(()=>ui.service.state().fields['topic:matrices-r2-p1-2x2']?.value===true);
-    ui.doc.querySelector('.mx-next').click();await until(()=>ui.doc.querySelectorAll('[data-mx-input]').length===6);
-    assert.match(ui.doc.querySelector('.mx-instructions').textContent,/Problema 2/);
-    assert.equal(ui.doc.querySelectorAll('.mx-grid .mx-cell').length,6);
-    assert.match(ui.doc.querySelector('.mx-order-badge').textContent,/2 × 3/);
-    input(ui,'2-3','-4');await ui.app.flush();
-    ui.win.dispatchEvent(new ui.win.Event('focus'));
-    await until(()=>ui.doc.querySelector('#sync-status').dataset.phase==='synced');
-    assert.equal(ui.doc.querySelector('[data-mx-input="2-3"]').value,'-4');
-    ui.win.location.hash='padres';await until(()=>ui.doc.querySelector('#parent-matrices'));
-    assert.match(ui.doc.querySelector('#parent-matrices').textContent,/1.*5/);
-    assert.equal(ui.doc.querySelectorAll('.mx-result-badge.is-solved').length,1);
-    assert.doesNotMatch(ui.doc.body.textContent,/Introducción al álgebra|Exponentes y radicales/);
-    assert.ok(ui.doc.querySelector('a[href*="alumno=josue#padres"]'));
-  }finally{ui.close();}
+test('removed profile URLs show only the current landing page',async()=>{
+ for(const options of [{route:'padres'},{route:'cursos',search:'?alumno=josue'}]){
+  const ui=await open(options);try{assert.equal(ui.doc.querySelectorAll('.access-card').length,1);assert.doesNotMatch(ui.doc.body.textContent,/Padres|Josué|avance|progreso/i);}finally{ui.close();}
+ }
 });
-
-test('exactly five problems are presented, with random sizes, conditional rules, and no indexing aids on focus',async()=>{
-  const ui=await open();
-  const expected=[[[2,-1,-2],[1,4,-1],[2,1,6]],[[2,3,4],[3,4,5],[4,5,6]],[[2,3,4],[1,4,5],[2,1,6]],[[1,0,0],[0,1,0],[0,0,1]],[[0,3,4],[1,0,5],[2,1,0]]];
-  try{
-    assert.match(ui.doc.querySelector('[data-mx-counter]').textContent,/0 de 5/);
-    assert.match(ui.doc.querySelector('[data-rule] annotation').textContent,/i=j/);
-    for(let index=0;index<5;index++){
-      assert.match(ui.doc.querySelector('.mx-instructions h2').textContent,new RegExp('Problema '+(index+1)));
-      const fields=[...ui.doc.querySelectorAll('[data-mx-input]')];
-      fields.at(-1).focus();
-      assert.equal(ui.doc.querySelectorAll('#mx-order,#mx-cell-help,.mx-cell-index,[data-mx-row],[data-mx-column],.is-active').length,0);
-      for(const field of fields)input(ui,field.dataset.mxInput,String(expected[index][Number(field.dataset.i)-1][Number(field.dataset.j)-1]));
-      submit(ui);await until(()=>ui.doc.querySelector('.mx-feedback.is-success'));
-      assert.match(ui.doc.querySelector('[data-mx-counter]').textContent,new RegExp((index+1)+' de 5'));
-      if(index<4){ui.doc.querySelector('.mx-next').click();await until(()=>ui.doc.querySelector('.mx-instructions h2').textContent==='Problema '+(index+2));}
-    }
-    assert.equal(ui.doc.querySelector('.mx-next').disabled,true);
-    assert.match(ui.doc.querySelector('.mx-all-done').textContent,/cinco problemas/);
-    assert.equal(ui.doc.querySelectorAll('.math-fallback').length,0);
-    ui.win.location.hash='padres';await until(()=>ui.doc.querySelector('#parent-matrices'));
-    assert.equal(ui.doc.querySelectorAll('.mx-parent-row').length,5);
-    assert.match(ui.doc.querySelector('#parent-matrices').textContent,/5.*5/);
-  }finally{await ui.app.flush();ui.close();}
+test('blank cells and errors must be corrected before advancing, without positioning aids',async()=>{
+ const ui=await open();try{
+  submit(ui);assert.ok(ui.doc.querySelector('.mx-feedback.is-warning'));assert.equal(ui.doc.querySelector('.mx-next').disabled,true);
+  fill(ui,[2,-1,1,99]);submit(ui);assert.match(ui.doc.querySelector('#mx-feedback').textContent,/3 de 4/);
+  assert.equal(ui.doc.querySelectorAll('.mx-cell[data-result="incorrect"]').length,1);
+  fill(ui,[2,-1,1,4]);submit(ui);assert.ok(ui.doc.querySelector('.mx-feedback.is-success'));
+  assert.equal(ui.doc.querySelectorAll('input[readonly]').length,4);
+  ui.doc.querySelector('.mx-next').click();assert.match(ui.doc.querySelector('.mx-instructions h2').textContent,/Problema 2/);
+  assert.equal(ui.doc.querySelectorAll('[data-mx-input]').length,6);assert.equal(ui.reports.length,0);
+  finish(ui,{startAt:1});await until(()=>ui.doc.querySelector('[data-mx-action="download-report"]'));
+  assert.equal(ui.reports[0].results[0].attempts,2);assert.equal(ui.reports[0].results[0].firstCorrect,3);
+ }finally{ui.close();}
 });
-
-test('drafts survive reloading offline and completed matrices reach a separate parent device',async()=>{
-  const factory=new IDBFactory(),service=server();
-  const first=await open({factory,service});
-  fill(first,[2,-1,1,4]);submit(first);await until(()=>service.state().fields['topic:matrices-r2-p1-2x2']);
-  first.doc.querySelector('.mx-next').click();await until(()=>first.doc.querySelectorAll('[data-mx-input]').length===6);
-  input(first,'2-1','0');await first.app.flush();first.close();
-  const offline=await open({factory,service,offline:true,random:()=>0});
-  try{assert.equal(offline.doc.querySelector('[data-mx-input="2-1"]').value,'0');assert.match(offline.doc.querySelector('.mx-instructions').textContent,/Problema 2/);}
-  finally{offline.close();}
-  const parent=await open({service,route:'padres',random:()=>0});
-  try{await until(()=>parent.doc.querySelectorAll('.mx-result-badge.is-solved').length===1);assert.match(parent.doc.querySelector('#parent-matrices').textContent,/1.*5/);}
-  finally{parent.close();}
+test('finishing five matrices automatically prepares a downloadable PDF and offers native sharing when supported',async()=>{
+ const ui=await open({share:true});try{
+  assert.equal(ui.doc.querySelector('[data-mx-action="download-report"]'),null);finish(ui);
+  await until(()=>ui.doc.querySelector('[data-mx-action="download-report"]'));
+  assert.match(ui.doc.querySelector('h1').textContent,/Actividad terminada/);assert.equal(ui.reports.length,1);assert.equal(ui.reports[0].results.length,5);
+  assert.equal(ui.doc.querySelectorAll('.receipt-answer').length,5);assert.equal(ui.doc.querySelector('#mx-form'),null);
+  ui.doc.querySelector('[data-mx-action="download-report"]').click();assert.equal(ui.downloads.length,1);assert.match(ui.downloads[0].name,/Fernando_Matrices_.*\.pdf$/);
+  ui.doc.querySelector('[data-mx-action="share-report"]').click();await until(()=>ui.shares.length===1);
+  assert.equal(ui.shares[0].files[0].type,'application/pdf');assert.equal(ui.shares[0].files[0].name,ui.downloads[0].name);
+  assert.equal(ui.requests.length,1);assert.doesNotMatch(ui.doc.body.textContent,/enviado al profesor|entrega confirmada/i);
+ }finally{ui.close();}
 });
-
-test('retired algebra data cannot become matrix progress or block its new sync queue',async()=>{
-  const factory=new IDBFactory(),store=createStudentStore('fernando',factory);
-  await store.put('settings',{id:'learned',topics:['uni-c1-mapa']});
-  await store.put('settings',{id:'cloud-sync-v1',remote:emptyProgress('fernando'),outbox:{'answer:old:question':{id:'old-pending-answer'}}});
-  const ui=await open({factory});
-  try{
-    assert.match(ui.doc.querySelector('[data-mx-counter]').textContent,/0 de 5/);
-    fill(ui,[2,-1,1,4]);submit(ui);await until(()=>ui.service.state().fields['topic:matrices-r2-p1-2x2']);
-    const settings=await store.all('settings');
-    assert.ok(settings.find(value=>value.id==='cloud-sync-v1').outbox['answer:old:question']);
-    assert.ok(settings.find(value=>value.id==='matrices-round-v2-cloud-sync-v1'));
-    assert.ok(settings.find(value=>value.id==='learned').topics.includes('uni-c1-mapa'));
-  }finally{ui.close();(await store.openDatabase()).close();}
+test('activity answers are memory-only; a fresh page never restores earlier work',async()=>{
+ const first=await open();fill(first,[2,-1,1,4]);submit(first);first.close();
+ const second=await open();try{assert.ok([...second.doc.querySelectorAll('[data-mx-input]')].every(field=>field.value===''));assert.equal(second.requests.length,1);assert.equal(second.doc.querySelector('.mx-next').disabled,true);}finally{second.close();}
+});
+test('PDF generation can be retried without losing the completed activity',async()=>{
+ let fail=true;const ui=await open({pdfMaker:async()=>{if(fail)throw new Error('offline');return new Uint8Array([37,80,68,70,45]);}});
+ try{finish(ui);await until(()=>ui.doc.querySelector('[data-mx-action="retry-report"]'));assert.equal(ui.doc.querySelectorAll('.receipt-answer').length,5);fail=false;ui.doc.querySelector('[data-mx-action="retry-report"]').click();await until(()=>ui.doc.querySelector('[data-mx-action="download-report"]'));assert.equal(ui.doc.querySelector('[data-mx-action="share-report"]'),null);}finally{ui.close();}
 });

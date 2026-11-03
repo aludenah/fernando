@@ -1,5 +1,5 @@
 import katex from './vendor/katex/katex.mjs';
-import {html} from './model.js';
+import {html} from './html.js';
 
 const delimiters = /\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g;
 
